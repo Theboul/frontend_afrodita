@@ -1,30 +1,29 @@
-import { Link } from "react-router-dom";
+import React from "react";
+import "./Styles/Header.css";
+import { MdPersonOutline } from "react-icons/md"; // Icono usuario minimalista
+type HeaderProps = {
+  logoSrc?: string; // opcional: ruta del logo
+};
 
-export default function Header() {
+
+const Header: React.FC<HeaderProps> = ({ logoSrc = "../public/assets/1.png" }) => {
   return (
-    <header className="bg-[#FF84AF] py-4 shadow-md">
-      <div className="container mx-auto px-4 flex justify-between items-center">
-        <h1 className="text-lg font-bold text-white">Afrodita Tu Amiga</h1>
-        <nav>
-          <ul className="flex space-x-4">
-            <li>
-              <Link to="/" className="text-white hover:underline">
-                Inicio
-              </Link>
-            </li>
-            <li>
-              <Link to="/registro" className="text-white hover:underline">
-                Registro
-              </Link>
-            </li>
-            <li>
-              <Link to="/login" className="text-white hover:underline">
-                Login
-              </Link>
-            </li>
-          </ul>
-        </nav>
+    <header className="header">
+      {/* Botón menú hamburguesa */}
+      <button className="menu-btn">&#9776;</button>
+
+      {/* Logo central */}
+      <div className="logo-container">
+        <img src={logoSrc} alt="Logo" className="logo" />
       </div>
+
+      {/* Icono usuario */}
+     
+      <button className="user-btn">
+        <MdPersonOutline size={30} /> {/* Tamaño ajustable */}
+      </button>
     </header>
   );
-}
+};
+
+export default Header;
