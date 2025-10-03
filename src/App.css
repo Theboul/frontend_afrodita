@@ -1,0 +1,6 @@
+@media (max-width: 480px) {
+  .user-btn {
+    font-size: 28px;  /* más pequeño en móviles */
+    margin-left: 8px;
+  }
+}

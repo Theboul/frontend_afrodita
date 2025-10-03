@@ -1,29 +1,29 @@
 import React from "react";
 import "./Styles/Header.css";
-import { MdPersonOutline } from "react-icons/md"; // Icono usuario minimalista
+import { MdPersonOutline } from "react-icons/md";
+
 type HeaderProps = {
-  logoSrc?: string; // opcional: ruta del logo
+  logoSrc?: string;
+  onMenuClick: () => void; // nueva prop
 };
 
-
-const Header: React.FC<HeaderProps> = ({ logoSrc = "../public/assets/1.png" }) => {
+const Header: React.FC<HeaderProps> = ({ logoSrc = "../../../public/assets/1.png", onMenuClick }) => {
   return (
     <header className="header">
-      {/* Botón menú hamburguesa */}
-      <button className="menu-btn">&#9776;</button>
-
-      {/* Logo central */}
+      <button className="menu-btn" onClick={onMenuClick}>
+        &#9776;
+      </button>
       <div className="logo-container">
         <img src={logoSrc} alt="Logo" className="logo" />
       </div>
-
-      {/* Icono usuario */}
-     
-      <button className="user-btn">
-        <MdPersonOutline size={30} /> {/* Tamaño ajustable */}
-      </button>
+      <div className="header-icons">
+        <button className="user-btn">
+          <MdPersonOutline />
+        </button>
+      </div>
     </header>
+    
   );
 };
 
-export default Header;
+  export default Header;
