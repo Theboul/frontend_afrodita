@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "../../styles/gestionarCatalogo.css";
+import "../../styles/gestionarCategoria.css";
 
 type Categoria = {
   id: string;
