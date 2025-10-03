@@ -43,7 +43,7 @@ export default function RolesPage() {
   return (
     <div className="w-full min-h-screen bg-gray-100 flex flex-col">
       {/* Header */}
-      <header className="bg-pink-500 text-white p-6 shadow-md">
+      <header className="bg-[#FF84AF] py-4 text-white p-6 shadow-md">
         <h1 className="text-3xl font-bold">Gestión de Roles</h1>
       </header>
 
@@ -58,19 +58,19 @@ export default function RolesPage() {
               placeholder="Nombre del Rol"
               value={nuevoRol.nombre}
               onChange={(e) => setNuevoRol({ ...nuevoRol, nombre: e.target.value })}
-              className="border rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-pink-400"
+              className="border rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-[#F4AFCC]"
             />
             <input
               type="text"
               placeholder="Descripción"
               value={nuevoRol.descripcion}
               onChange={(e) => setNuevoRol({ ...nuevoRol, descripcion: e.target.value })}
-              className="border rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-pink-400"
+              className="border rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-[#F4AFCC]"
             />
           </div>
           <button
             onClick={agregarRol}
-            className="mt-5 px-6 py-2 bg-pink-500 text-white font-medium rounded-lg hover:bg-pink-600 transition"
+            className="mt-5 px-6 py-2 bg-[#FF84AF] py-4 text-white font-medium rounded-lg hover:bg-pink-600 transition"
           >
             Guardar Rol
           </button>
@@ -79,7 +79,7 @@ export default function RolesPage() {
         {/* Tabla */}
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <table className="w-full border-collapse">
-            <thead className="bg-pink-500 text-white">
+            <thead className="bg-[#FF84AF] py-4 text-white">
               <tr>
                 <th className="px-6 py-3 text-left">ID</th>
                 <th className="px-6 py-3 text-left">Nombre</th>
@@ -106,6 +106,7 @@ export default function RolesPage() {
                     >
                       Editar
                     </button>
+    
                   </td>
                 </tr>
               ))}
