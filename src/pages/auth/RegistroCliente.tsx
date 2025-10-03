@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "../../components/common/Header";
 import Footer from "../../components/common/Footer";
 import UsuarioForm from "../../components/ui/UsuarioForm";
-import { registrarCliente } from "../../services/clienteService";
+import { registrarStep1, registrarStep2 } from "../../services/clienteService";
 import { type UsuarioRegistro } from "../../validation/usuarioSchema";
 import { step1UsuarioSchema, step2UsuarioSchema } from "../../validation/usuarioSchema";
 
@@ -21,6 +21,15 @@ export default function RegistroClientePage() {
       if (step === 1) {
         // Validar con esquema del paso 1
         step1UsuarioSchema.parse(data);
+         // Llamar backend paso 1
+        await registrarStep1({
+          nombre_usuario: data.nombre_usuario!,
+          correo: data.correo!,
+          password: data.password!,
+          confirm_password: data.confirmPassword!,
+        });
+
+        // Guardar datos localmente
         setFormData((prev) => ({ ...prev, ...data }));
         setStep(2);
       } else if (step === 2) {
@@ -28,18 +37,28 @@ export default function RegistroClientePage() {
         step2UsuarioSchema.parse(data);
         const finalData = { ...formData, ...data } as UsuarioRegistro;
 
-        // Enviar al backend
-        const res = await registrarCliente(finalData);
-        setMensaje(res.mensaje || "Registro exitoso ✅");
+        // Llamar backend paso 2 → crea el cliente
+        const res = await registrarStep2(finalData);
 
-        // Redirigir después de 2 segundos
+        setMensaje(res.mensaje || "Registro exitoso");
+
         setTimeout(() => navigate("/login"), 2000);
       }
     } catch (err: any) {
-      setMensaje(err.errors?.[0]?.message || "Error en la validación ❌");
-    } finally {
-      setLoading(false);
-    }
+        if (err.response) {
+          const data = await err.response.json();
+          if (data.errores) {
+            const firstError = Object.values(data.errores)[0] as string[];
+            setMensaje(firstError[0]);
+          } else {
+            setMensaje(data.mensaje || "Error en el registro");
+          }
+        } else {
+          setMensaje("Error inesperado");
+        }
+      } finally {
+        setLoading(false);
+      }
   };
 
   return (

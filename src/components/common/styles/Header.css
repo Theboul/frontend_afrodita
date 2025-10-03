@@ -1,0 +1,62 @@
+.header {
+  width: 100%;
+  background-color: #f5a9d0; /* rosado */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.menu-btn {
+  font-size: 28px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+}
+
+.logo {
+  height: 64px;
+  width: 64px;
+  border-radius: 50%;
+  border: 4px dashed #f5a9d0;
+  object-fit: cover;
+}
+
+
+
+.user-btn {
+  font-size: 40px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #333;
+  margin-left: 10px;   /* lo separa del ícono anterior */
+  margin-right: 16px;  /* espacio hasta el borde derecho */
+}
+.header-icons {
+  margin-left: auto;   /* empuja los íconos hacia el borde derecho */
+}
+
+.user-btn {
+  font-size: 40px;
+}
+
+
+
+.header-icons {
+  display: flex;
+  align-items: center;
+  gap: 6px; /* espacio entre íconos */
+}

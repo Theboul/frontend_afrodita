@@ -1,9 +1,19 @@
-export default function Footer() {
+import React from "react";
+import "./Styles/footer.css"; // Opcional si quieres estilos separados
+
+const Footer: React.FC = () => {
   return (
-    <footer className="bg-[#FF84AF] py-4">
-      <div className="container mx-auto px-4 text-center text-white text-sm">
-        © {new Date().getFullYear()} Afrodita Lentes — Todos los derechos reservados.
+    <footer className="footer">
+      <div className="footer-content">
+        <p>&copy; {new Date().getFullYear()} Mi Empresa. Todos los derechos reservados.</p>
+        <div className="footer-links">
+          <a href="#inicio">Inicio</a>
+          <a href="#servicios">Servicios</a>
+          <a href="#contacto">Contacto</a>
+        </div>
       </div>
     </footer>
   );
-}
+};
+
+export default Footer;
