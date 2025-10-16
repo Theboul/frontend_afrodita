@@ -1,0 +1,162 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* === ESTILOS GLOBALES === */
+html, body {
+  @apply bg-[#FDF2F6] text-gray-800 antialiased;
+}
+
+h1, h2, h3, h4 {
+  @apply font-bold text-gray-900;
+}
+
+table {
+  @apply w-full border-collapse text-sm;
+}
+
+th, td {
+  @apply px-4 py-2 border-b border-gray-200;
+}
+
+/* === MENSAJES DE ERROR === */
+.error {
+  @apply text-red-500 text-sm mt-1;
+}
+
+/* === ANIMACIONES === */
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-down {
+  animation: slide-down 0.2s ease-out;
+}
+
+/* === CONTENEDORES Y SECCIONES === */
+.section-base {
+  @apply bg-white p-6 rounded-lg shadow-md mb-6;
+}
+
+.page-header {
+  @apply bg-[#F4AFCC] text-black p-6 shadow-md flex items-center justify-between;
+}
+
+/* === BOTONES === */
+.btn {
+  @apply text-white font-medium px-4 py-2 rounded-md transition-colors duration-200;
+}
+
+.btn-primary {
+  @apply bg-pink-500 hover:bg-pink-600;
+}
+
+.btn-success {
+  @apply bg-green-600 hover:bg-green-700;
+}
+
+.btn-warning {
+  @apply bg-yellow-500 hover:bg-yellow-600;
+}
+
+.btn-danger {
+  @apply bg-red-500 hover:bg-red-600;
+}
+
+.btn-info {
+  @apply bg-blue-500 hover:bg-blue-600;
+}
+
+.btn-outline {
+  @apply border border-gray-400 text-gray-700 hover:bg-gray-100;
+}
+
+/* === INPUTS Y SELECTS === */
+.input-base {
+  @apply border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-pink-400 focus:border-transparent outline-none;
+}
+
+/* === TABLAS === */
+.table-wrapper {
+  @apply bg-white rounded-lg shadow-md overflow-hidden;
+}
+
+.table-header {
+  @apply bg-[#FFC7C5] text-black font-semibold;
+}
+
+.table-row {
+  @apply hover:bg-gray-50 transition;
+}
+
+/* === FORMULARIOS === */
+.form-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-4;
+}
+
+/* === CARDS === */
+.card {
+  @apply bg-white p-6 rounded-lg shadow-md;
+}
+
+/* === FOOTER / COPYRIGHT === */
+.footer {
+  @apply text-center text-sm text-gray-500 py-4;
+}
+
+/* === SIDEBAR === */
+.sidebar-container {
+  @apply fixed z-50 bg-[#F7D1D0] text-black w-64 h-full shadow-xl flex flex-col transform transition-transform duration-300;
+}
+
+.sidebar-header {
+  @apply flex items-center justify-between p-4 border-b border-purple-500;
+}
+
+.sidebar-footer {
+  @apply p-4 border-t border-purple-500 text-center text-sm text-black;
+}
+
+.sidebar-nav {
+  @apply flex-1 overflow-y-auto p-3 space-y-1;
+}
+
+.sidebar-button {
+  @apply w-full flex justify-between items-center px-3 py-2 rounded-md transition text-left bg-[#F7D1D0] hover:bg-[#F4AFCC];
+}
+
+.sidebar-subitem {
+  @apply block text-sm px-2 py-1 rounded-md transition hover:bg-[#F7D1D0]/80;
+}
+
+.sidebar-subitem-active {
+  @apply bg-purple-900 text-white font-semibold;
+}
+
+/* === Scrollbar bonito para la sidebar === */
+@layer base {
+  .sidebar-container::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .sidebar-container::-webkit-scrollbar-thumb {
+    background-color: #b257c9 !important;
+    border-radius: 9999px;
+  }
+
+  .sidebar-container::-webkit-scrollbar-thumb:hover {
+    background-color: #9c3fb8 !important;
+  }
+
+  .sidebar-container::-webkit-scrollbar-track {
+    background-color: #f7d1d0 !important;
+  }
+}

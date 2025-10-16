@@ -1,0 +1,103 @@
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
+// Páginas de autenticación
+import GestionarLogin from "./pages/auth/Login";
+import RegistroClientePage from "./pages/auth/RegistroCliente";
+
+// Páginas del dashboard
+import GestionRoles from "./pages/auth/GestionRoles";
+import GestionProductos from "./pages/auth/GestionProductos";
+import GestionCategorias from "./pages/auth/GestionCategorias";
+import GestionUsuarios from "./pages/auth/GestionUsuarios";
+import GestionArchivos from "./pages/auth/GestionArchivos";
+import BitacoraPage from "./pages/BitacoraPage";
+import DashboardPage from "./pages/dashboard/DashboardPage";
+
+// Layouts y estilos
+import DashboardLayout from "./layouts/DashboardLayout";
+import "./styles/globals.css";
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        {/* Redirección inicial */}
+        <Route path="/" element={<Navigate to="/login" />} />
+
+        {/* Rutas públicas (autenticación) */}
+        <Route path="/login" element={<GestionarLogin />} />
+        <Route path="/registro" element={<RegistroClientePage />} />
+
+        {/* Rutas del dashboard (todas con el Sidebar incluido) */}
+        <Route
+          path="/dashboard"
+          element={
+            <DashboardLayout>
+              <DashboardPage />
+            </DashboardLayout>
+          }
+        />
+        <Route
+          path="/roles"
+          element={
+            <DashboardLayout>
+              <GestionRoles />
+            </DashboardLayout>
+          }
+        />
+        <Route
+          path="/productos"
+          element={
+            <DashboardLayout>
+              <GestionProductos />
+            </DashboardLayout>
+          }
+        />
+        <Route
+          path="/categorias"
+          element={
+            <DashboardLayout>
+              <GestionCategorias />
+            </DashboardLayout>
+          }
+        />
+        <Route
+          path="/usuarios"
+          element={
+            <DashboardLayout>
+              <GestionUsuarios />
+            </DashboardLayout>
+          }
+        />
+        <Route
+          path="/catalogo"
+          element={
+            <DashboardLayout>
+              <GestionArchivos />
+            </DashboardLayout>
+          }
+        />
+        <Route
+          path="/bitacora"
+          element={
+            <DashboardLayout>
+              <BitacoraPage />
+            </DashboardLayout>
+          }
+        />
+
+        {/* Ruta no encontrada */}
+        <Route
+          path="*"
+          element={
+            <h1 className="p-6 text-2xl font-semibold text-red-600">
+              404 - Página no encontrada
+            </h1>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;

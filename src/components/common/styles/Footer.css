@@ -1,0 +1,32 @@
+.footer {
+  width: 100%;
+  background-color: #f5a9d0;
+  text-align: center;
+  padding: 1.5rem 0;
+  font-family: Arial, sans-serif;
+  
+  position: fixed;
+  bottom: 0px;       /* fuera de la pantalla inicialmente */
+  left: 0;
+  
+}
+
+.footer-content p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.footer-links {
+  margin-top: 0.5rem;
+}
+
+.footer-links a {
+  margin: 0 0.5rem;
+  color: #646cff;
+  text-decoration: none;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
