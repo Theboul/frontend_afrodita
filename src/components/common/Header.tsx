@@ -1,26 +1,37 @@
 import React from "react";
-import "./Styles/Header.css";
-import { MdPersonOutline } from "react-icons/md";
+import { MdPersonOutline, MdMenu } from "react-icons/md";
 
-type HeaderProps = {
+interface HeaderProps {
   logoSrc?: string;
-};
+}
 
-const Header: React.FC<HeaderProps> = ({ logoSrc = "../../../public/assets/1.png" }) => {
+const Header: React.FC<HeaderProps> = ({ logoSrc = "/assets/1.png" }) => {
   return (
-    <header className="header">
-      {/* Botón menú hamburguesa */}
-      <button className="menu-btn">&#9776;</button>
+    <header className="w-full bg-[#F4AFCC]/80 backdrop-blur-md border-b border-pink-200 flex items-center justify-between px-4 sm:px-8 py-5 shadow-sm">
+      {/* Menú hamburguesa */}
+      <button
+        className="text-gray-700 hover:text-[#C25B8C] transition-colors p-2 rounded-md hover:bg-[#FBE2EB]"
+        aria-label="Abrir menú"
+      >
+        <MdMenu size={24} />
+      </button>
 
-      {/* Logo central */}
-      <div className="logo-container">
-        <img src={logoSrc} alt="Logo" className="logo" />
+      {/* Logo */}
+      <div className="flex items-center justify-center">
+        <img
+          src={logoSrc}
+          alt="Logo Afrodita"
+          className="h-10 object-contain hover:scale-105 transition-transform"
+        />
       </div>
 
-      {/* Contenedor de íconos (usuario, carrito, etc.) */}
-      <div className="header-icons">
-        <button className="user-btn">
-          <MdPersonOutline />
+      {/* Botones de acción */}
+      <div className="flex items-center gap-3">
+        <button
+          className="flex items-center gap-1 bg-white border border-[#F4AFCC] text-[#C25B8C] px-3 py-1 rounded-full text-sm font-medium hover:bg-[#F4AFCC]/20 transition"
+        >
+          <MdPersonOutline size={18} />
+          Iniciar sesión
         </button>
       </div>
     </header>

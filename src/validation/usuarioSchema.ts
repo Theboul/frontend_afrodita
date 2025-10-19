@@ -43,5 +43,18 @@ export const step2UsuarioSchema = z.object({
     .max(100, "La dirección no puede superar 100 caracteres"),
 });
 
+
+export const loginSchema = z.object({
+  credencial: z
+    .string()
+    .min(4, "El usuario debe tener al menos 4 caracteres")
+    .nonempty('El usuario o email es requerido'),
+  contraseña: z
+    .string()
+    .nonempty('La contraseña es requerida'),
+});
+
+
+export type LoginFormData = z.infer<typeof loginSchema>;
 export const usuarioSchema = step1UsuarioSchema.merge(step2UsuarioSchema);
 export type UsuarioRegistro = z.infer<typeof usuarioSchema>;

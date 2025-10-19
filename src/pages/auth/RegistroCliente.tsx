@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "../../components/common/Header";
 import Footer from "../../components/common/Footer";
 import UsuarioForm from "../../components/ui/UsuarioForm";
-import { registrarStep1, registrarStep2 } from "../../services/clienteService";
+import { registrarStep1, registrarStep2 } from "../../services/cliente/clienteService";
 import { type UsuarioRegistro } from "../../validation/usuarioSchema";
 import { step1UsuarioSchema, step2UsuarioSchema } from "../../validation/usuarioSchema";
 

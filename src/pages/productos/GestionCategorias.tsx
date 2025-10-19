@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import ModuleLayout from "../../layouts/ModuleLayout";
 import Table from "../../components/ui/Table";
 import Button from "../../components/ui/Button";
-import { CategoriaService } from "../../services/categoriaService";
+import { CategoriaService } from "../../services/productos/categoriaService";
 
 export default function GestionCategorias() {
   const [categorias, setCategorias] = useState<any[]>([]);

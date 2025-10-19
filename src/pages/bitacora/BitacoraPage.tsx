@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { getBitacoraLogs } from "../services/bitacoraService";
+import { getBitacoraLogs } from '../../services/bitacora/bitacoraService';
+
 
 interface Bitacora {
   id_bitacora: number;

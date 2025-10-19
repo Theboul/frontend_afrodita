@@ -1,16 +1,16 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 // Páginas de autenticación
-import GestionarLogin from "./pages/auth/Login";
+import LoginForm from "./pages/auth/Login";
 import RegistroClientePage from "./pages/auth/RegistroCliente";
 
 // Páginas del dashboard
-import GestionRoles from "./pages/auth/GestionRoles";
-import GestionProductos from "./pages/auth/GestionProductos";
-import GestionCategorias from "./pages/auth/GestionCategorias";
-import GestionUsuarios from "./pages/auth/GestionUsuarios";
-import GestionArchivos from "./pages/auth/GestionArchivos";
-import BitacoraPage from "./pages/BitacoraPage";
+import GestionRoles from "./pages/usuarios/GestionRoles";
+import GestionProductos from "./pages/productos/GestionProductos";
+import GestionCategorias from "./pages/productos/GestionCategorias";
+import GestionUsuarios from "./pages/usuarios/GestionUsuarios";
+import GestionArchivos from "./pages/productos/GestionArchivos";
+import BitacoraPage from "./pages/bitacora/BitacoraPage";
 import DashboardPage from "./pages/dashboard/DashboardPage";
 
 // Layouts y estilos
@@ -25,7 +25,7 @@ function App() {
         <Route path="/" element={<Navigate to="/login" />} />
 
         {/* Rutas públicas (autenticación) */}
-        <Route path="/login" element={<GestionarLogin />} />
+        <Route path="/login" element={<LoginForm />} />
         <Route path="/registro" element={<RegistroClientePage />} />
 
         {/* Rutas del dashboard (todas con el Sidebar incluido) */}

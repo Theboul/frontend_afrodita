@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ProductoService, type Producto } from "../../services/ProductoService";
+import { ProductoService, type Producto } from "../../services/productos/ProductoService";
 
 export default function GestionProductos() {
   const [productos, setProductos] = useState<Producto[]>([]);
