@@ -7,7 +7,7 @@ import RegistroClientePage from "./pages/auth/RegistroCliente";
 // Páginas del dashboard
 import GestionRoles from "./pages/usuarios/GestionRoles";
 import GestionProductos from "./pages/productos/GestionProductos";
-import GestionCategorias from "./pages/productos/GestionCategorias";
+import ListaCategorias from "./pages/categoria/ListaCategorias";
 import GestionUsuarios from "./pages/usuarios/GestionUsuarios";
 import GestionArchivos from "./pages/productos/GestionArchivos";
 import BitacoraPage from "./pages/bitacora/BitacoraPage";
@@ -16,6 +16,7 @@ import DashboardPage from "./pages/dashboard/DashboardPage";
 // Layouts y estilos
 import DashboardLayout from "./layouts/DashboardLayout";
 import "./styles/globals.css";
+
 
 function App() {
   return (
@@ -57,7 +58,7 @@ function App() {
           path="/categorias"
           element={
             <DashboardLayout>
-              <GestionCategorias />
+              <ListaCategorias />
             </DashboardLayout>
           }
         />

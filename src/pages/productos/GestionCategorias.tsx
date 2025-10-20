@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import ModuleLayout from "../../layouts/ModuleLayout";
 import Table from "../../components/ui/Table";
 import Button from "../../components/ui/Button";
-import { CategoriaService } from "../../services/productos/categoriaService";
+import { CategoriaService } from "../../services/categorias/categoriaService";
 
 export default function GestionCategorias() {
   const [categorias, setCategorias] = useState<any[]>([]);
 
   useEffect(() => {
-    CategoriaService.listar().then(res => setCategorias(res.data));
+    CategoriaService.listar_arbol().then(res => setCategorias(res.data));
   }, []);
 
   return (
