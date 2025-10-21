@@ -2,13 +2,17 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../stores/authStore";
 
-const DashboardHeader: React.FC = () => {
+interface HeaderProps {
+  logoSrc?: string;
+}
+
+const DashboardHeader: React.FC<HeaderProps> = ({ logoSrc = "/assets/1.png" }) => {
   const navigate = useNavigate();
   const { user, logout } = useAuthStore();
 
-  const handleLogout = async () => {
-    await logout();
-    navigate("/login");
+  const handleLogout = () => {
+    logout();
+    navigate("/login"); // Redirige al login después de cerrar sesión
   };
 
   return (
@@ -16,6 +20,15 @@ const DashboardHeader: React.FC = () => {
       {/* Lado izquierdo */}
       <div>
         <h1 className="text-xl font-bold text-white">Afrodita Dashboard</h1>
+      </div>
+
+      {/* Logo central */}
+      <div className="flex items-center justify-center">
+        <img
+          src={logoSrc}
+          alt="Logo Afrodita"
+          className="h-10 object-contain hover:scale-105 transition-transform"
+        />
       </div>
 
       {/* Lado derecho */}
