@@ -16,6 +16,8 @@ import DashboardPage from "./pages/dashboard/DashboardPage";
 
 import DashboardCliente from "./clientes/pages/productos/DashboardCliente"; 
 import CatalogoCliente from "./clientes/pages/productos/Catalogo";
+import ContactoCliente from "./clientes/pages/productos/Contacto";
+import PreguntasFrecuentes from "./clientes/pages/productos/PreguntasFrecuentes";
 
 
 
@@ -27,7 +29,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-
+       {/* Rutas para el cliente */}
       <Route
         path="/dashboard-cliente"
         element={
@@ -41,6 +43,22 @@ function App() {
         element={
    
           <CatalogoCliente/>
+        }
+      />
+
+      <Route
+        path="/contacto-cliente"
+        element={
+   
+          <ContactoCliente/>
+        }
+      />
+
+      <Route
+        path="/preguntas-cliente"
+        element={
+   
+          <PreguntasFrecuentes/>
         }
       />
 

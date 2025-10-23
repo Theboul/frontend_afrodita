@@ -4,7 +4,8 @@ import Banner from "../../components/common/Banner";
 import Footer from "../../components/common/Footer";
 import Visitanos from "../../components/dashboard/Visitanos";
 import FiltrarBusquedas from "../../components/dashboard/FiltrarBusquedas";
-import { ProductoService, type Producto } from "../../../services/productos/productoService";
+import { ProductoService, type Producto } from "../../../services/productos/ProductoService";
+
 
 
 const DashboardCliente: React.FC = () => {
