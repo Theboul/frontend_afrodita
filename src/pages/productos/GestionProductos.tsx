@@ -1,144 +1,125 @@
 import { useEffect, useState } from "react";
-import { ProductoService, type Producto } from "../../services/productos/ProductoService";
+import { axiosInstance } from "../../services/axiosConfig";
+import { type Producto, type Categoria, type Configuracion } from "../../services/productos/ProductoService";
+import ProductoForm from "../../components/productos/ProductoForm";
 
 export default function GestionProductos() {
   const [productos, setProductos] = useState<Producto[]>([]);
-  const [nuevoProducto, setNuevoProducto] = useState<Partial<Producto>>({
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
+  const [configuraciones, setConfiguraciones] = useState<Configuracion[]>([]);
+  const [productoActual, setProductoActual] = useState<Partial<Producto>>({
+    id_producto: "",
     nombre: "",
     descripcion: "",
     precio: 0,
     stock: 0,
-    estado_producto: "activo",
-    categoria: 1,        
-    configuracion: "C001" 
+    estado_producto: "ACTIVO",
+    id_categoria: "",
+    id_configuracion: "",
   });
 
-  // Cargar productos al montar
+  // Cargas iniciales
   useEffect(() => {
-    ProductoService.listar().then(res => setProductos(res.data));
+    cargarDatosIniciales();
   }, []);
 
-  const agregarProducto = () => {
-    if (!nuevoProducto.nombre) return;
-
-    ProductoService.crear(nuevoProducto)
-      .then(() => ProductoService.listar().then(res => setProductos(res.data)))
-      .finally(() => setNuevoProducto({ nombre: "", descripcion: "", precio: 0 }));
+  const cargarDatosIniciales = async () => {
+    try {
+      await Promise.all([
+        cargarProductos(),
+        cargarCategorias(),
+        cargarConfiguraciones()
+      ]);
+    } catch (error) {
+      console.error("Error cargando datos iniciales:", error);
+    }
   };
 
-  const eliminarProducto = (id: string) => {
-    ProductoService.eliminar(id).then(() => {
-      setProductos(productos.filter(p => p.id_producto !== id));
-    });
+  const cargarProductos = async () => {
+    try {
+      const res = await axiosInstance.get("/api/productos/");
+      const data = Array.isArray(res.data) ? res.data : res.data.results || [];
+      setProductos(data);
+    } catch (error) {
+      console.error("Error cargando productos:", error);
+    }
   };
 
-  const editarProducto = (id: string) => {
-    const prod = productos.find((p) => p.id_producto === id);
-    if (!prod) return;
+  const cargarCategorias = async () => {
+    try {
+      const res = await axiosInstance.get("/api/categorias/listar_arbol/");
+      const data = Array.isArray(res.data) ? res.data : res.data.results || [];
+      setCategorias(data);
+    } catch (error) {
+      console.error("Error cargando categorías:", error);
+    }
+  };
 
-    const nuevoNombre = prompt("Nuevo nombre:", prod.nombre);
-    const nuevaDescripcion = prompt("Nueva descripción:", prod.descripcion);
-    const nuevoPrecioStr = prompt("Nuevo precio:", prod.precio.toString());
+  const cargarConfiguraciones = async () => {
+    try {
+      const res = await axiosInstance.get("/api/productos/configuraciones/");
+      const data = Array.isArray(res.data) ? res.data : res.data.results || [];
+      setConfiguraciones(data);
+    } catch (error) {
+      console.error("Error cargando configuraciones:", error);
+    }
+  };
 
-    if (nuevoNombre && nuevaDescripcion && nuevoPrecioStr) {
-      const nuevoPrecio = parseFloat(nuevoPrecioStr);
-
-      ProductoService.actualizar(id, {
-        nombre: nuevoNombre,
-        descripcion: nuevaDescripcion,
-        precio: nuevoPrecio,
-      }).then(() => {
-        ProductoService.listar().then(res => setProductos(res.data));
+  const handleGuardarProducto = async (productoData: Partial<Producto>) => {
+    try {
+      if (productoData.id_producto) {
+        await axiosInstance.put(`/api/productos/${productoData.id_producto}/`, productoData);
+      } else {
+        await axiosInstance.post("/api/productos/", productoData);
+      }
+      
+      await cargarProductos();
+      alert("Producto guardado correctamente.");
+      setProductoActual({
+        id_producto: "",
+        nombre: "",
+        descripcion: "",
+        precio: 0,
+        stock: 0,
+        estado_producto: "ACTIVO",
+        id_categoria: "",
+        id_configuracion: "",
       });
+    } catch (error) {
+      console.error("Error guardando producto:", error);
+      alert("No se pudo guardar el producto.");
+    }
+  };
+
+  const handleEliminarProducto = async (id: string) => {
+    if (!confirm("¿Seguro que deseas eliminar este producto?")) return;
+    try {
+      await axiosInstance.delete(`/api/productos/${id}/`);
+      setProductos(prev => prev.filter(p => p.id_producto !== id));
+      alert("Producto eliminado correctamente.");
+    } catch (error) {
+      console.error("Error eliminando producto:", error);
+      alert("No se pudo eliminar el producto.");
     }
   };
 
   return (
-    <div className="w-full min-h-screen bg-gray-100 flex flex-col">
-      {/* Header */}
-      <header className="bg-[#FF84AF] py-4 text-white p-6 shadow-md">
-        <h1 className="text-3xl font-bold">Gestión de Productos</h1>
-      </header>
+    <div className="w-full min-h-[150vh] bg-[#FDF2F6] p-6">
+      <div className="w-full bg-white rounded-2xl shadow-md p-8">
+        <h1 className="text-3xl font-bold mb-8 text-pink-600 text-center">
+          Gestión de Productos
+        </h1>
 
-      {/* Contenido principal */}
-      <main className="flex-1 p-6 overflow-y-auto">
-        {/* Formulario */}
-        <div className="bg-white p-6 rounded-lg shadow-md mb-8 grid grid-cols-1 md:grid-cols-4 gap-4">
-          <input
-            type="text"
-            placeholder="Nombre"
-            value={nuevoProducto.nombre || ""}
-            onChange={(e) => setNuevoProducto({ ...nuevoProducto, nombre: e.target.value })}
-            className="border rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-[#F4AFCC]"
-          />
-          <input
-            type="text"
-            placeholder="Descripción"
-            value={nuevoProducto.descripcion || ""}
-            onChange={(e) => setNuevoProducto({ ...nuevoProducto, descripcion: e.target.value })}
-            className="border rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-[#F4AFCC]"
-          />
-          <input
-            type="number"
-            placeholder="Precio"
-            value={nuevoProducto.precio || 0}
-            onChange={(e) => setNuevoProducto({ ...nuevoProducto, precio: parseFloat(e.target.value) })}
-            className="border rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-[#F4AFCC]"
-          />
-          <button
-            onClick={agregarProducto}
-            className="mt-2 md:mt-0 bg-[#FF84AF] text-white px-4 py-2 rounded-lg hover:bg-pink-600 transition"
-          >
-            Agregar Producto
-          </button>
-        </div>
-
-        {/* Tabla */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <table className="w-full border-collapse">
-            <thead className="bg-[#FF84AF] text-white">
-              <tr>
-                <th className="px-4 py-2">ID</th>
-                <th className="px-4 py-2">Nombre</th>
-                <th className="px-4 py-2">Descripción</th>
-                <th className="px-4 py-2">Precio</th>
-                <th className="px-4 py-2 text-center">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {productos.map((p) => (
-                <tr key={p.id_producto} className="border-b hover:bg-gray-50">
-                  <td className="px-4 py-2">{p.id_producto}</td>
-                  <td className="px-4 py-2">{p.nombre}</td>
-                  <td className="px-4 py-2">{p.descripcion}</td>
-                  <td className="px-4 py-2">${p.precio}</td>
-                  <td className="px-4 py-2 text-center space-x-2">
-                    <button
-                      onClick={() => eliminarProducto(p.id_producto)}
-                      className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-                    >
-                      Eliminar
-                    </button>
-                    <button
-                      onClick={() => editarProducto(p.id_producto)}
-                      className="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"
-                    >
-                      Editar
-                    </button>
-                  </td>
-                </tr>
-              ))}
-              {productos.length === 0 && (
-                <tr>
-                  <td colSpan={5} className="text-center py-6 text-gray-500">
-                    No hay productos
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </main>
+        <ProductoForm
+          producto={productoActual}
+          categorias={categorias}
+          configuraciones={configuraciones}
+          onGuardar={handleGuardarProducto}
+          onEliminar={handleEliminarProducto}
+          onCambioProducto={setProductoActual}
+          onImagenesSubidas={cargarProductos}
+        />
+      </div>
     </div>
   );
 }

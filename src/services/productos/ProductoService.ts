@@ -1,22 +1,96 @@
-import axios from "axios";
-
-const API_URL = "http://localhost:8000/api/producto/productos/";
+import { axiosInstance } from "../axiosConfig";
 
 export interface Producto {
-  id_producto: string;     
+  id_producto: string;
   nombre: string;
   descripcion: string;
   precio: number;
   stock: number;
-  estado_producto: string;
-  categoria: number;
-  configuracion: string;
+  estado_producto?: string;
+  id_categoria: string;
+  id_configuracion?: string | null;
 }
 
+export interface Categoria {
+  id_categoria: string;
+  nombre: string;
+  subcategorias?: Categoria[];
+}
+
+export interface Configuracion {
+  id_configuracion: string;
+  color: string;
+  curva: string;
+  diametro: number;
+  medida_info: {
+    medida: string;
+    descripcion: string;
+  };
+}
+
+export type Visibilidad = "mostrar" | "ocultar" | null;
+
 export const ProductoService = {
-  listar: () => axios.get<Producto[]>(API_URL, { withCredentials: true }),
-  obtener: (id: string) => axios.get<Producto>(`${API_URL}${id}/`, { withCredentials: true }),
-  crear: (data: Partial<Producto>) => axios.post(API_URL, data, { withCredentials: true }),
-  actualizar: (id: string, data: Partial<Producto>) => axios.put(`${API_URL}${id}/`, data, { withCredentials: true }),
-  eliminar: (id: string) => axios.delete(`${API_URL}${id}/`, { withCredentials: true }),
+  listar: async () => {
+    return axiosInstance.get("/api/productos/");
+  },
+
+  crear: async (producto: Partial<Producto>) => {
+    const data = {
+      id_producto: producto.id_producto,
+      nombre: producto.nombre,
+      descripcion: producto.descripcion,
+      precio: producto.precio,
+      stock: producto.stock,
+      id_categoria: producto.id_categoria,
+      id_configuracion: producto.id_configuracion || null,
+    };
+    return axiosInstance.post("/api/productos/", data);
+  },
+
+  eliminar: async (id: string) => {
+    return axiosInstance.delete(`/api/productos/${id}/`);
+  },
+
+  obtener: async (id: string) => {
+    return axiosInstance.get(`/api/productos/${id}/`);
+  },
+
+  actualizar: async (id: string, data: Partial<Producto>) => {
+    return axiosInstance.put(`/api/productos/${id}/`, data);
+  },
+
+  cambiarEstado: async (id: string, estado: "ACTIVO" | "INACTIVO", motivo?: string) => {
+    return axiosInstance.patch(`/api/productos/${id}/cambiar-estado/`, { estado_producto: estado, motivo });
+  },
+
+  ajustarStock: async (id: string, tipo: "INCREMENTO" | "DECREMENTO" | "CORRECCION", cantidad: number, motivo: string) => {
+    return axiosInstance.post(`/api/productos/${id}/ajustar-stock/`, {
+      tipo_ajuste: tipo,
+      cantidad,
+      motivo,
+    });
+  },
+};
+
+export const CategoriaService = {
+  listarArbol: async () => {
+    return axiosInstance.get("/api/categorias/listar_arbol/");
+  },
+};
+
+export const ConfiguracionService = {
+  listar: async () => {
+    return axiosInstance.get("/api/productos/configuraciones/");
+  },
+};
+
+export const ImagenService = {
+  subir: async (productoId: string, formData: FormData) => {
+    return axiosInstance.post(
+      `/api/imagenes/productos/${productoId}/subir/`,
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
+  },
 };

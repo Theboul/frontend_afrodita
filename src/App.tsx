@@ -9,7 +9,7 @@ import GestionRoles from "./pages/usuarios/GestionRoles";
 import GestionProductos from "./pages/productos/GestionProductos";
 import ListaCategorias from "./pages/categoria/ListaCategorias";
 import GestionUsuarios from "./pages/usuarios/GestionUsuarios";
-import GestionArchivos from "./pages/productos/GestionArchivos";
+import GestionArchivos from "./pages/archivos/CatalogoArchivos";
 import BitacoraPage from "./pages/bitacora/BitacoraPage";
 import DashboardPage from "./pages/dashboard/DashboardPage";
 

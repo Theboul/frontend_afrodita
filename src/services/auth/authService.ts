@@ -29,7 +29,7 @@ export interface ApiError {
   error?: string;
 }
 
-export type AuthError = 
+export type AuthError =
   | 'NETWORK_ERROR'
   | 'TIMEOUT_ERROR'
   | 'INVALID_CREDENTIALS'
@@ -43,6 +43,9 @@ export type AuthError =
 class AuthService {
   private isRefreshing = false;
 
+  // ======================
+  // LOGIN
+  // ======================
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
     try {
       const response = await axiosInstance.post<LoginResponse>(
@@ -61,6 +64,9 @@ class AuthService {
     }
   }
 
+  // ======================
+  // LOGOUT
+  // ======================
   async logout(): Promise<void> {
     try {
       await axiosInstance.post('/api/auth/logout/');
@@ -68,9 +74,13 @@ class AuthService {
       console.error('Error en logout:', error);
     } finally {
       this.clearLocalStorage();
+      window.location.href = '/login';
     }
   }
 
+  // ======================
+  // REFRESH TOKEN
+  // ======================
   async refreshAccessToken(): Promise<void> {
     if (this.isRefreshing) {
       return new Promise((resolve) => {
@@ -90,21 +100,29 @@ class AuthService {
     } catch (error: any) {
       this.clearLocalStorage();
       const authError = this.handleAuthError(error);
-      if (authError === 'INVALID_CREDENTIALS') {
+
+      if (
+        authError === 'INVALID_CREDENTIALS' ||
+        authError === 'REFRESH_TOKEN_EXPIRED'
+      ) {
         this.forceLogout();
       }
+
       throw new Error(authError);
     } finally {
       this.isRefreshing = false;
     }
   }
 
+  // ======================
+  // VERIFICAR SESIÓN
+  // ======================
   async verifyToken(): Promise<UserData | null> {
     try {
       const response = await axiosInstance.get<{ success: boolean; user: UserData }>(
         '/api/auth/verificar-sesion/'
       );
-      
+
       if (response.data.success) {
         this.saveUserData(response.data.user);
         return response.data.user;
@@ -116,6 +134,9 @@ class AuthService {
     }
   }
 
+  // ======================
+  // INICIALIZAR AUTH
+  // ======================
   async initializeAuth(): Promise<boolean> {
     try {
       const userData = await this.verifyToken();
@@ -126,7 +147,9 @@ class AuthService {
     }
   }
 
-  // Almacenamiento local
+  // ======================
+  // LOCAL STORAGE
+  // ======================
   saveUserData(userData: UserData): void {
     localStorage.setItem('user', JSON.stringify(userData));
   }
@@ -145,6 +168,9 @@ class AuthService {
     window.location.href = '/login';
   }
 
+  // ======================
+  // MANEJO DE ERRORES
+  // ======================
   private handleAuthError(error: any): AuthError {
     if (!error.response) {
       if (error.code === 'ECONNABORTED') return 'TIMEOUT_ERROR';
@@ -161,13 +187,15 @@ class AuthService {
         }
         return 'INVALID_CREDENTIALS';
       case 401:
-        // Si es un error 401 en refresh token, es más específico
         if (error.config?.url?.includes('refresh-token')) {
           return 'REFRESH_TOKEN_EXPIRED';
         }
         return 'INVALID_CREDENTIALS';
       case 403:
-        if (data.error?.includes('inactivo') || data.error?.includes('bloqueado')) {
+        if (
+          data.error?.includes('inactivo') ||
+          data.error?.includes('bloqueado')
+        ) {
           return 'USER_INACTIVE';
         }
         return 'INVALID_CREDENTIALS';
@@ -189,7 +217,7 @@ class AuthService {
       RATE_LIMIT_EXCEEDED: 'Demasiados intentos. Espera unos minutos.',
       SERVER_ERROR: 'Error del servidor. Intenta más tarde.',
       INVALID_TOKEN: 'Sesión inválida. Inicia sesión nuevamente.',
-      REFRESH_TOKEN_EXPIRED: 'Sesión expirada. Inicia sesión nuevamente.'
+      REFRESH_TOKEN_EXPIRED: 'Sesión expirada. Inicia sesión nuevamente.',
     };
 
     return errorMessages[errorType];
