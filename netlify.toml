@@ -1,0 +1,41 @@
+[build]
+  # Comando para construir la aplicación
+  command = "bun run build"
+  # Directorio donde se genera el build
+  publish = "dist"
+
+# Configuración para Single Page Applications (SPA)
+# Redirige todas las peticiones al index.html para que React Router funcione
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Headers de seguridad
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Seguridad básica
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    
+    # Cache para assets estáticos
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    # No cachear HTML para obtener siempre la última versión
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    # Service Worker no debe cachearse
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Variables de entorno (opcional, es mejor configurarlas en la UI de Netlify)
+# [build.environment]
+#   NODE_VERSION = "20"

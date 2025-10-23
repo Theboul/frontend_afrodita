@@ -30,6 +30,9 @@ dist/
 
 # Env
 .env
+.env.local
+.env.production
+.env.development
 
 # Editor
 .vscode/

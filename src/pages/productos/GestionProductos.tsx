@@ -4,6 +4,7 @@ import { type Producto, type Categoria, type Configuracion } from "../../service
 import ProductoForm from "../../components/productos/ProductoForm";
 
 export default function GestionProductos() {
+  // @ts-ignore - productos será usado cuando se implemente la lista de productos
   const [productos, setProductos] = useState<Producto[]>([]);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [configuraciones, setConfiguraciones] = useState<Configuracion[]>([]);
