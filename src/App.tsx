@@ -13,6 +13,12 @@ import GestionArchivos from "./pages/productos/GestionArchivos";
 import BitacoraPage from "./pages/bitacora/BitacoraPage";
 import DashboardPage from "./pages/dashboard/DashboardPage";
 
+
+import DashboardCliente from "./clientes/pages/productos/DashboardCliente"; 
+import CatalogoCliente from "./clientes/pages/productos/Catalogo";
+
+
+
 // Layouts y estilos
 import DashboardLayout from "./layouts/DashboardLayout";
 import "./styles/globals.css";
@@ -21,6 +27,23 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+
+      <Route
+        path="/dashboard-cliente"
+        element={
+   
+          <DashboardCliente />
+        }
+      />
+
+      <Route
+        path="/catalogo-cliente"
+        element={
+   
+          <CatalogoCliente/>
+        }
+      />
+
         {/* Redirección inicial */}
         <Route path="/" element={<Navigate to="/login" />} />
 
