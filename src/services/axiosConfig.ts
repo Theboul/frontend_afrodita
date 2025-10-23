@@ -3,6 +3,7 @@ import axios, { type AxiosInstance, type AxiosResponse, AxiosError, type Interna
 import { authService } from './auth/authService';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_TIMEOUT = parseInt(import.meta.env.VITE_API_TIMEOUT || '30000');
 
 class AxiosConfig {
   private instance: AxiosInstance;
@@ -10,7 +11,7 @@ class AxiosConfig {
   constructor() {
     this.instance = axios.create({
       baseURL: API_BASE_URL,
-      timeout: 30000, // 30 segundos
+      timeout: API_TIMEOUT,
       withCredentials: true, // Importante para cookies HTTP-only
     });
 

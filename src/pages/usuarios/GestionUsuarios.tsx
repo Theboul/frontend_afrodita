@@ -8,6 +8,7 @@ import ModalCambiarContrasena from "../../components/usuario/ModalCambiarContras
 import FormularioUsuario from "../../components/usuario/FormularioUsuario";
 import { useUsuarios } from "../../hooks/useUsuarios";
 import type { Usuario, UsuarioCreate } from "../../services/usuarios/gestionUsuario";
+import { debug } from "../../utils/debug";
 
 export default function GestionUsuarios() {
   const {
@@ -25,7 +26,7 @@ export default function GestionUsuarios() {
 
   // Agregar useEffect para debug
   useEffect(() => {
-    console.log("📊 Estado actual:", {
+    debug.log("📊 Estado actual:", {
       usuarios,
       loading,
       error,
@@ -125,10 +126,12 @@ export default function GestionUsuarios() {
           <p className="text-gray-600">
             Total: {paginacion?.total || 0} usuarios
           </p>
-          {/* Debug info */}
-          <p className="text-xs text-gray-400">
-            DEBUG: {usuarios.length} usuarios cargados
-          </p>
+          {/* Debug info - solo visible si está habilitado */}
+          {import.meta.env.VITE_ENABLE_DEBUG === 'true' && (
+            <p className="text-xs text-gray-400">
+              DEBUG: {usuarios.length} usuarios cargados
+            </p>
+          )}
         </div>
         <Button 
           label="+ Nuevo Usuario" 
