@@ -7,7 +7,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({
-  logoSrc = "../../public/assets/1.png",
+  logoSrc = "../../../../public/assets/1.png",
 }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false); // 👈 Control del sidebar
 
@@ -34,13 +34,14 @@ const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Botón de iniciar sesión */}
-        <div className="flex items-center gap-3">
-          <button
-            className="flex items-center gap-1 bg-white border border-[#F4AFCC] text-[#C25B8C] px-3 py-1 rounded-full text-sm font-medium hover:bg-[#F4AFCC]/20 transition"
-          >
-            <MdPersonOutline size={18} />
+       <div className="flex items-center gap-3">
+         <a
+           href="/login" 
+           className="flex items-center gap-1 bg-white border border-[#F4AFCC] text-[#C25B8C] px-3 py-1 rounded-full text-sm font-medium hover:bg-[#F4AFCC]/20 transition"
+           >
+           <MdPersonOutline size={18} />
             Iniciar sesión
-          </button>
+          </a>
         </div>
       </header>
 
