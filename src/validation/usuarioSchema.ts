@@ -36,11 +36,6 @@ export const step2UsuarioSchema = z.object({
     .optional(),
 
   sexo: z.enum(["M", "F", "N"]),
-  
-  direccion: z
-    .string()
-    .min(5, "La dirección es demasiado corta")
-    .max(100, "La dirección no puede superar 100 caracteres"),
 });
 
 

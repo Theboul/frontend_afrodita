@@ -32,6 +32,9 @@ const LoginForm: React.FC = () => {
       case "VENDEDOR":
         navigate("/dashboard");
         break;
+      case "CLIENTE":
+        navigate("/catalogo-cliente"); // Redirige a clientes al catálogo
+        break;
       default:
         navigate("/");
     }
@@ -176,7 +179,7 @@ const LoginForm: React.FC = () => {
               <div className="register-link">
                 <p>
                   ¿No tienes cuenta aún?{" "}
-                  <Link to="/register" className="create-account">
+                  <Link to="/registro" className="create-account">
                     Crear una cuenta
                   </Link>
                 </p>

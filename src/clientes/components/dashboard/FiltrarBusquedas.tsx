@@ -1,90 +1,25 @@
+// src/components/dashboard/FiltrarBusquedas.tsx
 import React from "react";
 
-interface Filtro {
-  nombre: string;
-  imagen: string;
+interface Props {
+  categorias: { id_categoria: number; nombre: string }[];
+  onFiltrar: (id: number) => void;
 }
 
-interface FiltrarBusquedasProps {
-  onFiltrar: (categoria: string) => void;
-}
-
-const filtrosSuperiores: Filtro[] = [
-  {
-    nombre: "Lentes",
-    imagen: "../../../../public/assets/Lentes.png",
-  },
-  {
-    nombre: "Liquidos",
-    imagen: "../../../../public/assets/Liquido.png",
-  },
-  {
-    nombre: "Accesorios",
-    imagen: "../../../../public/assets/Accesorios.jpg",
-  },
-];
-
-const filtrosInferiores: Filtro[] = [
-  {
-    nombre: "Mieles",
-    imagen: "../../../../public/assets/Miel.jpg",
-  },
-  {
-    nombre: "Grises",
-    imagen: "../../../../public/assets/Grises.webp",
-  },
-    {
-    nombre: "Verdes",
-    imagen: "../../../../public/assets/Verdes.jpg",
-  },
-  {
-    nombre: "Celestes",
-    imagen: "../../../../public/assets/Celestes.jpg",
-  },
-];
-
-export default function FiltrarBusquedas({ onFiltrar }: FiltrarBusquedasProps) {
+const FiltrarBusquedas: React.FC<Props> = ({ categorias, onFiltrar }) => {
   return (
-    <div className="flex flex-col items-center gap-20 p-6">
-      {/* Fila superior - redondos */}
-      <div className="flex justify-center gap-20 flex-wrap">
-        {filtrosSuperiores.map((filtro) => (
-          <button
-            key={filtro.nombre}
-            onClick={() => onFiltrar(filtro.nombre.toLowerCase())}
-            className="flex flex-col items-center transition-transform hover:scale-105 focus:outline-none"
-          >
-            <img
-              src={filtro.imagen}
-              alt={filtro.nombre}
-              className="w-24 h-24 rounded-full object-cover border-2 border-transparent hover:border-purple-400 shadow-md"
-            />
-            <span className="mt-2 text-gray-700 font-semibold">
-              {filtro.nombre}
-            </span>
-          </button>
-        ))}
-      </div>
-
-      {/* Fila inferior - rectangulares */}
-      <div className="flex justify-center gap-6 flex-wrap">
-        {filtrosInferiores.map((filtro) => (
-          <button
-            key={filtro.nombre}
-            onClick={() => onFiltrar(filtro.nombre.toLowerCase())}
-            className="flex flex-col items-center transition-transform hover:scale-105 focus:outline-none"
-          >
-            <img
-              src={filtro.imagen}
-              alt={filtro.nombre}
-              className="w-40 h-40 rounded-xl object-cover border-2 border-transparent hover:border-purple-400 shadow-md"
-            />
-            <span className="mt-2 font-semibold text-purple-600">
-              {filtro.nombre}
-            </span>
-          </button>
-        ))}
-      </div>
+    <div className="bg-white shadow p-4 rounded-lg flex flex-wrap gap-2 justify-center">
+      {categorias.map((c) => (
+        <button
+          key={c.id_categoria}
+          onClick={() => onFiltrar(c.id_categoria)}
+          className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-[#C25B8C] hover:text-white transition"
+        >
+          {c.nombre}
+        </button>
+      ))}
     </div>
   );
-}
+};
+
+export default FiltrarBusquedas;

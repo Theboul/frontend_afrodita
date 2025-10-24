@@ -1,4 +1,4 @@
-const BASE_URL = "http://127.0.0.1:8000/api/clientes/registro/";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 export interface ClienteRegistro {
   nombre_completo: string;
@@ -7,34 +7,59 @@ export interface ClienteRegistro {
   correo: string;
   telefono?: string;
   sexo: "M" | "F" | "N";
-  direccion: string;
 }
 
+// Paso 1 — Validación de credenciales
 export async function registrarStep1(datos: {
   nombre_usuario: string;
   correo: string;
   password: string;
-  confirm_password: string;
+  confirmar_password: string;
 }) {
-  const response = await fetch(BASE_URL + "step1/", {
+  // 🔹 Convertimos las claves antes de enviar
+  const payload = {
+    nombre_usuario: datos.nombre_usuario,
+    correo: datos.correo,
+    contraseña: datos.password, // backend espera "contraseña"
+    confirmar_contraseña: datos.confirmar_password,
+  };
+
+  const response = await fetch(`${API_URL}/api/usuarios/register/cliente/step1/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(datos),
+    body: JSON.stringify(payload),
   });
-  if (!response.ok) {
-    throw new Error("Error en el paso 1");
-  }
-  return await response.json();
+
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.message || "Error en el paso 1");
+  return data;
 }
 
-export async function registrarStep2(datos: ClienteRegistro) {
-  const response = await fetch(BASE_URL + "step2/", {
+// Paso 2 — Creación definitiva del cliente
+export async function registrarStep2(datos: {
+  nombre_usuario: string;
+  correo: string;
+  password: string;
+  nombre_completo: string;
+  telefono?: string;
+  sexo: "M" | "F" | "N";
+}) {
+  const payload = {
+    nombre_usuario: datos.nombre_usuario,
+    correo: datos.correo,
+    contraseña: datos.password, // backend espera "contraseña"
+    nombre_completo: datos.nombre_completo,
+    telefono: datos.telefono,
+    sexo: datos.sexo,
+  };
+
+  const response = await fetch(`${API_URL}/api/usuarios/register/cliente/step2/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(datos),
+    body: JSON.stringify(payload),
   });
-  if (!response.ok) {
-    throw new Error("Error en el paso 2");
-  }
-  return await response.json();
+
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.message || "Error en el paso 2");
+  return data;
 }

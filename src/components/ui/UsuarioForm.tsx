@@ -64,7 +64,6 @@ export default function UsuarioForm(props: UsuarioFormProps) {
   const step2Fields = [
     { name: "nombre_completo", type: "text", placeholder: "Nombre completo" },
     { name: "telefono", type: "tel", placeholder: "Teléfono (opcional)" },
-    { name: "direccion", type: "text", placeholder: "Dirección" },
   ];
 
   // Render

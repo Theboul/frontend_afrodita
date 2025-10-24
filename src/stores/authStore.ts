@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 import { authService } from '../services/auth/authService';
 import type { LoginCredentials, AuthError, UserData } from '../services/auth/authService';
 
-// 🔹 Definimos la interfaz del estado global
+// Definimos la interfaz del estado global
 interface AuthState {
   user: UserData | null;
   isAuthenticated: boolean;

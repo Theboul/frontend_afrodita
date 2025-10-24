@@ -10,7 +10,11 @@ import { step1UsuarioSchema, step2UsuarioSchema } from "../../validation/usuario
 export default function RegistroClientePage() {
   const [mensaje, setMensaje] = useState("");
   const [step, setStep] = useState(1); // Paso actual
-  const [formData, setFormData] = useState<Partial<UsuarioRegistro>>({});
+  const [step1Data, setStep1Data] = useState<{
+    nombre_usuario: string;
+    correo: string;
+    password: string;
+  } | null>(null); // Guardar datos del paso 1
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -21,24 +25,43 @@ export default function RegistroClientePage() {
       if (step === 1) {
         // Validar con esquema del paso 1
         step1UsuarioSchema.parse(data);
-         // Llamar backend paso 1
+         // Llamar backend paso 1 (solo validación)
         await registrarStep1({
           nombre_usuario: data.nombre_usuario!,
           correo: data.correo!,
-          password: data.password!,
-          confirm_password: data.confirmPassword!,
+          password: data.password!, // La función lo convierte a "contraseña"
+          confirmar_password: data.confirmPassword!, // La función lo convierte a "confirmar_contraseña"
         });
 
-        // Guardar datos localmente
-        setFormData((prev) => ({ ...prev, ...data }));
+        // Guardar datos del paso 1 para enviarlos en el paso 2
+        setStep1Data({
+          nombre_usuario: data.nombre_usuario!,
+          correo: data.correo!,
+          password: data.password!,
+        });
+
+        // Pasar al siguiente paso
         setStep(2);
       } else if (step === 2) {
         // Validar con esquema del paso 2
         step2UsuarioSchema.parse(data);
-        const finalData = { ...formData, ...data } as UsuarioRegistro;
+        
+        if (!step1Data) {
+          setMensaje("Error: Datos del paso 1 no encontrados");
+          return;
+        }
 
-        // Llamar backend paso 2 → crea el cliente
-        const res = await registrarStep2(finalData);
+        // Llamar backend paso 2 con TODOS los datos
+        const res = await registrarStep2({
+          // Datos del paso 1
+          nombre_usuario: step1Data.nombre_usuario,
+          correo: step1Data.correo,
+          password: step1Data.password,
+          // Datos del paso 2
+          nombre_completo: data.nombre_completo!,
+          telefono: data.telefono,
+          sexo: data.sexo || "N",
+        });
 
         setMensaje(res.mensaje || "Registro exitoso");
 
@@ -54,7 +77,7 @@ export default function RegistroClientePage() {
             setMensaje(data.mensaje || "Error en el registro");
           }
         } else {
-          setMensaje("Error inesperado");
+          setMensaje(err.message || "Error inesperado");
         }
       } finally {
         setLoading(false);
