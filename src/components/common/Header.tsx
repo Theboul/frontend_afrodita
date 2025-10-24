@@ -7,7 +7,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ logoSrc = "../../../public/assets/1.png" }) => {
   return (
-    <header className="w-full bg-[#F4AFCC]/80 backdrop-blur-md border-b border-pink-200 flex items-center justify-between px-4 sm:px-8 py-5 shadow-sm">
+    <header className="w-full bg-[#F4AFCC]/100 backdrop-blur-md border-b border-pink-200 flex items-center justify-between px-4 sm:px-8 py-5 shadow-sm">
       {/* Menú hamburguesa */}
       <button
         className="text-gray-700 hover:text-[#C25B8C] transition-colors p-2 rounded-md hover:bg-[#FBE2EB]"

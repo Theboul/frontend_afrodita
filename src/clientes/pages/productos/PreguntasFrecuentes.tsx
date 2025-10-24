@@ -33,18 +33,23 @@ const PreguntasFrecuentes: React.FC = () => {
       <Header logoSrc="/assets/1.png" />
 
       {/* Contenido principal */}
-      <main className="flex-1 max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-[#C25B8C] mb-8 text-center">
+      <main className="flex-1 max-w-4xl mx-auto py-10 sm:py-12 px-4 sm:px-6 lg:px-8">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#C25B8C] mb-6 sm:mb-8 text-center">
           Preguntas Frecuentes sobre Lentes de Contacto
         </h1>
 
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {preguntas.map((item, index) => (
-            <div key={index} className="border-l-4 border-[#C25B8C] pl-4">
-              <h2 className="text-lg font-semibold text-gray-800">
+            <div
+              key={index}
+              className="border-l-4 border-[#C25B8C] pl-3 sm:pl-4 py-2 sm:py-3"
+            >
+              <h2 className="text-base sm:text-lg md:text-xl font-semibold text-gray-800">
                 {item.pregunta}
               </h2>
-              <p className="mt-1 text-gray-600">{item.respuesta}</p>
+              <p className="mt-1 text-sm sm:text-base md:text-lg text-gray-600">
+                {item.respuesta}
+              </p>
             </div>
           ))}
         </div>

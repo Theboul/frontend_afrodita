@@ -17,10 +17,11 @@ export const menuModules = [
     label: "Gestión de Clientes",
     icon: Users,
     items: [
-      { label: "Gestionar Cuenta de Cliente", to: "/clientes/cuenta" },
+      { label: "Gestionar Cuenta de Cliente", to: "/gestionar-cuentacliente" },
       { label: "Registrar Cliente", to: "/clientes/registro" },
       { label: "Gestionar Contacto / Soporte", to: "/clientes/soporte" },
       { label: "Gestionar Reseñas de Productos", to: "/clientes/reseñas" },
+     
     ],
   },
 
@@ -42,7 +43,7 @@ export const menuModules = [
     icon: Boxes,
     items: [
       { label: "Gestionar Proveedores", to: "/proveedores" },
-      { label: "Gestionar Compras", to: "/compras" },
+      { label: "Gestionar Compras", to: "/gestionar-compra"} ,
       { label: "Gestionar Inventario", to: "/inventario" },
       { label: "Gestionar Lotes y Caducidades", to: "/lotes" },
       { label: "Generar Nota de Compra", to: "/compras/nota" },

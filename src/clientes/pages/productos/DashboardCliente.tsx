@@ -5,14 +5,13 @@ import Footer from "../../components/common/Footer";
 import Visitanos from "../../components/dashboard/Visitanos";
 import FiltrarBusquedas from "../../components/dashboard/FiltrarBusquedas";
 import { ProductoService, type Producto } from "../../../services/productos/ProductoService";
-
-
+import SearchBar from "../../components/common/Search";
+import EnviosTodoBolivia from "../../components/dashboard/EnviosBanner";
 
 const DashboardCliente: React.FC = () => {
   const [visibleSections, setVisibleSections] = useState<string[]>([]);
   const [productos, setProductos] = useState<Producto[]>([]);
 
-  // función auxiliar para observar elementos y activar animaciones
   const useScrollAnimation = (id: string) => {
     const ref = useRef<HTMLDivElement>(null);
 
@@ -44,13 +43,12 @@ const DashboardCliente: React.FC = () => {
     console.log("Filtrando por:", categoria);
   }
 
-  // refs para animaciones
   const banner = useScrollAnimation("banner");
+  const search = useScrollAnimation("search");
   const filtros = useScrollAnimation("filtros");
   const panel = useScrollAnimation("panel");
   const visitanos = useScrollAnimation("visitanos");
 
-  // ✅ Listar productos y mostrar en consola
   useEffect(() => {
     ProductoService.listar()
       .then((response) => {
@@ -68,7 +66,7 @@ const DashboardCliente: React.FC = () => {
       <Header logoSrc="/assets/1.png" />
 
       {/* Contenido principal */}
-      <main className="flex-1">
+      <main className="flex-1 w-full">
         {/* Banner */}
         <div
           ref={banner.ref}
@@ -87,6 +85,18 @@ const DashboardCliente: React.FC = () => {
           />
         </div>
 
+        {/* 🔍 SearchBar */}
+        <div
+          ref={search.ref}
+          className={`transition-all duration-[1000ms] ease-out transform ${
+            search.isVisible
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 translate-y-10"
+          } w-full px-4 sm:px-6 lg:px-8 mt-10`}
+        >
+          <SearchBar />
+        </div>
+
         {/* Filtro de búsquedas */}
         <div
           ref={filtros.ref}
@@ -94,7 +104,7 @@ const DashboardCliente: React.FC = () => {
             filtros.isVisible
               ? "opacity-100 translate-y-0"
               : "opacity-0 translate-y-10"
-          }`}
+          } w-full px-4 sm:px-6 lg:px-8 mt-8`}
         >
           <FiltrarBusquedas onFiltrar={setCategoriaSeleccionada} />
         </div>
@@ -102,20 +112,25 @@ const DashboardCliente: React.FC = () => {
         {/* Sección de contenido */}
         <section
           ref={panel.ref}
-          className={`p-6 transition-all duration-[1000ms] ease-out transform ${
+          className={`transition-all duration-[1000ms] ease-out transform p-6 sm:p-8 md:p-12 ${
             panel.isVisible
               ? "opacity-100 translate-y-0"
               : "opacity-0 translate-y-10"
           }`}
         >
-          <h2 className="text-2xl font-bold mb-4 text-[#C25B8C]">
-            Tu Panel de Control
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-[#C25B8C] text-center sm:text-left">
+            LENTES HIPERREALISTAS
           </h2>
-          <p className="text-gray-700">
-            Esta parte va ser modificada, es solo para mostrar un contenido de ejemplo.
+          <p className="text-gray-700 text-sm sm:text-base md:text-lg text-center sm:text-left">
+            Transforma tu mirada con nuestros lentes de contacto estéticos y con graduación,  diseñados para
+            brindarte comodidad, seguridad y estilo único. Descubre más de 80 modelos exclusivos en colores
+            naturales y fantasía perfectos para cambiar tu look cuando quieras además de nuestra
+            líneaa de lentes con graduación
           </p>
+          
         </section>
-
+        {/* Envíos a todo Bolivia */}
+          < EnviosTodoBolivia />    
         {/* Visítanos */}
         <div
           ref={visitanos.ref}
@@ -123,7 +138,7 @@ const DashboardCliente: React.FC = () => {
             visitanos.isVisible
               ? "opacity-100 translate-y-0"
               : "opacity-0 translate-y-10"
-          }`}
+          } w-full px-4 sm:px-6 lg:px-8 mt-8`}
         >
           <Visitanos />
         </div>
