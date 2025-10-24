@@ -67,30 +67,36 @@ export default function ArbolCategorias({
 
   if (!categorias.length)
     return (
-      <p className="text-gray-500 text-center p-4 bg-white rounded shadow">
-        No hay categorías registradas
-      </p>
+      <div className="text-center py-8 sm:py-12 bg-white rounded-lg shadow p-4">
+        <div className="text-gray-300 text-4xl sm:text-6xl mb-4">📂</div>
+        <p className="text-gray-500 text-sm sm:text-base font-medium">
+          No hay categorías registradas
+        </p>
+        <p className="text-gray-400 text-xs sm:text-sm mt-2">
+          Crea tu primera categoría para organizar productos
+        </p>
+      </div>
     );
 
   return (
-    <div className="bg-white rounded-lg shadow p-4">
+    <div className="bg-white rounded-lg shadow p-3 sm:p-4">
       {/* === Header con búsqueda === */}
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-3 gap-2">
-        <h2 className="text-lg font-semibold text-gray-800">Árbol de Categorías</h2>
-        <div className="flex items-center gap-2">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2 sm:gap-3">
+        <h2 className="text-base sm:text-lg font-semibold text-gray-800">Árbol de Categorías</h2>
+        <div className="flex items-center gap-2 w-full sm:w-auto">
           <input
             type="text"
             placeholder="Buscar categoría..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="border rounded px-2 py-1 w-full sm:w-64 focus:ring focus:ring-pink-200"
+            className="border rounded px-2 sm:px-3 py-1.5 sm:py-2 w-full sm:w-64 text-sm focus:ring focus:ring-pink-200"
           />
           {search && (
             <button
               onClick={() => setSearch("")}
-              className="text-sm text-gray-500 hover:text-gray-700"
+              className="text-xs sm:text-sm text-gray-500 hover:text-gray-700 flex-shrink-0 px-2"
             >
-              ✖ Limpiar
+              ✖
             </button>
           )}
         </div>
@@ -102,7 +108,7 @@ export default function ArbolCategorias({
       )}
 
       {/* === Render del árbol === */}
-      <div className="max-h-[70vh] overflow-y-auto pr-2">
+      <div className="max-h-[60vh] sm:max-h-[70vh] overflow-y-auto pr-1 sm:pr-2">
         {categoriasFiltradas.map((cat) => (
           <TreeNode
             key={cat.id_categoria}

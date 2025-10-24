@@ -1,4 +1,3 @@
-// src/clientes/pages/productos/Contacto.tsx
 import React from "react";
 import Header from "../../components/common/Header";
 import Footer from "../../components/common/Footer";

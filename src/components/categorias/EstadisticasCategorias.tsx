@@ -30,7 +30,7 @@ export default function EstadisticasCategorias() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center py-4 text-gray-500">
+      <div className="flex justify-center items-center py-6 sm:py-8 text-gray-500 text-sm sm:text-base">
         Cargando estadísticas...
       </div>
     );
@@ -38,7 +38,7 @@ export default function EstadisticasCategorias() {
 
   if (error || !data) {
     return (
-      <div className="flex justify-center items-center py-4 text-red-500">
+      <div className="flex justify-center items-center py-6 sm:py-8 text-red-500 text-sm sm:text-base">
         {error ?? "No se pudieron obtener las estadísticas."}
       </div>
     );
@@ -49,33 +49,40 @@ export default function EstadisticasCategorias() {
       label: "Total de Categorías",
       value: data.total,
       color: "bg-pink-100 text-pink-700",
+      icon: "📊",
     },
     {
       label: "Categorías Principales",
       value: data.principales,
       color: "bg-indigo-100 text-indigo-700",
+      icon: "📁",
     },
     {
       label: "Sin Productos",
       value: data.sin_productos,
       color: "bg-yellow-100 text-yellow-700",
+      icon: "⚠️",
     },
     {
       label: "Nivel Máximo",
       value: data.nivel_maximo,
       color: "bg-green-100 text-green-700",
+      icon: "📈",
     },
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-3 sm:mb-4">
       {cards.map((card) => (
         <div
           key={card.label}
-          className={`p-4 rounded-lg shadow-sm text-center font-semibold ${card.color}`}
+          className={`p-3 sm:p-4 rounded-lg shadow-sm text-center font-semibold ${card.color}`}
         >
-          <div className="text-3xl font-bold">{card.value}</div>
-          <div className="text-sm mt-1">{card.label}</div>
+          <div className="flex items-center justify-center gap-2 mb-1">
+            <span className="text-xl sm:text-2xl">{card.icon}</span>
+            <div className="text-2xl sm:text-3xl font-bold">{card.value}</div>
+          </div>
+          <div className="text-xs sm:text-sm mt-1">{card.label}</div>
         </div>
       ))}
     </div>

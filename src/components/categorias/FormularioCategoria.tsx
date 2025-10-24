@@ -44,22 +44,22 @@ export default function FormularioCategoria({
     ]);
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-        <h2 className="text-lg font-semibold mb-4">
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+      <div className="bg-white p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-md">
+        <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">
           {categoria ? "Editar Categoría" : "Nueva Categoría"}
         </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
           {/* === Campo: Nombre === */}
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label className="block text-xs sm:text-sm font-medium mb-1">
               Nombre de la categoría
             </label>
             <input
               value={nombre}
               onChange={(e) => setNombre(e.target.value.toUpperCase())}
-              className="w-full border rounded px-2 py-1 focus:ring focus:ring-pink-300"
+              className="w-full border rounded px-2 sm:px-3 py-1.5 sm:py-2 text-sm focus:ring focus:ring-pink-300"
               placeholder="Ej: LENTES SIN MEDIDA"
               required
               maxLength={40}
@@ -68,7 +68,7 @@ export default function FormularioCategoria({
 
           {/* === Campo: Categoría padre (opcional) === */}
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label className="block text-xs sm:text-sm font-medium mb-1">
               Categoría padre (opcional)
             </label>
             <select
@@ -76,7 +76,7 @@ export default function FormularioCategoria({
               onChange={(e) =>
                 setIdPadre(e.target.value ? Number(e.target.value) : null)
               }
-              className="w-full border rounded px-2 py-1 focus:ring focus:ring-pink-300"
+              className="w-full border rounded px-2 sm:px-3 py-1.5 sm:py-2 text-sm focus:ring focus:ring-pink-300"
             >
               <option value="">— Ninguna (principal) —</option>
               {renderOptions(categorias)}
@@ -84,18 +84,18 @@ export default function FormularioCategoria({
           </div>
 
           {/* === Botones === */}
-          <div className="flex justify-end space-x-2">
+          <div className="flex flex-col sm:flex-row justify-end gap-2 pt-2">
             <button
               type="button"
               onClick={onCancel}
-              className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+              className="w-full sm:w-auto px-3 py-2 text-sm bg-gray-200 rounded hover:bg-gray-300 transition-colors"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50"
+              className="w-full sm:w-auto px-3 py-2 text-sm bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 transition-colors"
             >
               {loading ? "Guardando..." : "Guardar"}
             </button>

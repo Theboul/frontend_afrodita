@@ -246,31 +246,31 @@ export default function FormularioUsuario({
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-                <div className="p-6 border-b">
-                    <h2 className="text-xl font-semibold text-gray-900">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+            <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto my-4">
+                <div className="p-4 sm:p-6 border-b sticky top-0 bg-white z-10">
+                    <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
                         {esModoEditar ? 'Editar Usuario' : 'Crear Nuevo Usuario'}
                     </h2>
                     {usuario && (
-                        <p className="text-sm text-gray-600 mt-1">
+                        <p className="text-xs sm:text-sm text-gray-600 mt-1">
                             Editando: {usuario.nombre_completo} (@{usuario.nombre_usuario})
                         </p>
                     )}
                 </div>
 
-                <form onSubmit={handleSubmit} className="p-6 space-y-6">
+                <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 sm:space-y-6">
                     {/* Información Básica */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                                 Nombre Completo *
                             </label>
                             <input
                                 type="text"
                                 value={formData.nombre_completo}
                                 onChange={(e) => handleChange('nombre_completo', e.target.value)}
-                                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errores.nombre_completo ? 'border-red-500' : 'border-gray-300'
+                                className={`w-full px-3 py-2 text-sm sm:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errores.nombre_completo ? 'border-red-500' : 'border-gray-300'
                                     }`}
                                 placeholder="Ej: Juan Pérez García"
                             />
@@ -280,7 +280,7 @@ export default function FormularioUsuario({
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                                 Nombre de Usuario *
                             </label>
                             <div className="relative">
@@ -288,7 +288,7 @@ export default function FormularioUsuario({
                                     type="text"
                                     value={formData.nombre_usuario}
                                     onChange={(e) => handleChange('nombre_usuario', e.target.value)}
-                                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errores.nombre_usuario ? 'border-red-500' : 'border-gray-300'
+                                    className={`w-full px-3 py-2 text-sm sm:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errores.nombre_usuario ? 'border-red-500' : 'border-gray-300'
                                         }`}
                                     placeholder="Ej: juan.perez"
                                 />
@@ -310,9 +310,9 @@ export default function FormularioUsuario({
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                                 Correo Electrónico *
                             </label>
                             <div className="relative">
@@ -320,7 +320,7 @@ export default function FormularioUsuario({
                                     type="email"
                                     value={formData.correo}
                                     onChange={(e) => handleChange('correo', e.target.value)}
-                                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errores.correo ? 'border-red-500' : 'border-gray-300'
+                                    className={`w-full px-3 py-2 text-sm sm:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errores.correo ? 'border-red-500' : 'border-gray-300'
                                         }`}
                                     placeholder="Ej: juan@empresa.com"
                                 />
@@ -342,14 +342,14 @@ export default function FormularioUsuario({
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                                 Teléfono
                             </label>
                             <input
                                 type="tel"
                                 value={formData.telefono}
                                 onChange={(e) => handleChange('telefono', e.target.value)}
-                                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errores.telefono ? 'border-red-500' : 'border-gray-300'
+                                className={`w-full px-3 py-2 text-sm sm:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errores.telefono ? 'border-red-500' : 'border-gray-300'
                                     }`}
                                 placeholder="Ej: 77712345"
                             />
@@ -359,15 +359,15 @@ export default function FormularioUsuario({
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                                 Sexo
                             </label>
                             <select
                                 value={formData.sexo}
                                 onChange={(e) => handleChange('sexo', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
                                 <option value="M">Masculino</option>
                                 <option value="F">Femenino</option>
@@ -376,13 +376,13 @@ export default function FormularioUsuario({
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                                 Rol *
                             </label>
                             <select
                                 value={formData.rol}
                                 onChange={(e) => handleChange('rol', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
                                 <option value="CLIENTE">Cliente</option>
                                 <option value="VENDEDOR">Vendedor</option>
@@ -393,16 +393,16 @@ export default function FormularioUsuario({
 
                     {/* Campos de contraseña solo en modo crear */}
                     {!esModoEditar && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                                     Contraseña *
                                 </label>
                                 <input
                                     type="password"
                                     value={formData.contraseña}
                                     onChange={(e) => handleChange('contraseña', e.target.value)}
-                                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errores.contraseña ? 'border-red-500' : 'border-gray-300'
+                                    className={`w-full px-3 py-2 text-sm sm:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errores.contraseña ? 'border-red-500' : 'border-gray-300'
                                         }`}
                                     placeholder="Mínimo 8 caracteres"
                                 />
@@ -424,14 +424,14 @@ export default function FormularioUsuario({
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                                     Confirmar Contraseña *
                                 </label>
                                 <input
                                     type="password"
                                     value={formData.confirmarContrasena}
                                     onChange={(e) => handleChange('confirmarContrasena', e.target.value)}
-                                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errores.confirmarContrasena ? 'border-red-500' : 'border-gray-300'
+                                    className={`w-full px-3 py-2 text-sm sm:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errores.confirmarContrasena ? 'border-red-500' : 'border-gray-300'
                                         }`}
                                     placeholder="Repite la contraseña"
                                 />
@@ -445,14 +445,14 @@ export default function FormularioUsuario({
                     {/* Campos condicionales para ADMINISTRADOR y VENDEDOR */}
                     {['ADMINISTRADOR', 'VENDEDOR'].includes(formData.rol) && (
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                                 Fecha de Contrato *
                             </label>
                             <input
                                 type="date"
                                 value={formData.fecha_contrato}
                                 onChange={(e) => handleChange('fecha_contrato', e.target.value)}
-                                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errores.fecha_contrato ? 'border-red-500' : 'border-gray-300'
+                                className={`w-full px-3 py-2 text-sm sm:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errores.fecha_contrato ? 'border-red-500' : 'border-gray-300'
                                     }`}
                             />
                             {errores.fecha_contrato && (
@@ -464,13 +464,13 @@ export default function FormularioUsuario({
                     {/* Campo específico para VENDEDOR */}
                     {formData.rol === 'VENDEDOR' && (
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                                 Tipo de Vendedor
                             </label>
                             <select
                                 value={formData.tipo_vendedor}
                                 onChange={(e) => handleChange('tipo_vendedor', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
                                 <option value="TIENDA">Tienda</option>
                                 <option value="ONLINE">Online</option>
@@ -479,7 +479,7 @@ export default function FormularioUsuario({
                     )}
 
                     {/* Botones */}
-                    <div className="flex justify-end space-x-3 pt-4 border-t">
+                    <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 pt-4 border-t sticky bottom-0 bg-white">
                         <Button
                             type="button"
                             label="Cancelar"

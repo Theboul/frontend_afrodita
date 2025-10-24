@@ -120,16 +120,16 @@ export default function GestionUsuarios() {
   return (
     <ModuleLayout title="Gestión de Usuarios">
       {/* Header con botón y estadísticas */}
-      <div className="mb-6 flex justify-between items-center">
+      <div className="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Usuarios</h1>
-          <p className="text-gray-600">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Usuarios</h1>
+          <p className="text-sm sm:text-base text-gray-600">
             Total: {paginacion?.total || 0} usuarios
           </p>
           {/* Debug info - solo visible si está habilitado */}
           {import.meta.env.VITE_ENABLE_DEBUG === 'true' && (
             <p className="text-xs text-gray-400">
-              DEBUG: {usuarios.length} usuarios cargados
+              Total: {usuarios.length} usuarios cargados
             </p>
           )}
         </div>
@@ -141,8 +141,8 @@ export default function GestionUsuarios() {
       </div>
 
       {/* Filtros (placeholder) */}
-      <div className="mb-4 p-4 bg-gray-50 rounded-lg">
-        <p className="text-gray-600">Filtros (próximamente)...</p>
+      <div className="mb-4 p-3 sm:p-4 bg-gray-50 rounded-lg">
+        <p className="text-sm sm:text-base text-gray-600">Filtros (próximamente)...</p>
       </div>
 
       {/* Tabla de usuarios */}
@@ -156,13 +156,13 @@ export default function GestionUsuarios() {
       />
 
       {/* Paginación */}
-      <div className="mt-4 flex justify-between items-center">
-        <div className="text-sm text-gray-700">
+      <div className="mt-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+        <div className="text-xs sm:text-sm text-gray-700 text-center sm:text-left">
           Mostrando {((paginacion?.page || 1) - 1) * (paginacion?.pageSize || 10) + 1} a{' '}
           {Math.min((paginacion?.page || 1) * (paginacion?.pageSize || 10), paginacion?.total || 0)} de{' '}
           {paginacion?.total || 0} usuarios
         </div>
-        <div className="flex space-x-2">
+        <div className="flex space-x-2 justify-center">
           <Button
             label="Anterior"
             color="info"
@@ -230,17 +230,17 @@ export default function GestionUsuarios() {
 
       {/* Mensaje de error */}
       {error && (
-        <div className="mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+        <div className="mt-4 p-3 sm:p-4 bg-red-100 border border-red-400 text-red-700 rounded text-sm sm:text-base">
           Error: {error}
         </div>
       )}
 
       {/* Estado vacío */}
       {!loading && usuarios.length === 0 && !error && (
-        <div className="mt-8 text-center py-12 bg-gray-50 rounded-lg">
-          <div className="text-gray-400 text-6xl mb-4">👥</div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No hay usuarios</h3>
-          <p className="text-gray-600 mb-4">No se encontraron usuarios en el sistema.</p>
+        <div className="mt-8 text-center py-8 sm:py-12 bg-gray-50 rounded-lg px-4">
+          <div className="text-gray-400 text-4xl sm:text-6xl mb-4">👥</div>
+          <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">No hay usuarios</h3>
+          <p className="text-sm sm:text-base text-gray-600 mb-4">No se encontraron usuarios en el sistema.</p>
           <Button 
             label="Crear primer usuario" 
             color="success" 

@@ -30,7 +30,7 @@ export default function Button({
       onClick={disabled ? undefined : onClick}
       disabled={disabled}
       className={`
-        text-white px-4 py-2 rounded-md transition
+        text-white px-3 sm:px-4 py-2 rounded-md transition text-sm sm:text-base
         ${disabled ? disabledStyles : colorMap[color]}
       `}
     >

@@ -60,11 +60,11 @@ function SortableImage({
         <img
           src={img.metadata?.medium || img.url}
           alt="producto"
-          className="w-full h-40 object-cover"
+          className="w-full h-32 sm:h-40 object-cover"
         />
         {img.estado_imagen === "INACTIVA" && (
           <div className="absolute inset-0 bg-gray-800/40 flex items-center justify-center">
-            <span className="text-white text-sm font-semibold bg-gray-700/80 px-2 py-1 rounded">
+            <span className="text-white text-xs sm:text-sm font-semibold bg-gray-700/80 px-2 py-1 rounded">
               Inactiva
             </span>
           </div>
@@ -76,12 +76,27 @@ function SortableImage({
         {img.estado_imagen === "ACTIVA" ? (
           <>
             {!img.es_principal && (
-              <Button label="⭐" color="info" onClick={() => onSetMain(img.id_imagen)} />
+              <button 
+                onClick={() => onSetMain(img.id_imagen)}
+                className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-xs sm:text-sm transition-colors"
+              >
+                ⭐
+              </button>
             )}
-            <Button label="🗑️" color="danger" onClick={() => onDelete(img.id_imagen)} />
+            <button 
+              onClick={() => onDelete(img.id_imagen)}
+              className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs sm:text-sm transition-colors"
+            >
+              🗑️
+            </button>
           </>
         ) : (
-          <Button label="♻️" color="success" onClick={() => onRestore(img.id_imagen)} />
+          <button 
+            onClick={() => onRestore(img.id_imagen)}
+            className="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded text-xs sm:text-sm transition-colors"
+          >
+            ♻️
+          </button>
         )}
       </div>
     </div>
@@ -172,19 +187,19 @@ export function ProductImagesModal({ producto, onClose }: Props) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl shadow-lg p-6 w-[700px] max-h-[90vh] overflow-y-auto">
-        <h2 className="text-xl font-bold mb-3">
-          Imágenes de <span className="text-indigo-600">{producto.nombre}</span>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+      <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto my-4">
+        <h2 className="text-lg sm:text-xl font-bold mb-3">
+          Imágenes de <span className="text-indigo-600 break-words">{producto.nombre}</span>
         </h2>
 
         {/* Subida */}
-        <div className="flex items-center gap-3 mb-4">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 mb-4">
           <input
             type="file"
             accept="image/*"
             onChange={(e) => setArchivo(e.target.files?.[0] || null)}
-            className="border rounded px-2 py-1 w-full"
+            className="border rounded px-2 py-1.5 sm:py-2 w-full text-sm"
           />
           <Button
             label={subiendo ? "Subiendo..." : "Subir"}
@@ -192,6 +207,14 @@ export function ProductImagesModal({ producto, onClose }: Props) {
             disabled={!archivo || subiendo}
             onClick={handleUpload}
           />
+        </div>
+
+        {/* Instrucciones para móvil */}
+        <div className="mb-4 p-2 sm:p-3 bg-indigo-50 border border-indigo-200 rounded-lg">
+          <p className="text-xs sm:text-sm text-indigo-800">
+            💡 <span className="font-semibold">Tip:</span> Mantén presionada una imagen para reorganizar. 
+            <span className="hidden sm:inline"> Arrastra para cambiar el orden de visualización.</span>
+          </p>
         </div>
 
         {/* Drag & Drop */}
@@ -204,7 +227,7 @@ export function ProductImagesModal({ producto, onClose }: Props) {
             items={imagenes.map((img) => img.id_imagen)}
             strategy={verticalListSortingStrategy}
           >
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
               {imagenes.length > 0 ? (
                 imagenes.map((img) => (
                   <SortableImage
@@ -216,15 +239,21 @@ export function ProductImagesModal({ producto, onClose }: Props) {
                   />
                 ))
               ) : (
-                <p className="col-span-3 text-center text-gray-500 italic">
-                  No hay imágenes registradas
-                </p>
+                <div className="col-span-2 sm:col-span-3 md:col-span-4 text-center py-8 sm:py-12">
+                  <div className="text-gray-300 text-4xl sm:text-6xl mb-2 sm:mb-4">📷</div>
+                  <p className="text-gray-500 text-sm sm:text-base italic">
+                    No hay imágenes registradas
+                  </p>
+                  <p className="text-gray-400 text-xs sm:text-sm mt-2">
+                    Sube la primera imagen del producto
+                  </p>
+                </div>
               )}
             </div>
           </SortableContext>
         </DndContext>
 
-        <div className="mt-6 flex justify-end">
+        <div className="mt-4 sm:mt-6 flex justify-end">
           <Button label="Cerrar" color="info" onClick={onClose} />
         </div>
       </div>

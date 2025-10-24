@@ -53,7 +53,7 @@ export default function TreeNode({
 
   return (
     <div
-      style={{ marginLeft: nivel * 16 }}
+      style={{ marginLeft: nivel * 12 }}
       className={`my-1 rounded ${isOver ? "bg-pink-100 border border-pink-300" : ""}`}
       onDragOver={(e) => {
         e.preventDefault();
@@ -66,20 +66,30 @@ export default function TreeNode({
         draggable
         onDragStart={handleDragStart}
         onClick={() => onSelect?.(categoria)}
-        className="flex items-center justify-between bg-gray-50 p-2 rounded-md hover:bg-gray-100 cursor-pointer select-none"
+        className="flex items-center justify-between bg-gray-50 p-2 sm:p-2.5 rounded-md hover:bg-gray-100 cursor-pointer select-none transition-colors"
       >
-        <div className="flex items-center space-x-2">
-          {tieneHijos ? <span>📁</span> : <span>📄</span>}
-          <span className="font-medium text-gray-800">{resaltar(categoria.nombre)}</span>
+        <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1">
+          <span className="text-base sm:text-lg flex-shrink-0">
+            {tieneHijos ? "📁" : "📄"}
+          </span>
+          <span className="font-medium text-gray-800 text-sm sm:text-base truncate">
+            {resaltar(categoria.nombre)}
+          </span>
+          {categoria.cantidad_productos > 0 && (
+            <span className="text-xs bg-pink-100 text-pink-600 px-1.5 py-0.5 rounded-full flex-shrink-0">
+              {categoria.cantidad_productos}
+            </span>
+          )}
         </div>
 
-        <div className="space-x-2 text-sm">
+        <div className="flex gap-1 sm:gap-2 text-sm sm:text-base flex-shrink-0 ml-2">
           <button
             onClick={(e) => {
               e.stopPropagation();
               onEditar(categoria);
             }}
-            className="text-yellow-600 hover:text-yellow-800"
+            className="text-yellow-600 hover:text-yellow-800 p-1 hover:bg-yellow-50 rounded transition-colors"
+            title="Editar"
           >
             ✏️
           </button>
@@ -88,7 +98,8 @@ export default function TreeNode({
               e.stopPropagation();
               onEliminar(categoria);
             }}
-            className="text-red-600 hover:text-red-800"
+            className="text-red-600 hover:text-red-800 p-1 hover:bg-red-50 rounded transition-colors"
+            title="Eliminar"
           >
             🗑️
           </button>
@@ -96,7 +107,7 @@ export default function TreeNode({
       </div>
 
       {tieneHijos && (
-        <div className="mt-1 border-l border-gray-200 pl-3">
+        <div className="mt-1 border-l-2 border-gray-200 pl-2 sm:pl-3">
           {categoria.subcategorias!.map((sub) => (
             <TreeNode
               key={sub.id_categoria}

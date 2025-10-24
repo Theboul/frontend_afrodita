@@ -16,7 +16,7 @@ export default function BreadcrumbCategoria({ ruta, onNavigate }: Props) {
   return (
     <nav
       aria-label="breadcrumb"
-      className="flex items-center flex-wrap gap-1 text-sm text-gray-700 mb-3"
+      className="flex items-center flex-wrap gap-1 text-xs sm:text-sm text-gray-700 mb-3 p-2 bg-gray-50 rounded-md"
     >
       {visibleRuta.map((cat, i) => {
         const isLast = i === visibleRuta.length - 1;
@@ -28,9 +28,10 @@ export default function BreadcrumbCategoria({ ruta, onNavigate }: Props) {
                 className={`${
                   isLast
                     ? "font-semibold text-pink-700"
-                    : "hover:underline cursor-pointer"
-                }`}
+                    : "hover:underline cursor-pointer text-gray-600 hover:text-gray-900"
+                } transition-colors truncate max-w-[120px] sm:max-w-[200px]`}
                 onClick={() => !isLast && onNavigate(cat)}
+                title={cat.nombre}
               >
                 {cat.nombre}
               </span>

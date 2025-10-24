@@ -1,4 +1,3 @@
-// pages/producto/catalogo.tsx
 import React, { useEffect, useRef, useState } from "react";
 import Header from "../../components/common/Header";
 import Footer from "../../components/common/Footer";
@@ -6,14 +5,12 @@ import FiltrarBusquedas from "../../components/dashboard/FiltrarBusquedas";
 import SearchBar from "../../components/common/Search"; // 🔍 Import del buscador
 
 const DashboardCliente: React.FC = () => {
-  const [categorias, setCategorias] = useState<Categoria[]>([]);
-  const [productos, setProductos] = useState<Producto[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  // === Animación de scroll ===
   const [visibleSections, setVisibleSections] = useState<string[]>([]);
+
+  // función auxiliar para observar elementos y activar animaciones
   const useScrollAnimation = (id: string) => {
     const ref = useRef<HTMLDivElement>(null);
+
     useEffect(() => {
       const observer = new IntersectionObserver(
         (entries) => {
@@ -27,12 +24,15 @@ const DashboardCliente: React.FC = () => {
         },
         { threshold: 0.3 }
       );
+
       if (ref.current) observer.observe(ref.current);
       return () => {
         if (ref.current) observer.unobserve(ref.current);
       };
     }, [id]);
-    return { ref, isVisible: visibleSections.includes(id) };
+
+    const isVisible = visibleSections.includes(id);
+    return { ref, isVisible };
   };
 
   function setCategoriaSeleccionada(categoria: string): void {

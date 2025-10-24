@@ -74,20 +74,20 @@ export default function ModalCambiarContrasena({
   if (!show) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-md">
+        <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">
           Cambiar Contraseña
         </h3>
         
-        <div className="mb-4 p-4 bg-gray-50 rounded">
-          <p className="font-medium">{usuario.nombre_completo}</p>
-          <p className="text-sm text-gray-600">@{usuario.nombre_usuario}</p>
+        <div className="mb-4 p-3 sm:p-4 bg-gray-50 rounded">
+          <p className="font-medium text-sm sm:text-base">{usuario.nombre_completo}</p>
+          <p className="text-xs sm:text-sm text-gray-600">@{usuario.nombre_usuario}</p>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
               Nueva Contraseña
             </label>
             <input
@@ -97,7 +97,7 @@ export default function ModalCambiarContrasena({
                 setContrasena(e.target.value);
                 setErrores(prev => ({ ...prev, contrasena: '' }));
               }}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Ingresa nueva contraseña"
             />
             {contrasena && (
@@ -116,7 +116,7 @@ export default function ModalCambiarContrasena({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
               Confirmar Contraseña
             </label>
             <input
@@ -126,7 +126,7 @@ export default function ModalCambiarContrasena({
                 setConfirmarContrasena(e.target.value);
                 setErrores(prev => ({ ...prev, confirmarContrasena: '' }));
               }}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Confirma la contraseña"
             />
             {errores.confirmarContrasena && (
@@ -136,12 +136,12 @@ export default function ModalCambiarContrasena({
         </div>
 
         <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded">
-          <p className="text-sm text-blue-800">
+          <p className="text-xs sm:text-sm text-blue-800">
             📧 El usuario será notificado del cambio de contraseña.
           </p>
         </div>
 
-        <div className="flex justify-end space-x-3 mt-6">
+        <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 mt-4 sm:mt-6">
           <Button
             label="Cancelar"
             color="info"
