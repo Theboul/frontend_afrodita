@@ -71,26 +71,9 @@ export const ProductoService = {
       motivo,
     });
   },
-};
 
-export const CategoriaService = {
-  listarArbol: async () => {
-    return axiosInstance.get("/api/categorias/listar_arbol/");
-  },
-};
-
-export const ConfiguracionService = {
-  listar: async () => {
-    return axiosInstance.get("/api/productos/configuraciones/");
-  },
-};
-
-export const ImagenService = {
-  subir: async (productoId: string, formData: FormData) => {
-    return axiosInstance.post(
-      `/api/imagenes/productos/${productoId}/subir/`,
-      formData,
-      { headers: { "Content-Type": "multipart/form-data" } }
-    );
+  listarConImagen: async (params?: { search?: string; categoria?: string; page?: number }) => {
+    const response = await axiosInstance.get("/api/productos/productos-imagen/", { params });
+    return response.data; // Aquí devolvemos toda la paginación: { count, next, previous, results }
   },
 };

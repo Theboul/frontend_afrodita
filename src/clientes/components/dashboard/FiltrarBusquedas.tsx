@@ -15,18 +15,18 @@ const filtrosSuperiores: Filtro[] = [
     imagen: "../../../../public/assets/Lentes.png",
   },
   {
-    nombre: "Liquidos",
+    nombre: "Liquido",
     imagen: "../../../../public/assets/Liquido.png",
   },
   {
-    nombre: "Accesorios",
+    nombre: "Estuche",
     imagen: "../../../../public/assets/Accesorios.jpg",
   },
 ];
 
 const filtrosInferiores: Filtro[] = [
   {
-    nombre: "Mieles",
+    nombre: "Miel",
     imagen: "../../../../public/assets/Miel.jpg",
   },
   {
