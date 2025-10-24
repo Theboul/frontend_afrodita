@@ -14,12 +14,12 @@ interface FiltrarBusquedasProps {
 
 const filtrosSuperiores: Filtro[] = [
   { nombre: "Lentes", imagen: "../../../../public/assets/Lentes.png" },
-  { nombre: "Liquidos", imagen: "../../../../public/assets/Liquido.png" },
-  { nombre: "Accesorios", imagen: "../../../../public/assets/Accesorios.jpg" },
+  { nombre: "Liquido", imagen: "../../../../public/assets/Liquido.png" },
+  { nombre: "Estuche", imagen: "../../../../public/assets/Accesorios.jpg" },
 ];
 
 const filtrosInferiores: Filtro[] = [
-  { nombre: "Mieles", imagen: "../../../../public/assets/Miel.jpg" },
+  { nombre: "Miel", imagen: "../../../../public/assets/Miel.jpg" },
   { nombre: "Grises", imagen: "../../../../public/assets/Grises.webp" },
   { nombre: "Verdes", imagen: "../../../../public/assets/Verdes.jpg" },
   { nombre: "Celestes", imagen: "../../../../public/assets/Celestes.jpg" },

@@ -4,14 +4,16 @@ import Banner from "../../components/common/Banner";
 import Footer from "../../components/common/Footer";
 import Visitanos from "../../components/dashboard/Visitanos";
 import FiltrarBusquedas from "../../components/dashboard/FiltrarBusquedas";
-import { ProductoService, type Producto } from "../../../services/productos/ProductoService";
 import SearchBar from "../../components/common/Search";
 import EnviosTodoBolivia from "../../components/dashboard/EnviosBanner";
+import { useNavigate } from "react-router-dom";
 
 const DashboardCliente: React.FC = () => {
   const [visibleSections, setVisibleSections] = useState<string[]>([]);
-  const [productos, setProductos] = useState<Producto[]>([]);
 
+  const navigate = useNavigate();
+
+  // Hook de animación por scroll
   const useScrollAnimation = (id: string) => {
     const ref = useRef<HTMLDivElement>(null);
 
@@ -39,8 +41,11 @@ const DashboardCliente: React.FC = () => {
     return { ref, isVisible };
   };
 
+  // 🔹 Guarda la categoría seleccionada y redirige al catálogo
   function setCategoriaSeleccionada(categoria: string): void {
-    console.log("Filtrando por:", categoria);
+    console.log("✅ Categoría seleccionada:", categoria);
+    localStorage.setItem("categoriaSeleccionada", categoria);
+    navigate("/catalogo-cliente"); // navegación interna, sin recargar
   }
 
   const banner = useScrollAnimation("banner");
@@ -49,23 +54,10 @@ const DashboardCliente: React.FC = () => {
   const panel = useScrollAnimation("panel");
   const visitanos = useScrollAnimation("visitanos");
 
-  useEffect(() => {
-    ProductoService.listar()
-      .then((response) => {
-        console.log("✅ Productos obtenidos desde el backend:", response.data);
-        setProductos(response.data);
-      })
-      .catch((error) => {
-        console.error("❌ Error al listar productos:", error);
-      });
-  }, []);
-
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Header */}
       <Header logoSrc="/assets/1.png" />
 
-      {/* Contenido principal */}
       <main className="flex-1 w-full">
         {/* Banner */}
         <div
@@ -85,7 +77,7 @@ const DashboardCliente: React.FC = () => {
           />
         </div>
 
-        {/* 🔍 SearchBar */}
+        {/* SearchBar */}
         <div
           ref={search.ref}
           className={`transition-all duration-[1000ms] ease-out transform ${
@@ -94,7 +86,7 @@ const DashboardCliente: React.FC = () => {
               : "opacity-0 translate-y-10"
           } w-full px-4 sm:px-6 lg:px-8 mt-10`}
         >
-          <SearchBar />
+          {/*<SearchBar />*/}
         </div>
 
         {/* Filtro de búsquedas */}
@@ -122,16 +114,15 @@ const DashboardCliente: React.FC = () => {
             LENTES HIPERREALISTAS
           </h2>
           <p className="text-gray-700 text-sm sm:text-base md:text-lg text-center sm:text-left">
-            Transforma tu mirada con nuestros lentes de contacto estéticos y con graduación,  diseñados para
-            brindarte comodidad, seguridad y estilo único. Descubre más de 80 modelos exclusivos en colores
-            naturales y fantasía perfectos para cambiar tu look cuando quieras además de nuestra
-            líneaa de lentes con graduación
+            Transforma tu mirada con nuestros lentes de contacto estéticos y con
+            graduación, diseñados para brindarte comodidad, seguridad y estilo
+            único. Descubre más de 80 modelos exclusivos en colores naturales y
+            fantasía, perfectos para cambiar tu look cuando quieras.
           </p>
-          
         </section>
-        {/* Envíos a todo Bolivia */}
-          < EnviosTodoBolivia />    
-        {/* Visítanos */}
+
+        <EnviosTodoBolivia />
+
         <div
           ref={visitanos.ref}
           className={`transition-all duration-[1000ms] ease-out transform ${
@@ -144,7 +135,6 @@ const DashboardCliente: React.FC = () => {
         </div>
       </main>
 
-      {/* Footer */}
       <Footer logoSrc="/assets/1.png" />
     </div>
   );

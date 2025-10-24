@@ -13,7 +13,7 @@ const menuItems = [
   { label: "Inicio", href: "/dashboard-cliente", icon: <HomeIcon className="text-pink-500" /> },
   { label: "Productos", href: "/catalogo-cliente", icon: <ShoppingBagIcon className="text-pink-500" /> },
   { label: "Contacto", href: "/contacto-cliente", icon: <CallIcon className="text-pink-500" /> },
-  { label: "Preguntas Frecuentes", href: "preguntas-cliente", icon: <HelpOutlineIcon className="text-pink-500" /> },
+  { label: "Preguntas Frecuentes", href: "/preguntas-cliente", icon: <HelpOutlineIcon className="text-pink-500" /> },
 ];
 
 export default function SidebarCliente({ isOpen, onClose }: SidebarClienteProps) {
