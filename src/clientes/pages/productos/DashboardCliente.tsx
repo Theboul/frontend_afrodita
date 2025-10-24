@@ -4,7 +4,6 @@ import Banner from "../../components/common/Banner";
 import Footer from "../../components/common/Footer";
 import Visitanos from "../../components/dashboard/Visitanos";
 import FiltrarBusquedas from "../../components/dashboard/FiltrarBusquedas";
-import SearchBar from "../../components/common/Search";
 import EnviosTodoBolivia from "../../components/dashboard/EnviosBanner";
 import { useNavigate } from "react-router-dom";
 
@@ -43,7 +42,7 @@ const DashboardCliente: React.FC = () => {
 
   // 🔹 Guarda la categoría seleccionada y redirige al catálogo
   function setCategoriaSeleccionada(categoria: string): void {
-    console.log("✅ Categoría seleccionada:", categoria);
+    console.log("Categoría seleccionada:", categoria);
     localStorage.setItem("categoriaSeleccionada", categoria);
     navigate("/catalogo-cliente"); // navegación interna, sin recargar
   }

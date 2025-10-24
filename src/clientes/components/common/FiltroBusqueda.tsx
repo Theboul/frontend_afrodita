@@ -1,4 +1,3 @@
-import React from "react";
 import FiltroItem from "./FiltroItem";
 
 interface Filtro {

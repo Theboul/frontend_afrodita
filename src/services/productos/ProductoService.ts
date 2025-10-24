@@ -1,6 +1,7 @@
 import { axiosInstance } from "../axiosConfig";
 
 export interface Producto {
+  imagen_principal: any;
   id_producto: string;
   nombre: string;
   descripcion: string;
