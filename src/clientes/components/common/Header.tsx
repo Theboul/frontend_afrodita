@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { MdPersonOutline, MdMenu } from "react-icons/md";
+import { MdPersonOutline, MdMenu, MdLogout } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 import SidebarCliente from "./SidebarCliente";
+import { useAuthStore } from "../../../stores/authStore";
 
 interface HeaderProps {
   logoSrc?: string;
@@ -9,7 +11,18 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({
   logoSrc = "/assets/1.png",
 }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(false); // 👈 Control del sidebar
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const navigate = useNavigate();
+  const { isAuthenticated, logout } = useAuthStore();
+
+  const handleAuthAction = async () => {
+    if (isAuthenticated) {
+      await logout();
+      navigate("/login");
+    } else {
+      navigate("/login");
+    }
+  };
 
   return (
     <>
@@ -33,15 +46,24 @@ const Header: React.FC<HeaderProps> = ({
           />
         </div>
 
-        {/* Botón de iniciar sesión */}
+        {/* Botón de iniciar sesión / Cerrar sesión */}
        <div className="flex items-center gap-3">
-         <a
-           href="/login" 
+         <button
+           onClick={handleAuthAction}
            className="flex items-center gap-1 bg-white border border-[#F4AFCC] text-[#C25B8C] px-3 py-1 rounded-full text-sm font-medium hover:bg-[#F4AFCC]/20 transition"
            >
-           <MdPersonOutline size={18} />
-            Iniciar sesión
-          </a>
+           {isAuthenticated ? (
+             <>
+               <MdLogout size={18} />
+               Cerrar sesión
+             </>
+           ) : (
+             <>
+               <MdPersonOutline size={18} />
+               Iniciar sesión
+             </>
+           )}
+          </button>
         </div>
       </header>
 

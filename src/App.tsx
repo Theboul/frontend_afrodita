@@ -45,7 +45,7 @@ function App() {
         {/* ========================================
             REDIRECCIÓN INICIAL Y AUTENTICACIÓN
         ======================================== */}
-        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/" element={<Navigate to="/dashboard-cliente" />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/registro" element={<RegistroClientePage />} />
 
