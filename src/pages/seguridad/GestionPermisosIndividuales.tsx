@@ -11,7 +11,7 @@ import { seguridadService, type UsuarioPermiso, type Permiso } from "../../servi
 
 export default function GestionPermisosIndividuales() {
   const [permisosIndividuales, setPermisosIndividuales] = useState<UsuarioPermiso[]>([]);
-  const [usuarios, setUsuarios] = useState<any[]>([]);
+  const [usuarios] = useState<any[]>([]);
   const [permisos, setPermisos] = useState<Permiso[]>([]);
   const [loading, setLoading] = useState(false);
   const [mostrarModal, setMostrarModal] = useState(false);

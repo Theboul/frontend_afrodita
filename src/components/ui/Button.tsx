@@ -2,7 +2,7 @@ import { type ReactNode } from "react";
 
 interface ButtonProps {
   label: string;
-  color?: "info" | "success" | "danger" | "warning";
+  color?: "primary" | "info" | "success" | "danger" | "warning";
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
   disabled?: boolean;
@@ -20,6 +20,7 @@ export default function Button({
   fullWidth = false,
 }: ButtonProps) {
   const colorClasses = {
+    primary: "bg-pink-500 hover:bg-pink-600 text-white",
     info: "bg-blue-500 hover:bg-blue-600 text-white",
     success: "bg-green-500 hover:bg-green-600 text-white",
     danger: "bg-red-500 hover:bg-red-600 text-white",

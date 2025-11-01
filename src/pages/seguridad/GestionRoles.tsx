@@ -15,7 +15,7 @@ import { useRoles } from "../../hooks/useRoles";
 import { seguridadService, type Permiso } from "../../services/seguridad/seguridadService";
 
 export default function GestionRoles() {
-  const { roles, loading, cargarRoles, crearRol, actualizarRol, eliminarRol } = useRoles();
+  const { roles, loading, crearRol, actualizarRol, eliminarRol } = useRoles();
   const [permisos, setPermisos] = useState<Permiso[]>([]);
   const [busqueda, setBusqueda] = useState("");
   const [mostrarModal, setMostrarModal] = useState(false);
