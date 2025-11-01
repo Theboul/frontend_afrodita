@@ -7,7 +7,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({
-  logoSrc = "../../../../public/assets/1.png",
+  logoSrc = "/assets/1.png",
 }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false); // 👈 Control del sidebar
 

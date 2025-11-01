@@ -17,7 +17,7 @@ export const menuModules = [
     label: "Gestión de Clientes",
     icon: Users,
     items: [
-      { label: "Gestionar Cuenta de Cliente", to: "/gestionar-cuentacliente" },
+      { label: "Gestionar Clientes", to: "/clientes" },
       { label: "Registrar Cliente", to: "/clientes/registro" },
       { label: "Gestionar Contacto / Soporte", to: "/clientes/soporte" },
       { label: "Gestionar Reseñas de Productos", to: "/clientes/reseñas" },

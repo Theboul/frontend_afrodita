@@ -42,17 +42,17 @@ export default function Visitanos() {
         {/* Lado Derecho - Imágenes */}
         <div className="flex flex-wrap justify-center gap-4">
           <img
-            src="../../../../public/assets/tienda1.png"
+            src="/assets/Tienda1.png"
             alt="Producto 1"
             className="w-40 md:w-48 rounded-lg shadow"
           />
           <img
-            src="../../../../public/assets/tienda2.png"
+            src="/assets/Tienda2.png"
             alt="Producto 2"
             className="w-40 md:w-48 rounded-lg shadow"
           />
           <img
-            src="../../../../public/assets/tienda3.png"
+            src="/assets/Tienda3.png"
             alt="Producto 3"
             className="w-40 md:w-48 rounded-lg shadow"
           />

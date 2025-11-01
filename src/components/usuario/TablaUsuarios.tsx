@@ -8,6 +8,7 @@ interface TablaUsuariosProps {
   onEliminar: (id: number) => void;
   onCambiarEstado: (usuario: Usuario) => void;
   onCambiarContrasena: (usuario: Usuario) => void;
+  onVerDirecciones: (usuario: Usuario) => void;
 }
 
 export default function TablaUsuarios({
@@ -16,7 +17,8 @@ export default function TablaUsuarios({
   onEditar,
   onEliminar,
   onCambiarEstado,
-  onCambiarContrasena
+  onCambiarContrasena,
+  onVerDirecciones
 }: TablaUsuariosProps) {
   
   const getBadgeColor = (rol: string) => {
@@ -117,6 +119,13 @@ export default function TablaUsuarios({
                       color="warning" 
                       onClick={() => onEditar(usuario)}
                     />
+                    {usuario.rol === 'CLIENTE' && (
+                      <Button 
+                        label="Direcciones" 
+                        color="success" 
+                        onClick={() => onVerDirecciones(usuario)}
+                      />
+                    )}
                     <Button 
                       label="Contraseña" 
                       color="info" 
@@ -203,6 +212,13 @@ export default function TablaUsuarios({
                 color="warning" 
                 onClick={() => onEditar(usuario)}
               />
+              {usuario.rol === 'CLIENTE' && (
+                <Button 
+                  label="Direcciones" 
+                  color="success" 
+                  onClick={() => onVerDirecciones(usuario)}
+                />
+              )}
               <Button 
                 label="Contraseña" 
                 color="info" 

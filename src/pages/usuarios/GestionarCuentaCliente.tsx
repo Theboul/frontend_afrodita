@@ -1,232 +1,283 @@
-import React, { useState, useEffect } from "react";
-
-interface Cliente {
-  id: number;
-  nombre: string;
-  correo: string;
-  telefono: string;
-}
-
-interface Direccion {
-  id: number;
-  descripcion: string;
-}
+﻿import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import ModuleLayout from "../../layouts/ModuleLayout";
+import Button from "../../components/ui/Button";
+import ModalDirecciones from "../../components/usuario/ModalDirecciones";
+import { UsuarioService, type Usuario } from "../../services/usuarios/gestionUsuario";
+import type { Direccion } from "../../services/direcciones/direccionesService";
+import { obtenerDirecciones } from "../../services/direcciones/direccionesService";
 
 interface Compra {
-  id: number;
-  fecha: string;
+  id_compra: number;
+  fecha_compra: string;
   total: number;
+  estado: string;
 }
 
-interface DatosCliente {
-  cliente: Cliente;
-  direcciones: Direccion[];
-  compras: Compra[];
-}
-
-const GestionarCuentaCliente: React.FC = () => {
-  const [clientesDatos, setClientesDatos] = useState<DatosCliente[]>([]);
-  const [clienteActual, setClienteActual] = useState<Cliente | null>(null);
+export default function GestionarCuentaCliente() {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  
+  const [cliente, setCliente] = useState<Usuario | null>(null);
   const [direcciones, setDirecciones] = useState<Direccion[]>([]);
   const [compras, setCompras] = useState<Compra[]>([]);
-  const [modoEdicion, setModoEdicion] = useState(false);
-  const [datosEditados, setDatosEditados] = useState<Partial<Cliente>>({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [modalDirecciones, setModalDirecciones] = useState(false);
 
-  // Simulación de obtención de varios clientes
   useEffect(() => {
-    const datos: DatosCliente[] = [
-      {
-        cliente: { id: 1, nombre: "Tatiana Chávez", correo: "tatiana@example.com", telefono: "+591 70000000" },
-        direcciones: [
-          { id: 1, descripcion: "Av. Libertador 123" },
-          { id: 2, descripcion: "Calle 9 No. 456" }
-        ],
-        compras: [
-          { id: 1, fecha: "2025-09-10", total: 120.5 },
-          { id: 2, fecha: "2025-10-01", total: 80.75 }
-        ]
-      },
-      {
-        cliente: { id: 2, nombre: "Carlos Pérez", correo: "carlos@example.com", telefono: "+591 70123456" },
-        direcciones: [
-          { id: 3, descripcion: "Av. Bolivia 789" },
-        ],
-        compras: [
-          { id: 3, fecha: "2025-08-15", total: 200.0 }
-        ]
-      },
-      {
-        cliente: { id: 3, nombre: "María López", correo: "maria@example.com", telefono: "+591 70234567" },
-        direcciones: [
-          { id: 4, descripcion: "Calle Sucre 101" },
-        ],
-        compras: [
-          { id: 4, fecha: "2025-07-20", total: 50.0 },
-          { id: 5, fecha: "2025-10-10", total: 75.25 }
-        ]
-      },
-    ];
-    setClientesDatos(datos);
-    seleccionarCliente(datos[0]);
-  }, []);
-
-  const seleccionarCliente = (datos: DatosCliente) => {
-    setClienteActual(datos.cliente);
-    setDirecciones(datos.direcciones);
-    setCompras(datos.compras);
-    setModoEdicion(false);
-    setDatosEditados(datos.cliente);
-  };
-
-  const handleEditar = () => {
-    setModoEdicion(true);
-    setDatosEditados(clienteActual || {});
-  };
-
-  const handleGuardar = () => {
-    if (clienteActual) {
-      setClienteActual({ ...clienteActual, ...datosEditados });
-      // Actualizamos también el array de clientes
-      setClientesDatos((prev) =>
-        prev.map((c) =>
-          c.cliente.id === clienteActual.id ? { ...c, cliente: { ...c.cliente, ...datosEditados } } : c
-        )
-      );
+    console.log("ID del parámetro URL:", id);
+    
+    if (!id) {
+      setError("No se proporcionó ID de cliente");
+      setLoading(false);
+      return;
     }
-    setModoEdicion(false);
+    
+    const idNumerico = parseInt(id);
+    if (isNaN(idNumerico)) {
+      setError("ID de cliente inválido");
+      setLoading(false);
+      return;
+    }
+    
+    cargarDatosCliente(idNumerico);
+  }, [id]);
+
+  const cargarDatosCliente = async (idCliente: number) => {
+    setLoading(true);
+    setError(null);
+    
+    console.log("🔍 Iniciando carga de cliente ID:", idCliente);
+
+    try {
+      // Cargar datos del cliente usando el servicio
+      console.log("📞 Llamando a UsuarioService.obtener...");
+      const responseCliente = await UsuarioService.obtener(idCliente);
+      console.log("✅ Respuesta recibida:", responseCliente);
+      console.log("📦 Data del cliente:", responseCliente.data);
+      
+      // Verificar que sea un cliente
+      if (responseCliente.data && responseCliente.data.rol !== 'CLIENTE') {
+        setError("Este usuario no es un cliente");
+        setLoading(false);
+        return;
+      }
+      
+      // La respuesta viene directamente en responseCliente.data
+      if (responseCliente.data) {
+        console.log("✅ Cliente establecido:", responseCliente.data);
+        setCliente(responseCliente.data);
+      } else {
+        console.error("❌ No hay datos en la respuesta");
+        setError("Cliente no encontrado");
+        setLoading(false);
+        return;
+      }
+
+      // Cargar direcciones
+      console.log("📍 Cargando direcciones...");
+      const dataDirecciones = await obtenerDirecciones(idCliente);
+      console.log("📍 Respuesta direcciones:", dataDirecciones);
+      
+      if (dataDirecciones.success) {
+        setDirecciones(dataDirecciones.direcciones || []);
+        console.log("✅ Direcciones cargadas:", dataDirecciones.direcciones?.length || 0);
+      }
+
+      // Placeholder para compras
+      setCompras([]);
+      console.log("✅ Carga completada exitosamente");
+      
+    } catch (err: any) {
+      console.error("❌ Error al cargar datos del cliente:", err);
+      console.error("📄 Respuesta completa:", err.response);
+      console.error("📄 Data del error:", err.response?.data);
+      console.error("📄 Status:", err.response?.status);
+      
+      // Mostrar mensaje de error más específico
+      if (err.response?.status === 404) {
+        setError("Cliente no encontrado");
+      } else if (err.response?.status === 403) {
+        setError("No tienes permisos para ver este cliente");
+      } else {
+        setError(err.response?.data?.message || "Error al cargar los datos del cliente");
+      }
+    } finally {
+      setLoading(false);
+      console.log("🏁 Carga finalizada - loading:", false);
+    }
   };
+
+  if (loading) {
+    return (
+      <ModuleLayout title="Gestión de Cuenta del Cliente">
+        <div className="flex justify-center items-center h-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Cargando datos del cliente...</p>
+          </div>
+        </div>
+      </ModuleLayout>
+    );
+  }
+
+  if (error || !cliente) {
+    return (
+      <ModuleLayout title="Gestión de Cuenta del Cliente">
+        <div className="text-center py-12">
+          <div className="text-red-600 text-6xl mb-4">⚠️</div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Error</h2>
+          <p className="text-gray-600 mb-6">{error || "Cliente no encontrado"}</p>
+          <Button label="Volver a Usuarios" color="info" onClick={() => navigate("/dashboard/usuarios")} />
+        </div>
+      </ModuleLayout>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-pink-50 to-white text-gray-900 flex flex-col items-center p-6">
-      <div className="w-full max-w-4xl bg-white shadow-lg rounded-2xl p-6 border border-pink-200">
-        <h1 className="text-3xl font-bold text-pink-700 mb-6 text-center">
-          Gestión de Cuenta del Cliente
-        </h1>
-
-        {/* PERFIL */}
-        <section className="mb-8">
-          <h2 className="text-xl font-semibold text-black border-b border-pink-300 pb-2 mb-4">
-            Perfil del Cliente
-          </h2>
-          {clienteActual && (
-            <div className="space-y-2">
-              {modoEdicion ? (
-                <div className="space-y-3">
-                  <input
-                    className="w-full border border-pink-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-pink-400"
-                    value={datosEditados.nombre || ""}
-                    onChange={(e) =>
-                      setDatosEditados({ ...datosEditados, nombre: e.target.value })
-                    }
-                  />
-                  <input
-                    className="w-full border border-pink-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-pink-400"
-                    value={datosEditados.correo || ""}
-                    onChange={(e) =>
-                      setDatosEditados({ ...datosEditados, correo: e.target.value })
-                    }
-                  />
-                  <input
-                    className="w-full border border-pink-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-pink-400"
-                    value={datosEditados.telefono || ""}
-                    onChange={(e) =>
-                      setDatosEditados({ ...datosEditados, telefono: e.target.value })
-                    }
-                  />
-                  <div className="flex justify-end gap-2">
-                    <button
-                      className="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700"
-                      onClick={handleGuardar}
-                    >
-                      Guardar
-                    </button>
-                    <button
-                      className="bg-gray-300 px-4 py-2 rounded-lg hover:bg-gray-400"
-                      onClick={() => setModoEdicion(false)}
-                    >
-                      Cancelar
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div>
-                  <p><strong>Nombre:</strong> {clienteActual.nombre}</p>
-                  <p><strong>Correo:</strong> {clienteActual.correo}</p>
-                  <p><strong>Teléfono:</strong> {clienteActual.telefono}</p>
-                  <button
-                    className="mt-3 bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700"
-                    onClick={handleEditar}
-                  >
-                    Editar Perfil
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
-        </section>
-
-        {/* DIRECCIONES */}
-        <section className="mb-8">
-          <h2 className="text-xl font-semibold text-black border-b border-pink-300 pb-2 mb-4">
-            Direcciones
-          </h2>
-          <ul className="space-y-2">
-            {direcciones.map((dir) => (
-              <li
-                key={dir.id}
-                className="p-3 bg-pink-50 rounded-lg border border-pink-200 hover:bg-pink-100 transition"
-              >
-                {dir.descripcion}
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        {/* HISTORIAL DE COMPRAS */}
-        <section className="mb-8">
-          <h2 className="text-xl font-semibold text-black border-b border-pink-300 pb-2 mb-4">
-            Historial de Compras
-          </h2>
-          <ul className="space-y-2">
-            {compras.map((compra) => (
-              <li
-                key={compra.id}
-                className="flex justify-between items-center p-3 bg-pink-50 rounded-lg border border-pink-200 hover:bg-pink-100 transition"
-              >
-                <span>
-                  <strong>Fecha:</strong> {compra.fecha}
-                </span>
-                <span className="text-pink-700 font-semibold">
-                  Total: ${compra.total.toFixed(2)}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        {/* LISTA DE CLIENTES */}
-<section>
-  <h2 className="text-xl font-semibold text-black border-b border-pink-300 pb-2 mb-4">
-    Otros Clientes
-  </h2>
-  <ul className="space-y-2">
-    {clientesDatos.map((c) => (
-      <li
-        key={c.cliente.id}
-        className={`cursor-pointer p-3 rounded-lg border border-pink-200 hover:bg-pink-100 transition ${
-          clienteActual?.id === c.cliente.id ? "bg-pink-200 font-semibold" : "bg-pink-50"
-        }`}
-        onClick={() => seleccionarCliente(c)}
-      >
-        <span className="mr-2 font-semibold">ID: {c.cliente.id}</span>
-        <span>{c.cliente.nombre}</span>
-      </li>
-    ))}
-  </ul>
-</section>
+    <ModuleLayout title={`Cuenta de ${cliente.nombre_completo}`}>
+      <div className="mb-6">
+        <Button label="← Volver a Usuarios" color="info" onClick={() => navigate("/dashboard/usuarios")} />
       </div>
-    </div>
-  );
-};
 
-export default GestionarCuentaCliente;
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-6">
+          <section className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-gray-900">Perfil del Cliente</h2>
+              <span className={`px-3 py-1 text-xs font-semibold rounded-full ${cliente.estado_usuario === "ACTIVO" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+                {cliente.estado_usuario}
+              </span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-gray-600">Nombre Completo</p>
+                <p className="font-medium text-gray-900">{cliente.nombre_completo}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Usuario</p>
+                <p className="font-medium text-gray-900">@{cliente.nombre_usuario}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Correo Electrónico</p>
+                <p className="font-medium text-gray-900">{cliente.correo}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Teléfono</p>
+                <p className="font-medium text-gray-900">{cliente.telefono || "No registrado"}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Fecha de Registro</p>
+                <p className="font-medium text-gray-900">
+                  {new Date(cliente.fecha_registro).toLocaleDateString('es-ES', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Último Login</p>
+                <p className="font-medium text-gray-900">
+                  {cliente.ultimo_login 
+                    ? new Date(cliente.ultimo_login).toLocaleDateString('es-ES', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })
+                    : 'Nunca'
+                  }
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+              <h2 className="text-xl font-semibold text-gray-900">Direcciones ({direcciones.length})</h2>
+              <Button label="📍 Gestionar Direcciones" color="success" onClick={() => setModalDirecciones(true)} />
+            </div>
+            {direcciones.length === 0 ? (
+              <div className="text-center py-8 bg-gray-50 rounded-lg">
+                <div className="text-gray-400 text-4xl mb-2">📭</div>
+                <p className="text-gray-600">No hay direcciones registradas</p>
+                <button
+                  onClick={() => setModalDirecciones(true)}
+                  className="mt-3 text-pink-600 hover:text-pink-700 font-medium text-sm underline"
+                >
+                  Agregar primera dirección
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {direcciones.map((direccion) => (
+                  <div key={direccion.id_direccion} className={`p-3 rounded-lg border-2 ${direccion.es_principal ? "border-yellow-400 bg-yellow-50" : "border-gray-200 bg-gray-50"}`}>
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      <span className="font-semibold text-gray-900">{direccion.etiqueta || "Sin etiqueta"}</span>
+                      {direccion.es_principal && (
+                        <span className="px-2 py-0.5 bg-yellow-400 text-yellow-900 rounded-full text-xs font-semibold">
+                          ⭐ Principal
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-sm text-gray-700">{direccion.direccion}</p>
+                    {(direccion.ciudad || direccion.departamento || direccion.pais) && (
+                      <p className="text-xs text-gray-500 mt-1">
+                        {[direccion.ciudad, direccion.departamento, direccion.pais]
+                          .filter(Boolean)
+                          .join(', ')}
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+
+          <section className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">Historial de Compras</h2>
+            <div className="text-center py-8 bg-gray-50 rounded-lg">
+              <div className="text-gray-400 text-4xl mb-2">🛍️</div>
+              <p className="text-gray-600">Sin compras realizadas</p>
+              <p className="text-sm text-gray-500 mt-1">El historial de compras se implementará próximamente</p>
+            </div>
+          </section>
+        </div>
+
+        <div className="lg:col-span-1 space-y-6">
+          <section className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Resumen</h3>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-3 bg-pink-50 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">🏠</span>
+                  <span className="text-sm text-gray-600">Direcciones</span>
+                </div>
+                <span className="text-2xl font-bold text-pink-600">{direcciones.length}</span>
+              </div>
+              <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">🛍️</span>
+                  <span className="text-sm text-gray-600">Compras</span>
+                </div>
+                <span className="text-2xl font-bold text-blue-600">{compras.length}</span>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      {modalDirecciones && (
+        <ModalDirecciones
+          show={modalDirecciones}
+          usuario={cliente}
+          onCancel={() => {
+            setModalDirecciones(false);
+            if (id) cargarDatosCliente(parseInt(id));
+          }}
+        />
+      )}
+    </ModuleLayout>
+  );
+}

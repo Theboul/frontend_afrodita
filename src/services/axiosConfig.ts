@@ -21,35 +21,58 @@ class AxiosConfig {
   private setupInterceptors(): void {
     // Interceptor de request
     this.instance.interceptors.request.use(
-      (config: InternalAxiosRequestConfig) => {return config},
-      (error: AxiosError) => {
-        return Promise.reject(error);
-      }
+      (config: InternalAxiosRequestConfig) => config,
+      (error: AxiosError) => Promise.reject(error)
     );
 
     // Interceptor de response
     this.instance.interceptors.response.use(
-      (response: AxiosResponse) => response,
+      // 1. Normalizar respuestas APIResponse
+      (response: AxiosResponse) => {
+        const res = response.data;
+
+        // Si tiene la estructura típica de tu backend
+        if (res && typeof res === 'object' && 'success' in res && 'data' in res) {
+          return res; // { success, message, data, errors? }
+        }
+
+        // Si no tiene esa estructura (casos raros)
+        return { success: true, message: '', data: res };
+      },
+
+      // 2. Manejo de errores + refresh token
       async (error: AxiosError) => {
         const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
 
+        // Si el token expiró (401)
         if (error.response?.status === 401 && !originalRequest._retry) {
           originalRequest._retry = true;
 
           try {
-            // Intentar refrescar el token
+            // Intentar refrescar token
             await authService.refreshAccessToken();
             // Reintentar la request original
             return this.instance(originalRequest);
           } catch (refreshError) {
-            // Si el refresh falla, hacer logout
+            // Si falla, forzar logout
             await authService.logout();
             window.location.href = '/login';
             return Promise.reject(refreshError);
           }
         }
 
-        return Promise.reject(error);
+        // Si el backend devolvió un APIResponse de error
+        const res = error.response?.data;
+        if (res && typeof res === 'object' && 'success' in res) {
+          return Promise.reject(res);
+        }
+
+        // Si fue otro tipo de error
+        return Promise.reject({
+          success: false,
+          message: 'Error inesperado al conectar con el servidor.',
+          data: null,
+        });
       }
     );
   }
