@@ -19,3 +19,5 @@ export default function Table({ headers, children }: TableProps) {
     </div>
   );
 }
+
+export { Table };

@@ -21,10 +21,23 @@ import GestionarCompra from "./pages/productos/GestionarCompra";
 import GestionarCuentaCliente from "./pages/usuarios/GestionarCuentaCliente";
 
 // Páginas del cliente
-import DashboardCliente from "./clientes/pages/productos/DashboardCliente"; 
+import DashboardCliente from "./clientes/pages/productos/DashboardCliente";
 import CatalogoCliente from "./clientes/pages/productos/Catalogo";
 import ContactoCliente from "./clientes/pages/productos/Contacto";
 import PreguntasFrecuentes from "./clientes/pages/productos/PreguntasFrecuentes";
+
+// Páginas de soporte (tickets)
+import SoporteList from "./pages/soporte/SoporteList";
+import SoporteDetalle from "./pages/soporte/SoporteDetalle";
+
+
+// Perfil cliente y subpáginas
+import ProtectedRoute from "./components/auth/ProtectedRoute";
+import PerfilClienteLayout from "./clientes/pages/perfilCliente/PerfilClienteLayout";
+import PerfilInfo from "./clientes/pages/perfilCliente/PerfilInfo";
+import PerfilCompras from "./clientes/pages/perfilCliente/PerfilCompras";
+import PerfilDirecciones from "./clientes/pages/perfilCliente/PerfilDirecciones";
+import PerfilSoporte from "./clientes/pages/perfilCliente/PerfilSoporte";
 
 // Layouts y estilos
 import DashboardLayout from "./layouts/DashboardLayout";
@@ -48,6 +61,22 @@ function App() {
         <Route path="/" element={<Navigate to="/dashboard-cliente" />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/registro" element={<RegistroClientePage />} />
+        
+        
+        <Route
+          path="/perfil-cliente"
+          element={
+            <ProtectedRoute allowedRoles={["CLIENTE"]}>
+              <PerfilClienteLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<PerfilInfo />} />
+          <Route path="info" element={<PerfilInfo />} />
+          <Route path="compras" element={<PerfilCompras />} />
+          <Route path="direcciones" element={<PerfilDirecciones />} />
+          <Route path="soporte" element={<PerfilSoporte />} />
+        </Route>
 
         {/* ========================================
             RUTAS DEL DASHBOARD (CON SIDEBAR)
@@ -174,6 +203,27 @@ function App() {
         />
 
         {/* ========================================
+        RUTAS DE SOPORTE (ADMINISTRADOR)
+        ======================================= */}
+        <Route
+          path="/soporte"
+          element={
+            <DashboardLayout>
+              <SoporteList />
+            </DashboardLayout>
+          }
+        />
+
+        <Route
+          path="/soporte/:id"
+          element={
+            <DashboardLayout>
+              <SoporteDetalle />
+            </DashboardLayout>
+          }
+        />
+
+        {/* ========================================
             RUTA NO ENCONTRADA
         ======================================== */}
         <Route
@@ -183,8 +233,8 @@ function App() {
               <div className="text-center">
                 <h1 className="text-6xl font-bold text-pink-600 mb-4">404</h1>
                 <p className="text-2xl text-gray-600 mb-4">Página no encontrada</p>
-                <a 
-                  href="/dashboard" 
+                <a
+                  href="/dashboard"
                   className="text-pink-500 hover:text-pink-700 underline"
                 >
                   Volver al Dashboard

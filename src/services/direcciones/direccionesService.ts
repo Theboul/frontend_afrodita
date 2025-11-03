@@ -31,7 +31,7 @@ const API_BASE = '/api/usuarios/admin/usuarios';
  */
 export const obtenerDirecciones = async (idUsuario: number) => {
   const response = await axiosInstance.get(`${API_BASE}/${idUsuario}/direcciones/`);
-  return response.data;
+  return response;
 };
 
 /**
@@ -39,7 +39,7 @@ export const obtenerDirecciones = async (idUsuario: number) => {
  */
 export const crearDireccion = async (idUsuario: number, datos: DireccionCreate) => {
   const response = await axiosInstance.post(`${API_BASE}/${idUsuario}/direcciones/`, datos);
-  return response.data;
+  return response;
 };
 
 /**
@@ -50,11 +50,13 @@ export const actualizarDireccion = async (
   idDireccion: number,
   datos: Partial<DireccionCreate>
 ) => {
+  console.log("✏️ Actualizando dirección:", idDireccion, "del usuario:", idUsuario);
   const response = await axiosInstance.patch(
     `${API_BASE}/${idUsuario}/direcciones/${idDireccion}/`,
     datos
   );
-  return response.data;
+  console.log("✏️ Respuesta actualizar:", response);
+  return response;
 };
 
 /**
@@ -62,7 +64,7 @@ export const actualizarDireccion = async (
  */
 export const eliminarDireccion = async (idUsuario: number, idDireccion: number) => {
   const response = await axiosInstance.delete(`${API_BASE}/${idUsuario}/direcciones/${idDireccion}/`);
-  return response.data;
+  return response;
 };
 
 /**
@@ -72,5 +74,5 @@ export const marcarDireccionPrincipal = async (idUsuario: number, idDireccion: n
   const response = await axiosInstance.post(
     `${API_BASE}/${idUsuario}/direcciones/${idDireccion}/marcar-principal/`
   );
-  return response.data;
+  return response;
 };

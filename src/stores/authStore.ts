@@ -3,7 +3,6 @@ import { persist } from 'zustand/middleware';
 import { authService } from '../services/auth/authService';
 import type { LoginCredentials, AuthError, UserData } from '../services/auth/authService';
 
-// Definimos la interfaz del estado global
 interface AuthState {
   user: UserData | null;
   isAuthenticated: boolean;
@@ -23,11 +22,13 @@ export const useAuthStore = create<AuthState>()(
       loading: false,
       error: null,
 
+      // LOGIN
       login: async (credentials: LoginCredentials) => {
         set({ loading: true, error: null });
         try {
           const response = await authService.login(credentials);
-          if (response.success) {
+          if (response.success && response.user) {
+            authService.saveUserData(response.user); //Sincroniza con localStorage
             set({
               user: response.user,
               isAuthenticated: true,
@@ -40,23 +41,28 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
+      // LOGOUT
       logout: async () => {
         try {
           await authService.logout();
         } finally {
+          authService.clearLocalStorage(); // 🔹 Limpia storage real
           set({ user: null, isAuthenticated: false, error: null });
           sessionStorage.removeItem('session_active');
         }
       },
 
+      // VERIFICAR SESIÓN
       checkAuth: async () => {
         try {
           const userData = await authService.verifyToken();
+          if (userData) authService.saveUserData(userData); // 🔹 Sincroniza storage
           set({
             user: userData,
             isAuthenticated: !!userData,
           });
         } catch {
+          authService.clearLocalStorage();
           set({ user: null, isAuthenticated: false });
         }
       },
@@ -65,7 +71,6 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'auth-storage',
-      // 🔹 Tipamos el parámetro `state` correctamente
       partialize: (state: AuthState) => ({
         user: state.user,
         isAuthenticated: state.isAuthenticated,

@@ -6,6 +6,8 @@ import ModalDirecciones from "../../components/usuario/ModalDirecciones";
 import { UsuarioService, type Usuario } from "../../services/usuarios/gestionUsuario";
 import type { Direccion } from "../../services/direcciones/direccionesService";
 import { obtenerDirecciones } from "../../services/direcciones/direccionesService";
+import { soporteService, type Ticket } from "../../services/soporte/soporteService";
+import TicketEstadoBadge from "../../components/soporte/TicketEstadoBadge";
 
 interface Compra {
   id_compra: number;
@@ -21,12 +23,18 @@ export default function GestionarCuentaCliente() {
   const [cliente, setCliente] = useState<Usuario | null>(null);
   const [direcciones, setDirecciones] = useState<Direccion[]>([]);
   const [compras, setCompras] = useState<Compra[]>([]);
+  const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [modalDirecciones, setModalDirecciones] = useState(false);
 
   useEffect(() => {
-    console.log("ID del parámetro URL:", id);
+    // Limpiar estado cuando cambia el ID
+    setCliente(null);
+    setDirecciones([]);
+    setTickets([]);
+    setCompras([]);
+    setError(null);
     
     if (!id) {
       setError("No se proporcionó ID de cliente");
@@ -47,15 +55,10 @@ export default function GestionarCuentaCliente() {
   const cargarDatosCliente = async (idCliente: number) => {
     setLoading(true);
     setError(null);
-    
-    console.log("🔍 Iniciando carga de cliente ID:", idCliente);
 
     try {
       // Cargar datos del cliente usando el servicio
-      console.log("📞 Llamando a UsuarioService.obtener...");
       const responseCliente = await UsuarioService.obtener(idCliente);
-      console.log("✅ Respuesta recibida:", responseCliente);
-      console.log("📦 Data del cliente:", responseCliente.data);
       
       // Verificar que sea un cliente
       if (responseCliente.data && responseCliente.data.rol !== 'CLIENTE') {
@@ -66,34 +69,39 @@ export default function GestionarCuentaCliente() {
       
       // La respuesta viene directamente en responseCliente.data
       if (responseCliente.data) {
-        console.log("✅ Cliente establecido:", responseCliente.data);
         setCliente(responseCliente.data);
       } else {
-        console.error("❌ No hay datos en la respuesta");
         setError("Cliente no encontrado");
         setLoading(false);
         return;
       }
 
       // Cargar direcciones
-      console.log("📍 Cargando direcciones...");
-      const dataDirecciones = await obtenerDirecciones(idCliente);
-      console.log("📍 Respuesta direcciones:", dataDirecciones);
+      const responseDirecciones = await obtenerDirecciones(idCliente);
       
-      if (dataDirecciones.success) {
-        setDirecciones(dataDirecciones.direcciones || []);
-        console.log("✅ Direcciones cargadas:", dataDirecciones.direcciones?.length || 0);
+      if (responseDirecciones.success && responseDirecciones.data) {
+        // La respuesta puede venir como {direcciones: [], total: X} o directamente el array
+        const direccionesData = responseDirecciones.data.direcciones || responseDirecciones.data;
+        setDirecciones(Array.isArray(direccionesData) ? direccionesData : []);
+      } else {
+        setDirecciones([]);
       }
 
       // Placeholder para compras
       setCompras([]);
-      console.log("✅ Carga completada exitosamente");
+      
+      // Cargar tickets del cliente
+      const responseTickets = await soporteService.listarTickets({ cliente_id: idCliente });
+      
+      if (responseTickets.success && responseTickets.data) {
+        const ticketsData = responseTickets.data.results || responseTickets.data.tickets || responseTickets.data;
+        setTickets(Array.isArray(ticketsData) ? ticketsData : []);
+      } else {
+        setTickets([]);
+      }
       
     } catch (err: any) {
-      console.error("❌ Error al cargar datos del cliente:", err);
-      console.error("📄 Respuesta completa:", err.response);
-      console.error("📄 Data del error:", err.response?.data);
-      console.error("📄 Status:", err.response?.status);
+      console.error("Error al cargar datos del cliente:", err);
       
       // Mostrar mensaje de error más específico
       if (err.response?.status === 404) {
@@ -105,7 +113,6 @@ export default function GestionarCuentaCliente() {
       }
     } finally {
       setLoading(false);
-      console.log("🏁 Carga finalizada - loading:", false);
     }
   };
 
@@ -236,6 +243,62 @@ export default function GestionarCuentaCliente() {
           </section>
 
           <section className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+              <h2 className="text-xl font-semibold text-gray-900">Tickets de Soporte ({tickets.length})</h2>
+              <Button 
+                label="📋 Ver Todos los Tickets" 
+                color="info" 
+                onClick={() => navigate(`/dashboard/soporte?cliente=${cliente?.id_usuario}`)} 
+              />
+            </div>
+            {tickets.length === 0 ? (
+              <div className="text-center py-8 bg-gray-50 rounded-lg">
+                <div className="text-gray-400 text-4xl mb-2">🎫</div>
+                <p className="text-gray-600">No hay tickets de soporte</p>
+                <p className="text-sm text-gray-500 mt-1">El cliente no ha creado ningún ticket</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {tickets.slice(0, 5).map((ticket) => (
+                  <div 
+                    key={ticket.id_ticket} 
+                    className="p-3 rounded-lg border border-gray-200 hover:border-pink-300 hover:bg-pink-50 transition-all cursor-pointer"
+                    onClick={() => navigate(`/dashboard/soporte/${ticket.id_ticket}`)}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
+                          <span className="font-semibold text-gray-900">#{ticket.id_ticket}</span>
+                          <TicketEstadoBadge estado={ticket.estado} />
+                        </div>
+                        <p className="text-sm text-gray-700 font-medium">{ticket.asunto}</p>
+                        <div className="flex items-center gap-3 mt-2 text-xs text-gray-500">
+                          <span>📅 {new Date(ticket.fecha_creacion).toLocaleDateString('es-ES')}</span>
+                          <span>💬 {ticket.cantidad_mensajes || 0} mensajes</span>
+                          {ticket.agente_nombre && (
+                            <span>👤 {ticket.agente_nombre}</span>
+                          )}
+                        </div>
+                      </div>
+                      <span className="text-gray-400">→</span>
+                    </div>
+                  </div>
+                ))}
+                {tickets.length > 5 && (
+                  <div className="text-center pt-2">
+                    <button
+                      onClick={() => navigate(`/dashboard/soporte?cliente=${cliente?.id_usuario}`)}
+                      className="text-pink-600 hover:text-pink-700 font-medium text-sm"
+                    >
+                      Ver {tickets.length - 5} ticket{tickets.length - 5 > 1 ? 's' : ''} más →
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </section>
+
+          <section className="bg-white rounded-lg shadow-md p-4 sm:p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Historial de Compras</h2>
             <div className="text-center py-8 bg-gray-50 rounded-lg">
               <div className="text-gray-400 text-4xl mb-2">🛍️</div>
@@ -255,6 +318,13 @@ export default function GestionarCuentaCliente() {
                   <span className="text-sm text-gray-600">Direcciones</span>
                 </div>
                 <span className="text-2xl font-bold text-pink-600">{direcciones.length}</span>
+              </div>
+              <div className="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">🎫</span>
+                  <span className="text-sm text-gray-600">Tickets</span>
+                </div>
+                <span className="text-2xl font-bold text-purple-600">{tickets.length}</span>
               </div>
               <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
                 <div className="flex items-center gap-2">

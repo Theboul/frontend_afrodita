@@ -19,7 +19,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
       {/* Fondo oscuro móvil */}
       {open && (
         <div
-          className="fixed inset-0 bg-black/40 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/40 z-45 lg:hidden"
           onClick={() => setOpen(false)}
         />
       )}

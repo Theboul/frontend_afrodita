@@ -38,16 +38,22 @@ export default function ModalDirecciones({ show, usuario, onCancel }: ModalDirec
     setError(null);
     
     try {
-      const data = await obtenerDirecciones(usuario.id_usuario);
+      console.log("🏠 [Modal] Cargando direcciones del usuario:", usuario.id_usuario);
+      const response = await obtenerDirecciones(usuario.id_usuario);
+      console.log("🏠 [Modal] Respuesta:", response);
       
-      if (data.success) {
-        setDirecciones(data.direcciones || []);
+      if (response.success && response.data) {
+        const direccionesData = response.data.direcciones || response.data;
+        setDirecciones(Array.isArray(direccionesData) ? direccionesData : []);
+        console.log("✅ [Modal] Direcciones cargadas:", direccionesData);
       } else {
-        setError(data.message || 'Error al cargar direcciones');
+        setError(response.message || 'Error al cargar direcciones');
+        setDirecciones([]);
       }
-    } catch (error) {
-      console.error('Error al cargar direcciones:', error);
+    } catch (error: any) {
+      console.error('❌ [Modal] Error al cargar direcciones:', error);
       setError('Error de conexión al cargar direcciones');
+      setDirecciones([]);
     } finally {
       setLoading(false);
     }
@@ -60,16 +66,18 @@ export default function ModalDirecciones({ show, usuario, onCancel }: ModalDirec
     }
 
     try {
-      const data = await eliminarDireccionService(usuario.id_usuario, direccionId);
+      console.log("🗑️ [Modal] Eliminando dirección:", direccionId);
+      const response = await eliminarDireccionService(usuario.id_usuario, direccionId);
+      console.log("🗑️ [Modal] Respuesta:", response);
 
-      if (data.success) {
+      if (response.success) {
         await cargarDirecciones();
         alert('Dirección eliminada correctamente');
       } else {
-        alert(data.message || 'Error al eliminar dirección');
+        alert(response.message || 'Error al eliminar dirección');
       }
-    } catch (error) {
-      console.error('Error al eliminar:', error);
+    } catch (error: any) {
+      console.error('❌ [Modal] Error al eliminar:', error);
       alert('Error de conexión al eliminar dirección');
     }
   };
@@ -78,16 +86,18 @@ export default function ModalDirecciones({ show, usuario, onCancel }: ModalDirec
     if (!usuario) return;
 
     try {
-      const data = await marcarPrincipalService(usuario.id_usuario, direccionId);
+      console.log("⭐ [Modal] Marcando como principal:", direccionId);
+      const response = await marcarPrincipalService(usuario.id_usuario, direccionId);
+      console.log("⭐ [Modal] Respuesta:", response);
 
-      if (data.success) {
+      if (response.success) {
         await cargarDirecciones();
         alert('Dirección marcada como principal');
       } else {
-        alert(data.message || 'Error al marcar como principal');
+        alert(response.message || 'Error al marcar como principal');
       }
-    } catch (error) {
-      console.error('Error al marcar principal:', error);
+    } catch (error: any) {
+      console.error('❌ [Modal] Error al marcar principal:', error);
       alert('Error de conexión');
     }
   };
@@ -108,21 +118,25 @@ export default function ModalDirecciones({ show, usuario, onCancel }: ModalDirec
     setSubmitting(true);
 
     try {
-      let data;
+      let response;
       
       if (direccionEditando) {
         // Actualizar dirección existente
-        data = await actualizarDireccion(
+        console.log("✏️ [Modal] Actualizando dirección:", direccionEditando.id_direccion);
+        response = await actualizarDireccion(
           usuario.id_usuario,
           direccionEditando.id_direccion,
           datos
         );
       } else {
         // Crear nueva dirección
-        data = await crearDireccion(usuario.id_usuario, datos);
+        console.log("➕ [Modal] Creando nueva dirección");
+        response = await crearDireccion(usuario.id_usuario, datos);
       }
 
-      if (data.success) {
+      console.log("📝 [Modal] Respuesta guardar:", response);
+
+      if (response.success) {
         alert(direccionEditando 
           ? 'Dirección actualizada correctamente' 
           : 'Dirección creada correctamente'
@@ -130,10 +144,10 @@ export default function ModalDirecciones({ show, usuario, onCancel }: ModalDirec
         handleCerrarFormulario();
         await cargarDirecciones();
       } else {
-        alert(data.message || 'Error al guardar la dirección');
+        alert(response.message || 'Error al guardar la dirección');
       }
-    } catch (error) {
-      console.error('Error al guardar:', error);
+    } catch (error: any) {
+      console.error('❌ [Modal] Error al guardar:', error);
       alert('Error de conexión al guardar la dirección');
     } finally {
       setSubmitting(false);

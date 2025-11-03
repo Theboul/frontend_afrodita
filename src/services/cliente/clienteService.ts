@@ -1,4 +1,5 @@
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+import { axiosInstance, type ApiResponse } from "../../services/axiosConfig";
 
 export interface ClienteRegistro {
   nombre_completo: string;
@@ -63,3 +64,24 @@ export async function registrarStep2(datos: {
   if (!response.ok) throw new Error(data.message || "Error en el paso 2");
   return data;
 }
+
+export interface ClientePerfil {
+  id_usuario: number;
+  nombre_completo: string;
+  correo: string;
+  telefono?: string;
+  direccion_principal?: string;
+  fecha_registro: string;
+  estado_usuario: string;
+  sexo?: string;
+}
+
+export const clienteService = {
+  async obtenerPerfil(): Promise<ApiResponse<ClientePerfil>> {
+    return axiosInstance.get("/api/usuarios/cliente/perfil/");
+  },
+
+  async actualizarPerfil(data: Partial<ClientePerfil>): Promise<ApiResponse<ClientePerfil>> {
+    return axiosInstance.patch("/api/usuarios/cliente/perfil/", data);
+  },
+};

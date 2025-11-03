@@ -19,7 +19,7 @@ export const menuModules = [
     items: [
       { label: "Gestionar Clientes", to: "/clientes" },
       { label: "Registrar Cliente", to: "/clientes/registro" },
-      { label: "Gestionar Contacto / Soporte", to: "/clientes/soporte" },
+      { label: "Gestionar Contacto / Soporte", to: "/soporte" },
       { label: "Gestionar Reseñas de Productos", to: "/clientes/reseñas" },
      
     ],

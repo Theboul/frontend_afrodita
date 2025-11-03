@@ -53,12 +53,14 @@ export const useUsuarios = (): UseUsuariosReturn => {
         pageSize: paginacion.pageSize
       });
       
-      setUsuarios(response.data.results || []);
-      setPaginacionState(prev => ({
-        ...prev,
-        total: response.data.count || 0,
-        totalPages: Math.ceil((response.data.count || 0) / paginacion.pageSize)
-      }));
+      if (response.success && response.data) {
+        setUsuarios(response.data.results || []);
+        setPaginacionState(prev => ({
+          ...prev,
+          total: response.data?.count || 0,
+          totalPages: Math.ceil((response.data?.count || 0) / paginacion.pageSize)
+        }));
+      }
     } catch (err: any) {
       const errorMessage = err.response?.data?.detail || 
                           err.response?.data?.message || 

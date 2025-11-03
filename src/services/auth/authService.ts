@@ -1,5 +1,5 @@
 // services/authService.ts
-import { axiosInstance } from '../axiosConfig';
+import { axiosInstance } from "../axiosConfig";
 
 export interface LoginCredentials {
   credencial: string;
@@ -11,6 +11,11 @@ export interface UserData {
   username: string;
   email: string;
   rol: string;
+  nombre_completo?: string;
+  telefono?: string;
+  sexo?: string;
+  correo?: string;
+  fecha_registro?: string;
 }
 
 export interface LoginResponse {
@@ -42,25 +47,36 @@ export type AuthError =
 
 class AuthService {
   private isRefreshing = false;
-
+  getCurrentUser() {
+    const userData = localStorage.getItem("user");
+    return userData ? JSON.parse(userData) : null;
+  }
   // ======================
   // LOGIN
   // ======================
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
     try {
-      const response = await axiosInstance.post<LoginResponse>(
-        '/api/auth/login/',
+      const response = await axiosInstance.post(
+        "/api/auth/login/",
         credentials
       );
 
-      if (response.data.success) {
-        this.saveUserData(response.data.user);
+      // El backend devuelve: { success, message, data: { user } }
+      const user = response.data?.user;
+      
+      if (user) {
+        this.saveUserData(user);
+        return {
+          success: true,
+          message: response.message || "Login exitoso",
+          user: user
+        };
       }
 
-      return response.data;
+      throw new Error(response.message || "No se recibió información del usuario");
     } catch (error: any) {
       const authError = this.handleAuthError(error);
-      throw new Error(authError);
+      throw new Error(this.getErrorMessage(authError));
     }
   }
 
@@ -119,15 +135,18 @@ class AuthService {
   // ======================
   async verifyToken(): Promise<UserData | null> {
     try {
-      const response = await axiosInstance.get<{ success: boolean; user: UserData }>(
-        '/api/auth/verificar-sesion/'
-      );
+      const response = await axiosInstance.get('/api/auth/verificar-sesion/');
 
-      if (response.data.success) {
-        this.saveUserData(response.data.user);
-        return response.data.user;
-      }
+      const userData: UserData =
+        response.data?.user || // si viene como { success, data: { user } }
+        response.data; // si viene directamente
+
+       if (userData) {
+         this.saveUserData(userData);
+         return userData;
+       }
       return null;
+
     } catch (error) {
       this.clearLocalStorage();
       return null;
@@ -145,6 +164,18 @@ class AuthService {
       this.clearLocalStorage();
       return false;
     }
+  }
+  
+  // VERIFICAR SI ESTA AUTENTICADO
+  isAuthenticated(): boolean {
+    const user = this.getCurrentUser();
+    return !!user;
+  }
+
+  // VERIFICAR ROL
+  hasRole(role: string): boolean {
+    const user = this.getCurrentUser();
+    return user?.rol?.toUpperCase() === role.toUpperCase();
   }
 
   // ======================

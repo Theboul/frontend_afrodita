@@ -1,4 +1,4 @@
-import { axiosInstance } from '../axiosConfig';
+import { axiosInstance, type ApiResponse } from '../axiosConfig';
 
 export interface Usuario {
   id_usuario: number;
@@ -11,7 +11,6 @@ export interface Usuario {
   sexo?: 'MASCULINO' | 'FEMENINO' | 'OTRO';
   fecha_registro: string;
   ultimo_login?: string;
-  // Campos específicos por rol
   fecha_contrato?: string;
   tipo_vendedor?: 'TIENDA' | 'ONLINE';
 }
@@ -44,57 +43,68 @@ export interface PaginacionResponse {
 }
 
 export class UsuarioService {
-  static async listar(filtros?: FiltrosUsuarios): Promise<{ data: PaginacionResponse }> {
-    const response = await axiosInstance.get('/api/usuarios/admin/usuarios/', { 
-      params: filtros 
-    });
-    return response;
+  static async listar(filtros?: FiltrosUsuarios): Promise<ApiResponse<PaginacionResponse>> {
+    return axiosInstance.get(
+      '/api/usuarios/admin/usuarios/', 
+      { params: filtros }
+    );
   }
 
-  static async obtener(id: number): Promise<{ data: Usuario }> {
-    const response = await axiosInstance.get(`/api/usuarios/admin/usuarios/${id}/`);
-    return response;
+  static async obtener(id: number): Promise<ApiResponse<Usuario>> {
+    return axiosInstance.get(
+      `/api/usuarios/admin/usuarios/${id}/`
+    );
   }
 
-  static async crear(usuario: UsuarioCreate): Promise<{ data: Usuario }> {
-    const response = await axiosInstance.post('/api/usuarios/admin/usuarios/', usuario);
-    return response;
+  static async crear(usuario: UsuarioCreate): Promise<ApiResponse<Usuario>> {
+    return axiosInstance.post(
+      '/api/usuarios/admin/usuarios/', 
+      usuario
+    );
   }
 
-  static async actualizar(id: number, usuario: Partial<UsuarioCreate>): Promise<{ data: Usuario }> {
-    const response = await axiosInstance.patch(`/api/usuarios/admin/usuarios/${id}/`, usuario);
-    return response;
+  static async actualizar(id: number, usuario: Partial<UsuarioCreate>): Promise<ApiResponse<Usuario>> {
+    return axiosInstance.patch(
+      `/api/usuarios/admin/usuarios/${id}/`, 
+      usuario
+    );
   }
 
-  static async eliminar(id: number): Promise<void> {
-    await axiosInstance.delete(`/api/usuarios/admin/usuarios/${id}/`);
+  static async eliminar(id: number): Promise<ApiResponse<null>> {
+    return axiosInstance.delete(
+      `/api/usuarios/admin/usuarios/${id}/`
+    );
   }
 
-  static async cambiarEstado(id: number, estado: string, motivo?: string): Promise<{ data: Usuario }> {
-    const response = await axiosInstance.patch(`/api/usuarios/admin/usuarios/${id}/cambiar_estado/`, { 
-      estado_usuario: estado, 
-      motivo 
-    });
-    return response;
+  static async cambiarEstado(
+    id: number,
+    estado: string,
+    motivo?: string
+  ): Promise<ApiResponse<Usuario>> {
+    return axiosInstance.patch(
+      `/api/usuarios/admin/usuarios/${id}/cambiar_estado/`, 
+      { estado_usuario: estado, motivo }
+    );
   }
 
-  static async cambiarContrasena(id: number, nuevaContrasena: string): Promise<void> {
-    await axiosInstance.patch(`/api/usuarios/admin/usuarios/${id}/cambiar_contrasena/`, { 
-      nueva_contrasena: nuevaContrasena 
-    });
+  static async cambiarContrasena(id: number, nuevaContrasena: string): Promise<ApiResponse<null>> {
+    return axiosInstance.patch(
+      `/api/usuarios/admin/usuarios/${id}/cambiar_contrasena/`, 
+      { nueva_contrasena: nuevaContrasena }
+    );
   }
 
   static async verificarUsername(params: { username: string; usuario_id?: number }) {
-    const response = await axiosInstance.get('/api/usuarios/admin/usuarios/verificar_username/', { 
-      params 
-    });
-    return response;
+    return axiosInstance.get(
+      '/api/usuarios/admin/usuarios/verificar_username/',
+      { params }
+    );
   }
 
   static async verificarEmail(params: { email: string; usuario_id?: number }) {
-    const response = await axiosInstance.get('/api/usuarios/admin/usuarios/verificar_email/', { 
-      params 
-    });
-    return response;
+    return axiosInstance.get(
+      '/api/usuarios/admin/usuarios/verificar_email/',
+      { params }
+    );
   }
 }
