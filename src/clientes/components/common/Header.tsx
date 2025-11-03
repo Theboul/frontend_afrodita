@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { MdPersonOutline, MdMenu, MdLogout } from "react-icons/md";
+import { MdPersonOutline, MdMenu, MdLogout, MdShoppingCart } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import SidebarCliente from "./SidebarCliente";
 import { useAuthStore } from "../../../stores/authStore";
@@ -24,6 +24,10 @@ const Header: React.FC<HeaderProps> = ({
     }
   };
 
+  const goToCarrito = () => {
+    navigate("/carrito-cliente"); // Redirige a la página del carrito
+  };
+
   return (
     <>
       {/* Header principal */}
@@ -46,23 +50,33 @@ const Header: React.FC<HeaderProps> = ({
           />
         </div>
 
-        {/* Botón de iniciar sesión / Cerrar sesión */}
-       <div className="flex items-center gap-3">
-         <button
-           onClick={handleAuthAction}
-           className="flex items-center gap-1 bg-white border border-[#F4AFCC] text-[#C25B8C] px-3 py-1 rounded-full text-sm font-medium hover:bg-[#F4AFCC]/20 transition"
-           >
-           {isAuthenticated ? (
-             <>
-               <MdLogout size={18} />
-               Cerrar sesión
-             </>
-           ) : (
-             <>
-               <MdPersonOutline size={18} />
-               Iniciar sesión
-             </>
-           )}
+        {/* Botones carrito y sesión */}
+        <div className="flex items-center gap-3">
+          {/* Carrito */}
+          <button
+            onClick={goToCarrito}
+            className="flex items-center gap-1 bg-white border border-[#F4AFCC] text-[#C25B8C] px-3 py-1 rounded-full text-sm font-medium hover:bg-[#F4AFCC]/20 transition"
+          >
+            <MdShoppingCart size={18} />
+            
+          </button>
+
+          {/* Iniciar sesión / Cerrar sesión */}
+          <button
+            onClick={handleAuthAction}
+            className="flex items-center gap-1 bg-white border border-[#F4AFCC] text-[#C25B8C] px-3 py-1 rounded-full text-sm font-medium hover:bg-[#F4AFCC]/20 transition"
+          >
+            {isAuthenticated ? (
+              <>
+                <MdLogout size={18} />
+                Cerrar sesión
+              </>
+            ) : (
+              <>
+                <MdPersonOutline size={18} />
+                Iniciar sesión
+              </>
+            )}
           </button>
         </div>
       </header>
@@ -74,7 +88,7 @@ const Header: React.FC<HeaderProps> = ({
           <div
             className="absolute inset-0 bg-transparent"
             onClick={() => setSidebarOpen(false)}
-          > </div>
+          ></div>
 
           {/* Sidebar ocupando toda la pantalla */}
           <div
