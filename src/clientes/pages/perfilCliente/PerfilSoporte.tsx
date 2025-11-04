@@ -7,6 +7,7 @@ import {
 import { Button } from "../../../components/ui/Button";
 import { EmptyState } from "../../../components/ui/EmptyState";
 import TicketDetalleClienteModal from "../../../components/soporte/TicketDetalleClienteModal";
+import CrearTicketModal from "../../../components/soporte/CrearTicketModal";
 import toast from "react-hot-toast";
 
 export default function PerfilSoporte() {
@@ -14,6 +15,7 @@ export default function PerfilSoporte() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalCrearVisible, setModalCrearVisible] = useState(false);
   const [ticketSeleccionado, setTicketSeleccionado] = useState<TicketDetalle | null>(null);
 
   useEffect(() => {
@@ -73,11 +75,32 @@ export default function PerfilSoporte() {
     }
   };
 
+  // 🔹 Crear nuevo ticket
+  const handleCrearTicket = async (data: { asunto: string; tipo_consulta: string; mensaje: string }) => {
+    try {
+      const res = await soporteClienteService.crearTicket(data);
+      if (res.success) {
+        toast.success("Ticket creado exitosamente ✅");
+        await cargarTickets();
+        setModalCrearVisible(false);
+      } else {
+        toast.error(res.message || "Error al crear el ticket");
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Error al crear el ticket");
+      throw error;
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-semibold text-gray-800">Mis Tickets de Soporte</h2>
-        <Button label="Nuevo Ticket" color="primary" onClick={() => toast("Función en desarrollo")} />
+        <Button 
+          label="Nuevo Ticket" 
+          color="primary" 
+          onClick={() => setModalCrearVisible(true)} 
+        />
       </div>
 
       {/* Estado de carga / error / vacío */}
@@ -124,6 +147,13 @@ export default function PerfilSoporte() {
           onResponder={handleResponder}
         />
       )}
+
+      {/* Modal de crear ticket */}
+      <CrearTicketModal
+        show={modalCrearVisible}
+        onClose={() => setModalCrearVisible(false)}
+        onCrear={handleCrearTicket}
+      />
     </div>
   );
 }
