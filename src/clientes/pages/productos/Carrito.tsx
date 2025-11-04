@@ -39,8 +39,8 @@ const Carrito: React.FC = () => {
     <div>
       <Header />
       <main className="flex-1 w-full px-4 sm:px-6 lg:px-8 mt-10">
-        <h1 className="text-2xl font-bold mb-6">🛒 Mi Carrito</h1>
-
+      <h1 className="text-2xl font-bold mb-6">🛒 Mi Carrito</h1>
+      <h1 className="text-2xl font-bold mb-6">🛒 Mi Carrito</h1>
         {loading ? (
           <p>Cargando carrito...</p>
         ) : productos.length === 0 ? (

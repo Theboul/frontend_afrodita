@@ -1,3 +1,4 @@
+// pages/catalogo/CatalogoCliente.tsx
 import React, { useEffect, useRef, useState } from "react";
 import Header from "../../components/common/Header";
 import Footer from "../../components/common/Footer";
@@ -5,12 +6,12 @@ import FiltrarBusquedas from "../../components/dashboard/FiltrarBusquedas";
 import SearchBar from "../../components/common/Search";
 import { ProductoService } from "../../../services/productos/ProductoService";
 import type { Producto } from "../../../services/productos/ProductoService";
-import { useCarritoStore } from "../../stores/useCarritoStore";
-import ProductoCard from "../../components/productoCard";
+//import { useCarritoStore } from "../../stores/useCarritoStore";
+import ProductoCard from "../../components/productoCard"; 
+
+
 
 const CatalogoCliente: React.FC = () => {
-
-
   const [visibleSections, setVisibleSections] = useState<string[]>([]);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -107,8 +108,6 @@ const CatalogoCliente: React.FC = () => {
     setPage(page + 1);
   };
 
-
-
   return (
     <div className="flex flex-col min-h-screen bg-white">
       <Header logoSrc="/assets/1.png" />
@@ -152,12 +151,20 @@ const CatalogoCliente: React.FC = () => {
               <ProductoCard
                 key={prod.id_producto}
                 producto={{
-                  id: Number(prod.id_producto),
+                 
+                  id: String(prod.id_producto),
+                  
                   nombre: prod.nombre,
                   descripcion: prod.descripcion,
                   imagen: prod.imagen_principal?.url || "/assets/default.jpg",
-                  precio: prod.precio,
-                  cantidad: 1,
+                  
+                
+                  precio: Number(prod.precio),
+                  
+                  cantidad: 1, 
+                  
+            
+                  stock: Number(prod.stock || 0),
                 }}
               />
             ))}

@@ -1,96 +1,137 @@
 import { create } from "zustand";
-import CarritoService from "../services/CarritoService";
+import CarritoService, { type CarritoResponse } from "../services/CarritoService";
 
 export interface ProductoCarrito {
-  id: number;
+  id: string;
   nombre: string;
-  descripcion: string;
-  imagen: string;
+  descripcion?: string;
+  imagen?: string;
   precio: number;
   cantidad: number;
+  stock?: number;
 }
 
 interface CarritoState {
   productos: ProductoCarrito[];
+  total: number;
+  error: string | null;
   cargarCarrito: () => Promise<void>;
   agregarProducto: (producto: ProductoCarrito) => Promise<void>;
-  aumentarCantidad: (id: number) => Promise<void>;
-  disminuirCantidad: (id: number) => Promise<void>;
-  eliminarProducto: (id: number) => Promise<void>;
+  aumentarCantidad: (id: string) => Promise<void>;
+  disminuirCantidad: (id: string) => Promise<void>;
+  eliminarProducto: (id: string) => Promise<void>;
   vaciarCarrito: () => Promise<void>;
+  clearError: () => void;
 }
 
 export const useCarritoStore = create<CarritoState>((set, get) => ({
   productos: [],
+  total: 0,
+  error: null,
 
+  // ============================
+  // CARGAR CARRITO
+  // ============================
   cargarCarrito: async () => {
-    const data = await CarritoService.obtener();
-    set({
-      productos: data.detalles.map((d: any) => ({
-        id: Number(d.id_producto.id_producto),
-        nombre: d.id_producto.nombre,
-        descripcion: d.id_producto.descripcion,
-        imagen: d.id_producto.imagen_principal?.url || "/assets/default.jpg",
-        precio: Number(d.id_producto.precio),
-        cantidad: d.cantidad,
-      })),
-    });
+    try {
+      const data = await CarritoService.obtener();
+      const detalles = data.detalles || [];
+
+      set({
+        productos: detalles.map((d) => ({
+          id: String(d.id_producto),
+          nombre: d.nombre_producto,
+          precio: Number(d.precio_unitario),
+          cantidad: Number(d.cantidad),
+        })),
+        total: data.total_general || 0,
+        error: null,
+      });
+    } catch (err: any) {
+      set({
+        error: err.message || "Error al cargar el carrito",
+      });
+    }
   },
 
+  // ============================
+  // AGREGAR PRODUCTO
+  // ============================
   agregarProducto: async (producto: ProductoCarrito) => {
-    await CarritoService.agregar(producto.id);
-    const productos = get().productos;
-    const existe = productos.find((p) => p.id === producto.id);
-    if (existe) {
+    try {
+      await CarritoService.agregar(producto.id, producto.cantidad);
+      await get().cargarCarrito();
+      set({ error: null });
+    } catch (err: any) {
       set({
-        productos: productos.map((p) =>
-          p.id === producto.id ? { ...p, cantidad: p.cantidad + 1 } : p
-        ),
+        error: err.message || "Error al agregar producto",
       });
-    } else {
-      set({ productos: [...productos, { ...producto, cantidad: 1 }] });
     }
   },
 
-  aumentarCantidad: async (id: number) => {
-    const productos = get().productos;
-    const prod = productos.find((p) => p.id === id);
+  // ============================
+  // AUMENTAR CANTIDAD
+  // ============================
+  aumentarCantidad: async (id: string) => {
+    const prod = get().productos.find((p) => p.id === id);
     if (!prod) return;
-    await CarritoService.actualizar(id, prod.cantidad + 1);
-    set({
-      productos: productos.map((p) =>
-        p.id === id ? { ...p, cantidad: p.cantidad + 1 } : p
-      ),
-    });
+
+    try {
+      await CarritoService.actualizar(id, prod.cantidad + 1);
+      await get().cargarCarrito();
+    } catch (err: any) {
+      set({
+        error: err.message || "Error al aumentar cantidad",
+      });
+    }
   },
 
-  disminuirCantidad: async (id: number) => {
-    const productos = get().productos;
-    const prod = productos.find((p) => p.id === id);
+  // ============================
+  // DISMINUIR CANTIDAD
+  // ============================
+  disminuirCantidad: async (id: string) => {
+    const prod = get().productos.find((p) => p.id === id);
     if (!prod) return;
+
     const nuevaCantidad = prod.cantidad - 1;
-    await CarritoService.actualizar(id, nuevaCantidad);
-    if (nuevaCantidad <= 0) {
-      set({ productos: productos.filter((p) => p.id !== id) });
-    } else {
+    try {
+      await CarritoService.actualizar(id, nuevaCantidad);
+      await get().cargarCarrito();
+    } catch (err: any) {
       set({
-        productos: productos.map((p) =>
-          p.id === id ? { ...p, cantidad: nuevaCantidad } : p
-        ),
+        error: err.message || "Error al disminuir cantidad",
       });
     }
   },
 
-  eliminarProducto: async (id: number) => {
-    await CarritoService.actualizar(id, 0);
-    set({ productos: get().productos.filter((p) => p.id !== id) });
+  // ============================
+  // ELIMINAR PRODUCTO (CANTIDAD = 0)
+  // ============================
+  eliminarProducto: async (id: string) => {
+    try {
+      await CarritoService.actualizar(id, 0);
+      await get().cargarCarrito();
+      set({ error: null });
+    } catch (err: any) {
+      set({
+        error: err.message || "Error al eliminar producto",
+      });
+    }
   },
 
+  // ============================
+  // VACIAR CARRITO
+  // ============================
   vaciarCarrito: async () => {
-    const productos = get().productos;
-    for (const p of productos) {
-      await CarritoService.actualizar(p.id, 0);
+    try {
+      await CarritoService.vaciar();
+      set({ productos: [], total: 0, error: null });
+    } catch (err: any) {
+      set({
+        error: err.message || "Error al vaciar carrito",
+      });
     }
-    set({ productos: [] });
   },
+
+  clearError: () => set({ error: null }),
 }));
