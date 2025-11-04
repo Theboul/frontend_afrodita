@@ -19,6 +19,8 @@ import BitacoraPage from "./pages/bitacora/BitacoraPage";
 import DashboardPage from "./pages/dashboard/DashboardPage";
 import GestionarCompra from "./pages/productos/GestionarCompra";
 import GestionarCuentaCliente from "./pages/usuarios/GestionarCuentaCliente";
+import GestionInventario from "./pages/inventario/GestionInventario";
+import GestionLotes from "./pages/lotes/GestionLotes";
 
 // Páginas del cliente
 import DashboardCliente from "./clientes/pages/productos/DashboardCliente"; 
@@ -116,6 +118,26 @@ function App() {
             </DashboardLayout>
           }
         />
+
+
+<Route
+  path="/inventario"
+  element={
+    <DashboardLayout>
+      <GestionInventario />
+    </DashboardLayout>
+  }
+/>
+        <Route
+  path="/lotes"
+  element={
+    <DashboardLayout>
+      <GestionLotes />
+    </DashboardLayout>
+  }
+/>
+
+
 
         {/* ========================================
             RUTAS DE USUARIOS Y CLIENTES
