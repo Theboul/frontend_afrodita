@@ -48,16 +48,21 @@ class AuthService {
   // ======================
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
     try {
-      const response = await axiosInstance.post<LoginResponse>(
+      const response = await axiosInstance.post(
         '/api/auth/login/',
         credentials
       );
 
-      if (response.data.success) {
-        this.saveUserData(response.data.user);
+      // El interceptor puede envolver la respuesta como { success, message, data }
+      // o devolver el objeto tal cual ({ success, user, ... }).
+      const body: any = response.data;
+      const payload = ('data' in body && body.data) ? body.data : body;
+
+      if (body?.success && payload?.user) {
+        this.saveUserData(payload.user);
       }
 
-      return response.data;
+      return body;
     } catch (error: any) {
       const authError = this.handleAuthError(error);
       throw new Error(authError);
@@ -119,13 +124,14 @@ class AuthService {
   // ======================
   async verifyToken(): Promise<UserData | null> {
     try {
-      const response = await axiosInstance.get<{ success: boolean; user: UserData }>(
-        '/api/auth/verificar-sesion/'
-      );
+      const response: any = await axiosInstance.get('/api/auth/verificar-sesion/');
+      // El interceptor puede devolver { success, data: { user } } o { success, user }
+      const body = response;
+      const payload = ('data' in body && body.data) ? body.data : body;
 
-      if (response.data.success) {
-        this.saveUserData(response.data.user);
-        return response.data.user;
+      if (body?.success && payload?.user) {
+        this.saveUserData(payload.user);
+        return payload.user as UserData;
       }
       return null;
     } catch (error) {
