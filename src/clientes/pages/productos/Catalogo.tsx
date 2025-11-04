@@ -6,9 +6,10 @@ import SearchBar from "../../components/common/Search";
 import { ProductoService } from "../../../services/productos/ProductoService";
 import type { Producto } from "../../../services/productos/ProductoService";
 import { useCarritoStore } from "../../stores/useCarritoStore";
+import ProductoCard from "../../components/productoCard";
 
 const CatalogoCliente: React.FC = () => {
-  const { agregarProducto } = useCarritoStore();
+
 
   const [visibleSections, setVisibleSections] = useState<string[]>([]);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<string | null>(null);
@@ -19,7 +20,7 @@ const CatalogoCliente: React.FC = () => {
   const [page, setPage] = useState<number>(1);
   const [nextPage, setNextPage] = useState<string | null>(null);
 
-  // Hook animación scroll
+  // Animación scroll
   const useScrollAnimation = (id: string) => {
     const ref = useRef<HTMLDivElement>(null);
 
@@ -106,26 +107,7 @@ const CatalogoCliente: React.FC = () => {
     setPage(page + 1);
   };
 
-  const ProductoCard = ({ producto }: any) => (
-    <div className="p-4 bg-white shadow-md rounded-xl flex flex-col items-center hover:scale-105 transform transition">
-      <div className="w-full aspect-square rounded-lg overflow-hidden">
-        <img
-          src={producto.imagen}
-          alt={producto.nombre}
-          className="w-full h-full object-cover"
-        />
-      </div>
-      <h3 className="font-bold mt-2 text-center">{producto.nombre}</h3>
-      <p className="text-gray-600 text-sm text-center mt-1 line-clamp-2">{producto.descripcion}</p>
-      <p className="text-pink-600 font-semibold mt-1">Bs {producto.precio}</p>
-      <button
-        onClick={() => agregarProducto(producto)}
-        className="mt-2 w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition"
-      >
-        Agregar al carrito
-      </button>
-    </div>
-  );
+
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
@@ -183,7 +165,6 @@ const CatalogoCliente: React.FC = () => {
 
           {loading && <p className="mt-4 text-gray-500">Cargando productos...</p>}
 
-          {/* Ver más */}
           {!loading && nextPage && (
             <div className="flex justify-center mt-6">
               <button

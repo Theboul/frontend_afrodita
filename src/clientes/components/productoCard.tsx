@@ -1,26 +1,62 @@
 import React, { useState } from "react";
 import { useCarritoStore } from "../stores/useCarritoStore";
+import type { ProductoCarrito } from "../stores/useCarritoStore";
+
 
 interface ProductoCardProps {
-  producto: {
-    id: number;
-    nombre: string;
-    descripcion: string;
-    imagen: string;
-    precio: number;
-    cantidad: number;
-  };
+  producto: ProductoCarrito & { stock?: number }; // agregamos stock opcional
 }
 
 const ProductoCard: React.FC<ProductoCardProps> = ({ producto }) => {
-  const { agregarProducto } = useCarritoStore();
-  const [cantidad, setCantidad] = useState<number>(1);
+  const {
+    productos,
+    agregarProducto,
+    aumentarCantidad,
+    disminuirCantidad,
+    eliminarProducto,
+  } = useCarritoStore();
 
-  const aumentar = () => setCantidad(c => c + 1);
-  const disminuir = () => setCantidad(c => (c > 1 ? c - 1 : 1));
-  const agregarAlCarrito = () => {
-    agregarProducto({ ...producto, cantidad });
+  const itemEnCarrito = productos.find((i) => i.id === producto.id);
+  const [agregado, setAgregado] = useState(false);
+  const [errorStock, setErrorStock] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleAgregar = async () => {
+    if (producto.stock && producto.stock <= 0) {
+      setErrorStock("No hay stock disponible");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await agregarProducto(producto);
+      setAgregado(true);
+      setErrorStock(null);
+    } catch (err) {
+      setErrorStock("Error al agregar el producto");
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const handleAumentar = async () => {
+    if (itemEnCarrito && producto.stock && itemEnCarrito.cantidad >= producto.stock) {
+      setErrorStock("No hay más stock disponible");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      if (itemEnCarrito) await aumentarCantidad(itemEnCarrito.id);
+      setErrorStock(null);
+    } catch (err) {
+      setErrorStock("Error al actualizar cantidad");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const mostrarContador = itemEnCarrito || agregado;
 
   return (
     <div className="p-4 bg-white shadow-md rounded-xl flex flex-col items-center hover:scale-105 transform transition">
@@ -31,33 +67,51 @@ const ProductoCard: React.FC<ProductoCardProps> = ({ producto }) => {
           className="w-full h-full object-cover"
         />
       </div>
+
       <h3 className="font-bold mt-2 text-center">{producto.nombre}</h3>
-      <p className="text-gray-600 text-sm text-center mt-1 line-clamp-2">{producto.descripcion}</p>
+      <p className="text-gray-600 text-sm text-center mt-1 line-clamp-2">
+        {producto.descripcion}
+      </p>
       <p className="text-pink-600 font-semibold mt-1">Bs {producto.precio}</p>
 
-      {/* Contador */}
-      <div className="flex items-center mt-2 space-x-2">
-        <button
-          onClick={disminuir}
-          className="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300"
-        >
-          -
-        </button>
-        <span>{cantidad}</span>
-        <button
-          onClick={aumentar}
-          className="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300"
-        >
-          +
-        </button>
-      </div>
+      {errorStock && <p className="text-red-500 text-sm mt-1">{errorStock}</p>}
 
-      <button
-        onClick={agregarAlCarrito}
-        className="mt-2 w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition"
-      >
-        Agregar al carrito
-      </button>
+      {mostrarContador ? (
+        <div className="flex items-center gap-2 mt-3 w-full justify-center">
+          <button
+            onClick={() => disminuirCantidad(producto.id)}
+            className="px-3 py-1 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"
+          >
+            -
+          </button>
+          <span className="font-semibold text-gray-700">
+            {itemEnCarrito?.cantidad || 1}
+          </span>
+          <button
+            onClick={handleAumentar}
+            className="px-3 py-1 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"
+          >
+            +
+          </button>
+          <button
+            onClick={() => {
+              eliminarProducto(producto.id);
+              setAgregado(false);
+            }}
+            className="ml-2 px-2 py-1 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600"
+          >
+            Eliminar
+          </button>
+        </div>
+      ) : (
+        <button
+          onClick={handleAgregar}
+          className="mt-2 w-full py-2 rounded-lg transition bg-pink-600 text-white hover:bg-pink-700"
+          disabled={loading}
+        >
+          {loading ? "Cargando..." : "Agregar al carrito"}
+        </button>
+      )}
     </div>
   );
 };
