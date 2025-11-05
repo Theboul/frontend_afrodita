@@ -64,6 +64,27 @@ export interface ResumenVenta {
   }>;
 }
 
+export interface StripeCreateIntentBody {
+  id_venta: number;
+  monto: number;
+  descripcion?: string;
+}
+
+export interface StripeCreateIntentResponse {
+  reference: string; // PaymentIntent id (pi_...)
+  client_secret: string;
+  status: string;
+  method: string;
+  method_id?: number | null;
+  order_total?: string;
+  paid_total?: string;
+  remaining?: string;
+}
+
+export interface StripeSimpleIntentResponse {
+  clientSecret: string;
+}
+
 class PaymentService {
   private baseURL = '/api/ventas';
 
@@ -91,6 +112,32 @@ class PaymentService {
   async resumenVenta(idVenta: number): Promise<APIResponse<ResumenVenta>> {
     const response = await axiosInstance.get(`${this.baseURL}/venta/${idVenta}/resumen/`);
     return response as unknown as APIResponse<ResumenVenta>;
+  }
+
+  async stripeCreateIntent(body: StripeCreateIntentBody): Promise<APIResponse<StripeCreateIntentResponse>> {
+    const response = await axiosInstance.post(`${this.baseURL}/stripe/create-intent/`, body);
+    return response as unknown as APIResponse<StripeCreateIntentResponse>;
+  }
+
+  // Compat con tu view function create_payment_intent (amount en centavos)
+  async createPaymentIntentSimple(amountCents: number, currency: string = 'usd'): Promise<StripeSimpleIntentResponse> {
+    // 1) Intentar endpoint dedicado si existe
+    try {
+      const r1 = await axiosInstance.post(`${this.baseURL}/create-payment-intent/`, { amount: amountCents, currency });
+      // Puede venir normalizado o sin normalizar
+      const body: any = r1 as any;
+      return ('data' in body && body.data?.clientSecret)
+        ? { clientSecret: body.data.clientSecret }
+        : { clientSecret: (body?.clientSecret || body?.data?.client_secret) };
+    } catch (e: any) {
+      // 2) Fallback al endpoint /stripe/create-intent/ con el mismo body
+      const r2 = await axiosInstance.post(`${this.baseURL}/stripe/create-intent/`, { amount: amountCents / 100, currency });
+      const body: any = r2 as any;
+      // Este endpoint devuelve client_secret dentro de data
+      const cs = body?.data?.client_secret || body?.client_secret || '';
+      if (!cs) throw new Error('No se recibió client_secret');
+      return { clientSecret: cs };
+    }
   }
 }
 

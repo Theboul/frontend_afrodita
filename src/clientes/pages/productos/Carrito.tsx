@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useCarritoStore } from "../../stores/useCarritoStore";
 import Header from "../../components/common/Header";
 import Footer from "../../../components/common/Footer";
+import StripePaymentModal from "../../../components/ventas/StripePaymentModal";
+import { paymentService } from "../../../services/ventas/paymentService";
 
 const Carrito: React.FC = () => {
   const {
@@ -14,6 +16,10 @@ const Carrito: React.FC = () => {
 
   const [loading, setLoading] = useState(false);
   const [errorStock, setErrorStock] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [stripeOpen, setStripeOpen] = useState(false);
+  const [clientSecret, setClientSecret] = useState<string>("");
+  const [idVentaTmp, setIdVentaTmp] = useState<number | null>(null);
 
   useEffect(() => {
     const init = async () => {
@@ -33,6 +39,27 @@ const Carrito: React.FC = () => {
     }
     setErrorStock(null);
     await aumentarCantidad(prod.id);
+  };
+
+  const pagarAhora = async () => {
+    try {
+      setError(null);
+      if (total <= 0) {
+        setError("El total debe ser mayor a 0");
+        return;
+      }
+      setLoading(true);
+      // Usar la view que ya tienes: create_payment_intent (amount en centavos)
+      const cents = Math.round(total * 100);
+      const currency = (import.meta.env.VITE_STRIPE_CURRENCY || 'usd').toLowerCase();
+      const r = await paymentService.createPaymentIntentSimple(cents, currency);
+      setClientSecret(r.clientSecret);
+      setStripeOpen(true);
+    } catch (e: any) {
+      setError(e?.message ?? "No se pudo iniciar el pago con Stripe");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -91,13 +118,22 @@ const Carrito: React.FC = () => {
                 </div>
               </div>
             ))}
-
+  
             <div className="mt-6 text-right font-bold text-xl">
               Total: Bs {total.toFixed(2)}
+          </div>
+            <div className="mt-2 text-right text-sm text-red-600">{error}</div>
+            <div className="mt-6 flex justify-end">
+              <button onClick={pagarAhora} disabled={loading} className="w-full sm:w-auto px-6 py-3 bg-pink-600 text-white font-bold text-xl rounded-lg shadow hover:bg-pink-700 transition disabled:opacity-50">
+                {loading ? 'Iniciando...' : 'Pagar Ahora'}
+              </button>
             </div>
+
+            
           </div>
         )}
       </main>
+      <StripePaymentModal open={stripeOpen} clientSecret={clientSecret} onClose={() => setStripeOpen(false)} onSucceeded={() => { /* opcional: refrescar resumen */ }} />
       <Footer />
     </div>
   );
