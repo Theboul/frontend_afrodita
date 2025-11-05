@@ -76,4 +76,7 @@ export const menuModules = [
       { label: "Auditoría / Bitácora", to: "/bitacora" },
     ],
   },
+
+
+
 ];
