@@ -1,4 +1,6 @@
 interface EmptyStateProps {
+  title?: string;
+  description?: string;
   message?: string;
 }
 
@@ -28,3 +30,5 @@ export default function EmptyState({ message = "No se encontraron resultados" }:
     </div>
   );
 }
+
+export { EmptyState };

@@ -47,3 +47,5 @@ export default function Button({
     </button>
   );
 }
+
+export { Button };

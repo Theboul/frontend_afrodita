@@ -1,5 +1,5 @@
 // services/authService.ts
-import { axiosInstance } from '../axiosConfig';
+import { axiosInstance } from "../axiosConfig";
 
 export interface LoginCredentials {
   credencial: string;
@@ -11,6 +11,11 @@ export interface UserData {
   username: string;
   email: string;
   rol: string;
+  nombre_completo?: string;
+  telefono?: string;
+  sexo?: string;
+  correo?: string;
+  fecha_registro?: string;
 }
 
 export interface LoginResponse {
@@ -42,7 +47,10 @@ export type AuthError =
 
 class AuthService {
   private isRefreshing = false;
-
+  getCurrentUser() {
+    const userData = localStorage.getItem("user");
+    return userData ? JSON.parse(userData) : null;
+  }
   // ======================
   // LOGIN
   // ======================
@@ -53,19 +61,33 @@ class AuthService {
         credentials
       );
 
-      // El interceptor ya devuelve el cuerpo normalizado, no AxiosResponse.
-      // Puede ser { success, message, data } o { success, user }.
-      const body: any = response as any;
+      // El interceptor puede envolver la respuesta como { success, message, data }
+      // o devolver el objeto tal cual ({ success, user, ... }).
+      const body: any = response.data;
+      console.log('🌐 AuthService: Respuesta completa del backend:', body);
+      console.log('🌐 AuthService: response.data:', response.data);
+      
       const payload = ('data' in body && body.data) ? body.data : body;
+      console.log('🌐 AuthService: payload procesado:', payload);
 
       if (body?.success && payload?.user) {
         this.saveUserData(payload.user);
       }
 
+      // Si la respuesta tiene 'user' pero no tiene 'success', normalizar
+      if (payload?.user && !body?.success) {
+        console.log('⚠️ AuthService: Normalizando respuesta sin campo success');
+        return {
+          success: true,
+          message: 'Login exitoso',
+          user: payload.user
+        };
+      }
+
       return body;
     } catch (error: any) {
       const authError = this.handleAuthError(error);
-      throw new Error(authError);
+      throw new Error(this.getErrorMessage(authError));
     }
   }
 
@@ -134,6 +156,7 @@ class AuthService {
         return payload.user as UserData;
       }
       return null;
+
     } catch (error) {
       this.clearLocalStorage();
       return null;
@@ -151,6 +174,18 @@ class AuthService {
       this.clearLocalStorage();
       return false;
     }
+  }
+  
+  // VERIFICAR SI ESTA AUTENTICADO
+  isAuthenticated(): boolean {
+    const user = this.getCurrentUser();
+    return !!user;
+  }
+
+  // VERIFICAR ROL
+  hasRole(role: string): boolean {
+    const user = this.getCurrentUser();
+    return user?.rol?.toUpperCase() === role.toUpperCase();
   }
 
   // ======================

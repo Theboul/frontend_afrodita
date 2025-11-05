@@ -1,5 +1,4 @@
 import { axiosInstance } from '../axiosConfig';
-import type { AxiosResponse } from 'axios';
 
 // ==================== TIPOS ====================
 export interface Permiso {
@@ -70,13 +69,13 @@ class SeguridadService {
     search?: string;
   }): Promise<APIResponse<Permiso[]>> {
     try {
-      const response: AxiosResponse<PaginatedResponse<Permiso> | APIResponse<Permiso[]>> = await axiosInstance.get(
+      const response = await axiosInstance.get(
         `${this.baseURL}/permisos/`,
         { params }
       );
       
-      // Verificar si es respuesta paginada
-      if ('results' in response.data) {
+      // Verificar si es respuesta paginada dentro de data
+      if (response.data && 'results' in response.data) {
         return {
           success: true,
           message: `${response.data.count} permisos encontrados`,
@@ -85,7 +84,7 @@ class SeguridadService {
       }
       
       // Si ya viene en formato APIResponse
-      return response.data as APIResponse<Permiso[]>;
+      return response as APIResponse<Permiso[]>;
     } catch (error) {
       console.error("Error al obtener permisos:", error);
       throw error;
@@ -129,17 +128,21 @@ class SeguridadService {
     es_sistema?: boolean;
     search?: string;
   }): Promise<APIResponse<Rol[]>> {
-    const response: AxiosResponse<PaginatedResponse<Rol>> = await axiosInstance.get(
+    const response = await axiosInstance.get(
       `${this.baseURL}/roles/`,
       { params }
     );
     
     // Convertir respuesta paginada a formato APIResponse
-    return {
-      success: true,
-      message: `${response.data.count} roles encontrados`,
-      data: response.data.results
-    };
+    if (response.data && 'results' in response.data) {
+      return {
+        success: true,
+        message: `${response.data.count} roles encontrados`,
+        data: response.data.results
+      };
+    }
+    
+    return response as APIResponse<Rol[]>;
   }
 
   async obtenerRol(id: number): Promise<APIResponse<RolDetalle>> {
@@ -223,21 +226,16 @@ class SeguridadService {
     try {
       const response = await axiosInstance.delete(`${this.baseURL}/roles/${id}/`);
       
-      // Si ya viene en formato APIResponse
-      if (response.data && 'success' in response.data) {
-        return response.data;
+      // El interceptor ya maneja la respuesta
+      if (response.success) {
+        return response as APIResponse<null>;
       }
       
-      // Si la eliminación fue exitosa (status 204 o 200)
-      if (response.status === 204 || response.status === 200) {
-        return {
-          success: true,
-          message: "Rol eliminado exitosamente",
-          data: null
-        };
-      }
-      
-      return response.data;
+      return {
+        success: true,
+        message: "Rol eliminado exitosamente",
+        data: null
+      };
     } catch (error: any) {
       throw error;
     }

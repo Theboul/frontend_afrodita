@@ -34,7 +34,7 @@ export default function TablaUsuarios({
     return (
       <div className="animate-pulse">
         {[...Array(5)].map((_, i) => (
-          <div key={i} className="h-12 bg-gray-200 rounded mb-2"></div>
+          <div key={`loading-skeleton-${i}`} className="h-12 bg-gray-200 rounded mb-2"></div>
         ))}
       </div>
     );
