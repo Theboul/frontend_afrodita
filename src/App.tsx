@@ -14,6 +14,7 @@ import BitacoraPage from "./pages/bitacora/BitacoraPage";
 import DashboardPage from "./pages/dashboard/DashboardPage";
 import GestionarCompra from "./pages/productos/GestionarCompra";
 import GestionarCuentaCliente from "./pages/usuarios/GestionarCuentaCliente";
+import GestionarProveedores from "./pages/Proveedores/GestionarProveedores";
 
 
 import DashboardCliente from "./clientes/pages/productos/DashboardCliente"; 
@@ -141,7 +142,15 @@ function App() {
           path="/gestionar-cuentacliente"
           element={
             <DashboardLayout>
-              < GestionarCuentaCliente/>
+              <GestionarCuentaCliente />
+            </DashboardLayout>
+          }
+        />
+        <Route
+          path="/proveedores"
+          element={
+            <DashboardLayout>
+              <GestionarProveedores />
             </DashboardLayout>
           }
         />
