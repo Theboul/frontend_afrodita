@@ -2,7 +2,10 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import { Toaster } from "react-hot-toast";
+import DevErrorBoundary from "./components/common/DevErrorBoundary";
 import "./index.css";  // importa Tailwind 
+
+console.log('[Afrodita] main.tsx loaded');
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -26,5 +29,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         },
       }}
     />
+    <DevErrorBoundary>
+      <App />
+    </DevErrorBoundary>
   </React.StrictMode>
 );

@@ -1,13 +1,7 @@
 // services/axiosConfig.ts
-import axios, {
-  type AxiosInstance,
-  type AxiosResponse,
-  AxiosError,
-  type InternalAxiosRequestConfig,
-} from "axios";
-import { authService } from "./auth/authService";
-
+import axios, { type AxiosInstance, type AxiosResponse, AxiosError, type InternalAxiosRequestConfig } from 'axios';
 // Tipo global de respuesta del backend
+
 export interface ApiResponse<T = any> {
   success: boolean;
   message: string;
@@ -15,8 +9,9 @@ export interface ApiResponse<T = any> {
   errors?: Record<string, string[]> | string;
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
-const API_TIMEOUT = parseInt(import.meta.env.VITE_API_TIMEOUT || "30000");
+// Nota: usamos nullish coalescing para permitir cadena vacía ('') y así usar rutas relativas + proxy de Vite.
+const API_BASE_URL = (import.meta.env.VITE_API_URL ?? 'http://localhost:8000');
+const API_TIMEOUT = parseInt(import.meta.env.VITE_API_TIMEOUT || '30000');
 
 class AxiosConfig {
   private instance: AxiosInstance;
@@ -64,14 +59,18 @@ class AxiosConfig {
           originalRequest._retry = true;
 
           try {
-            // Intentar refrescar token
+            // Cargar authService de forma diferida para evitar ciclos de importación
+            const { authService } = await import('./auth/authService');
             await authService.refreshAccessToken();
             // Reintentar la request original
             return this.instance(originalRequest);
           } catch (refreshError) {
             // Si falla, forzar logout
-            await authService.logout();
-            window.location.href = "/login";
+            try {
+              const { authService } = await import('./auth/authService');
+              await authService.logout();
+            } catch {}
+            window.location.href = '/login';
             return Promise.reject(refreshError);
           }
         }

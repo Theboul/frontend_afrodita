@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import PagoEnLinea from "./pages/ventas/PagoEnLinea";
 
 // Páginas de autenticación
 import LoginForm from "./pages/auth/Login";
@@ -82,6 +83,18 @@ function App() {
           <Route path="direcciones" element={<PerfilDirecciones />} />
           <Route path="soporte" element={<PerfilSoporte />} />
         </Route>
+
+        {/* ========================================
+            PAGOS (DEMO / EN LÍNEA)
+        ======================================== */}
+        <Route
+          path="/pagos/linea"
+          element={
+            <DashboardLayout>
+              <PagoEnLinea />
+            </DashboardLayout>
+          }
+        />
 
         {/* ========================================
             RUTAS DEL DASHBOARD (CON SIDEBAR)
