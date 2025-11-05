@@ -5,6 +5,7 @@ import TablaUsuarios from "../../components/usuario/TablaUsuarios";
 import ModalConfirmacion from "../../components/usuario/ModalConfirmacion";
 import ModalCambiarEstado from "../../components/usuario/ModalCambiarEstado";
 import ModalCambiarContrasena from "../../components/usuario/ModalCambiarContrasena";
+import ModalDirecciones from "../../components/usuario/ModalDirecciones";
 import FormularioUsuario from "../../components/usuario/FormularioUsuario";
 import { useUsuarios } from "../../hooks/useUsuarios";
 import type { Usuario, UsuarioCreate } from "../../services/usuarios/gestionUsuario";
@@ -48,6 +49,10 @@ export default function GestionUsuarios() {
     usuario: null
   });
   const [modalCambiarContrasena, setModalCambiarContrasena] = useState<{ show: boolean; usuario: Usuario | null }>({
+    show: false,
+    usuario: null
+  });
+  const [modalDirecciones, setModalDirecciones] = useState<{ show: boolean; usuario: Usuario | null }>({
     show: false,
     usuario: null
   });
@@ -103,6 +108,10 @@ export default function GestionUsuarios() {
     setModalEditar({ show: true, usuario });
   };
 
+  const handleVerDirecciones = (usuario: Usuario) => {
+    setModalDirecciones({ show: true, usuario });
+  };
+
   // Agregar estado de carga más explícito
   if (loading) {
     return (
@@ -153,6 +162,7 @@ export default function GestionUsuarios() {
         onEliminar={(id) => setModalEliminar({ show: true, usuarioId: id })}
         onCambiarEstado={(usuario) => setModalCambiarEstado({ show: true, usuario })}
         onCambiarContrasena={(usuario) => setModalCambiarContrasena({ show: true, usuario })}
+        onVerDirecciones={handleVerDirecciones}
       />
 
       {/* Paginación */}
@@ -225,6 +235,15 @@ export default function GestionUsuarios() {
           usuario={modalCambiarContrasena.usuario}
           onConfirm={handleCambiarContrasena}
           onCancel={() => setModalCambiarContrasena({ show: false, usuario: null })}
+        />
+      )}
+
+      {/* Modal de direcciones */}
+      {modalDirecciones.show && modalDirecciones.usuario && (
+        <ModalDirecciones
+          show={modalDirecciones.show}
+          usuario={modalDirecciones.usuario}
+          onCancel={() => setModalDirecciones({ show: false, usuario: null })}
         />
       )}
 

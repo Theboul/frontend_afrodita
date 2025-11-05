@@ -1,40 +1,51 @@
-// components/ui/Button.tsx
+import { type ReactNode } from "react";
+
 interface ButtonProps {
   label: string;
-  color?: "primary" | "success" | "warning" | "danger" | "info";
+  color?: "primary" | "info" | "success" | "danger" | "warning";
   onClick?: () => void;
+  type?: "button" | "submit" | "reset";
   disabled?: boolean;
-  type?: "button" | "submit" | "reset"; // 🆕 Agregar esta línea
+  icon?: ReactNode;
+  fullWidth?: boolean;
 }
 
-const colorMap = {
-  primary: "bg-pink-500 hover:bg-pink-600",
-  success: "bg-green-600 hover:bg-green-700", 
-  warning: "bg-yellow-500 hover:bg-yellow-600",
-  danger: "bg-red-500 hover:bg-red-600",
-  info: "bg-blue-500 hover:bg-blue-600",
-};
-
-const disabledStyles = "bg-gray-400 cursor-not-allowed";
-
-export default function Button({ 
-  label, 
-  color = "primary", 
-  onClick, 
+export default function Button({
+  label,
+  color = "info",
+  onClick,
+  type = "button",
   disabled = false,
-  type = "button" // 🆕 Valor por defecto
+  icon,
+  fullWidth = false,
 }: ButtonProps) {
+  const colorClasses = {
+    primary: "bg-pink-500 hover:bg-pink-600 text-white",
+    info: "bg-blue-500 hover:bg-blue-600 text-white",
+    success: "bg-green-500 hover:bg-green-600 text-white",
+    danger: "bg-red-500 hover:bg-red-600 text-white",
+    warning: "bg-yellow-500 hover:bg-yellow-600 text-white",
+  };
+
   return (
     <button
-      type={type} // 🆕 Agregar esta línea
-      onClick={disabled ? undefined : onClick}
+      type={type}
+      onClick={onClick}
       disabled={disabled}
       className={`
-        text-white px-3 sm:px-4 py-2 rounded-md transition text-sm sm:text-base
-        ${disabled ? disabledStyles : colorMap[color]}
+        ${fullWidth ? "w-full" : ""}
+        flex items-center justify-center gap-2
+        px-4 py-2 rounded-lg
+        font-medium text-sm md:text-base
+        transition-colors duration-200
+        disabled:opacity-50 disabled:cursor-not-allowed
+        ${colorClasses[color]}
       `}
     >
+      {icon}
       {label}
     </button>
   );
 }
+
+export { Button };

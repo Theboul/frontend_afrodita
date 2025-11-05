@@ -1,169 +1,306 @@
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import LoadingFallback from "./components/common/LoadingFallback";
+import "./styles/globals.css";
+
+// Componentes que se cargan inmediatamente (críticos para UX)
+import ProtectedRoute from "./components/auth/ProtectedRoute";
+import DashboardLayout from "./layouts/DashboardLayout";
+
+// ========================================
+// LAZY LOADING - Componentes cargados bajo demanda
+// ========================================
 
 // Páginas de autenticación
-import LoginForm from "./pages/auth/Login";
-import RegistroClientePage from "./pages/auth/RegistroCliente";
+const LoginForm = lazy(() => import("./pages/auth/Login"));
+const RegistroClientePage = lazy(() => import("./pages/auth/RegistroCliente"));
 
-// Páginas del dashboard
-import GestionRoles from "./pages/usuarios/GestionRoles";
-import GestionProductos from "./pages/productos/GestionProductos";
-import ListaCategorias from "./pages/categoria/ListaCategorias";
-import GestionUsuarios from "./pages/usuarios/GestionUsuarios";
-import GestionArchivos from "./pages/archivos/CatalogoArchivos";
-import BitacoraPage from "./pages/bitacora/BitacoraPage";
-import DashboardPage from "./pages/dashboard/DashboardPage";
-import GestionarCompra from "./pages/productos/GestionarCompra";
-import GestionarCuentaCliente from "./pages/usuarios/GestionarCuentaCliente";
-import GestionarProveedores from "./pages/Proveedores/GestionarProveedores";
+// Páginas del cliente (alta prioridad)
+const DashboardCliente = lazy(() => import("./clientes/pages/productos/DashboardCliente"));
+const CatalogoCliente = lazy(() => import("./clientes/pages/productos/Catalogo"));
+const ContactoCliente = lazy(() => import("./clientes/pages/productos/Contacto"));
+const PreguntasFrecuentes = lazy(() => import("./clientes/pages/productos/PreguntasFrecuentes"));
+const Carrito = lazy(() => import("./clientes/pages/productos/Carrito"));
 
+// Perfil cliente
+const PerfilClienteLayout = lazy(() => import("./clientes/pages/perfilCliente/PerfilClienteLayout"));
+const PerfilInfo = lazy(() => import("./clientes/pages/perfilCliente/PerfilInfo"));
+const PerfilCompras = lazy(() => import("./clientes/pages/perfilCliente/PerfilCompras"));
+const PerfilDirecciones = lazy(() => import("./clientes/pages/perfilCliente/PerfilDirecciones"));
+const PerfilSoporte = lazy(() => import("./clientes/pages/perfilCliente/PerfilSoporte"));
 
-import DashboardCliente from "./clientes/pages/productos/DashboardCliente"; 
-import CatalogoCliente from "./clientes/pages/productos/Catalogo";
-import ContactoCliente from "./clientes/pages/productos/Contacto";
-import PreguntasFrecuentes from "./clientes/pages/productos/PreguntasFrecuentes";
+// Páginas del dashboard administrativo
+const DashboardPage = lazy(() => import("./pages/dashboard/DashboardPage"));
+const GestionProductos = lazy(() => import("./pages/productos/GestionProductos"));
+const ListaCategorias = lazy(() => import("./pages/categoria/ListaCategorias"));
+const GestionUsuarios = lazy(() => import("./pages/usuarios/GestionUsuarios"));
+const ListaClientes = lazy(() => import("./pages/usuarios/ListaClientes"));
+const GestionArchivos = lazy(() => import("./pages/archivos/CatalogoArchivos"));
+const BitacoraPage = lazy(() => import("./pages/bitacora/BitacoraPage"));
+const GestionarCompra = lazy(() => import("./pages/productos/GestionarCompra"));
+const GestionarCuentaCliente = lazy(() => import("./pages/usuarios/GestionarCuentaCliente"));
+const GestionInventario = lazy(() => import("./pages/inventario/GestionInventario"));
+const GestionLotes = lazy(() => import("./pages/lotes/GestionLotes"));
 
+// Páginas de seguridad
+const GestionRoles = lazy(() => import("./pages/seguridad/GestionRoles"));
+const GestionPermisos = lazy(() => import("./pages/seguridad/GestionPermisos"));
+const GestionPermisosIndividuales = lazy(() => import("./pages/seguridad/GestionPermisosIndividuales"));
 
+// Páginas de soporte
+const SoporteList = lazy(() => import("./pages/soporte/SoporteList"));
+const SoporteDetalle = lazy(() => import("./pages/soporte/SoporteDetalle"));
 
-// Layouts y estilos
-import DashboardLayout from "./layouts/DashboardLayout";
-import "./styles/globals.css";
+// Pagos
+const MetodosPagoPage = lazy(() => import("./pages/pagos/MetodosPago"));
+const PagoEnLinea = lazy(() => import("./pages/ventas/PagoEnLinea"));
 
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-       {/* Rutas para el cliente */}
-      <Route
-        path="/dashboard-cliente"
-        element={
-   
-          <DashboardCliente />
-        }
-      />
+      <Suspense fallback={<LoadingFallback />}>
+        <Routes>
+          {/* ========================================
+              RUTAS PARA EL CLIENTE
+          ======================================== */}
+          <Route path="/dashboard-cliente" element={<DashboardCliente />} />
+          <Route path="/catalogo-cliente" element={<CatalogoCliente />} />
+          <Route path="/contacto-cliente" element={<ContactoCliente />} />
+          <Route path="/preguntas-cliente" element={<PreguntasFrecuentes />} />
+          <Route path="/carrito-cliente" element={<Carrito />} />
 
-      <Route
-        path="/catalogo-cliente"
-        element={
-   
-          <CatalogoCliente/>
-        }
-      />
+          {/* ========================================
+              REDIRECCIÓN INICIAL Y AUTENTICACIÓN
+          ======================================== */}
+          <Route path="/" element={<Navigate to="/dashboard-cliente" />} />
+          <Route path="/login" element={<LoginForm />} />
+          <Route path="/registro" element={<RegistroClientePage />} />
 
-      <Route
-        path="/contacto-cliente"
-        element={
-   
-          <ContactoCliente/>
-        }
-      />
 
-      <Route
-        path="/preguntas-cliente"
-        element={
-   
-          <PreguntasFrecuentes/>
-        }
-      />
+          <Route
+            path="/perfil-cliente"
+            element={
+              <ProtectedRoute allowedRoles={["CLIENTE"]}>
+                <PerfilClienteLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<PerfilInfo />} />
+            <Route path="info" element={<PerfilInfo />} />
+            <Route path="compras" element={<PerfilCompras />} />
+            <Route path="direcciones" element={<PerfilDirecciones />} />
+            <Route path="soporte" element={<PerfilSoporte />} />
+          </Route>
 
-        {/* Redirección inicial */}
-        <Route path="/" element={<Navigate to="/login" />} />
+          {/* ========================================
+              PAGOS (DEMO / EN LÍNEA)
+          ======================================== */}
+          <Route
+            path="/pagos/linea"
+            element={
+              <DashboardLayout>
+                <PagoEnLinea />
+              </DashboardLayout>
+            }
+          />
 
-        {/* Rutas públicas (autenticación) */}
-        <Route path="/login" element={<LoginForm />} />
-        <Route path="/registro" element={<RegistroClientePage />} />
+          <Route
+            path="/pagos/metodos"
+            element={
+              <DashboardLayout>
+                <MetodosPagoPage />
+              </DashboardLayout>
+            }
+          />
 
-        {/* Rutas del dashboard (todas con el Sidebar incluido) */}
-        <Route
-          path="/dashboard"
-          element={
-            <DashboardLayout>
-              <DashboardPage />
-            </DashboardLayout>
-          }
-        />
-        <Route
-          path="/roles"
-          element={
-            <DashboardLayout>
-              <GestionRoles />
-            </DashboardLayout>
-          }
-        />
-        <Route
-          path="/productos"
-          element={
-            <DashboardLayout>
-              <GestionProductos />
-            </DashboardLayout>
-          }
-        />
-        <Route
-          path="/categorias"
-          element={
-            <DashboardLayout>
-              <ListaCategorias />
-            </DashboardLayout>
-          }
-        />
-        <Route
-          path="/usuarios"
-          element={
-            <DashboardLayout>
-              <GestionUsuarios />
-            </DashboardLayout>
-          }
-        />
-        <Route
-          path="/catalogo"
-          element={
-            <DashboardLayout>
-              <GestionArchivos />
-            </DashboardLayout>
-          }
-        />
-        <Route
-          path="/bitacora"
-          element={
-            <DashboardLayout>
-              <BitacoraPage />
-            </DashboardLayout>
-          }
-        />
-         <Route
-          path="/gestionar-compra"
-          element={
-            <DashboardLayout>
-              <GestionarCompra />
-            </DashboardLayout>
-          }
-        />
-        <Route
-          path="/gestionar-cuentacliente"
-          element={
-            <DashboardLayout>
-              <GestionarCuentaCliente />
-            </DashboardLayout>
-          }
-        />
-        <Route
-          path="/proveedores"
-          element={
-            <DashboardLayout>
-              <GestionarProveedores />
-            </DashboardLayout>
-          }
-        />
-        {/* Ruta no encontrada */}
-        <Route
-          path="*"
-          element={
-            <h1 className="p-6 text-2xl font-semibold text-red-600">
-              404 - Página no encontrada
-            </h1>
-          }
-        />
-      </Routes>
+          {/* ========================================
+            RUTAS DEL DASHBOARD (CON SIDEBAR)
+        ======================================== */}
+          <Route
+            path="/dashboard"
+            element={
+              <DashboardLayout>
+                <DashboardPage />
+              </DashboardLayout>
+            }
+          />
+
+          {/* ========================================
+            RUTAS DE SEGURIDAD
+        ======================================== */}
+          <Route
+            path="/seguridad/roles"
+            element={
+              <DashboardLayout>
+                <GestionRoles />
+              </DashboardLayout>
+            }
+          />
+          <Route
+            path="/seguridad/permisos"
+            element={
+              <DashboardLayout>
+                <GestionPermisos />
+              </DashboardLayout>
+            }
+          />
+          <Route
+            path="/seguridad/permisos-individuales"
+            element={
+              <DashboardLayout>
+                <GestionPermisosIndividuales />
+              </DashboardLayout>
+            }
+          />
+
+          {/* ========================================
+            RUTAS DE PRODUCTOS Y CATEGORÍAS
+        ======================================== */}
+          <Route
+            path="/productos"
+            element={
+              <DashboardLayout>
+                <GestionProductos />
+              </DashboardLayout>
+            }
+          />
+          <Route
+            path="/categorias"
+            element={
+              <DashboardLayout>
+                <ListaCategorias />
+              </DashboardLayout>
+            }
+          />
+          <Route
+            path="/gestionar-compra"
+            element={
+              <DashboardLayout>
+                <GestionarCompra />
+              </DashboardLayout>
+            }
+          />
+
+
+          <Route
+            path="/inventario"
+            element={
+              <DashboardLayout>
+                <GestionInventario />
+              </DashboardLayout>
+            }
+          />
+          <Route
+            path="/lotes"
+            element={
+              <DashboardLayout>
+                <GestionLotes />
+              </DashboardLayout>
+            }
+          />
+
+
+
+          {/* ========================================
+            RUTAS DE USUARIOS Y CLIENTES
+        ======================================== */}
+          <Route
+            path="/usuarios"
+            element={
+              <DashboardLayout>
+                <GestionUsuarios />
+              </DashboardLayout>
+            }
+          />
+          <Route
+            path="/clientes"
+            element={
+              <DashboardLayout>
+                <ListaClientes />
+              </DashboardLayout>
+            }
+          />
+          <Route
+            path="/dashboard/clientes/:id"
+            element={
+              <DashboardLayout>
+                <GestionarCuentaCliente />
+              </DashboardLayout>
+            }
+          />
+
+          {/* ========================================
+            RUTAS DE ARCHIVOS Y BITÁCORA
+        ======================================== */}
+          <Route
+            path="/catalogo"
+            element={
+              <DashboardLayout>
+                <GestionArchivos />
+              </DashboardLayout>
+            }
+          />
+          <Route
+            path="/bitacora"
+            element={
+              <DashboardLayout>
+                <BitacoraPage />
+              </DashboardLayout>
+            }
+          />
+
+          {/* ========================================
+            COMPATIBILIDAD: Ruta antigua de roles
+        ======================================== */}
+          <Route
+            path="/roles"
+            element={<Navigate to="/seguridad/roles" replace />}
+          />
+
+          {/* ========================================
+        RUTAS DE SOPORTE (ADMINISTRADOR)
+        ======================================= */}
+          <Route
+            path="/soporte"
+            element={
+              <DashboardLayout>
+                <SoporteList />
+              </DashboardLayout>
+            }
+          />
+
+          <Route
+            path="/soporte/:id"
+            element={
+              <DashboardLayout>
+                <SoporteDetalle />
+              </DashboardLayout>
+            }
+          />
+
+          {/* ========================================
+              RUTA NO ENCONTRADA
+          ======================================== */}
+          <Route
+            path="*"
+            element={
+              <div className="flex items-center justify-center min-h-screen">
+                <div className="text-center">
+                  <h1 className="text-6xl font-bold text-pink-600 mb-4">404</h1>
+                  <p className="text-2xl text-gray-600 mb-4">Página no encontrada</p>
+                  <a
+                    href="/dashboard"
+                    className="text-pink-500 hover:text-pink-700 underline"
+                  >
+                    Volver al Dashboard
+                  </a>
+                </div>
+              </div>
+            }
+          />
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 }

@@ -12,16 +12,16 @@ interface FiltrarBusquedasProps {
 
 
 const filtrosSuperiores: Filtro[] = [
-  { nombre: "Lentes", imagen: "../../../../public/assets/Lentes.png" },
-  { nombre: "Liquido", imagen: "../../../../public/assets/Liquido.png" },
-  { nombre: "Estuche", imagen: "../../../../public/assets/Accesorios.jpg" },
+  { nombre: "Lentes", imagen: "/assets/Lentes.png" },
+  { nombre: "Liquido", imagen: "/assets/Liquido.png" },
+  { nombre: "Estuche", imagen: "/assets/Accesorios.jpg" },
 ];
 
 const filtrosInferiores: Filtro[] = [
-  { nombre: "Miel", imagen: "../../../../public/assets/Miel.jpg" },
-  { nombre: "Grises", imagen: "../../../../public/assets/Grises.webp" },
-  { nombre: "Verdes", imagen: "../../../../public/assets/Verdes.jpg" },
-  { nombre: "Celestes", imagen: "../../../../public/assets/Celestes.jpg" },
+  { nombre: "Miel", imagen: "/assets/Miel.jpg" },
+  { nombre: "Grises", imagen: "/assets/Grises.webp" },
+  { nombre: "Verdes", imagen: "/assets/Verdes.jpg" },
+  { nombre: "Celestes", imagen: "/assets/Celestes.jpg" },
 ];
 
 export default function FiltrarBusquedas({ onFiltrar }: FiltrarBusquedasProps) {

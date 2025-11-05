@@ -8,43 +8,56 @@ import EnviosTodoBolivia from "../../components/dashboard/EnviosBanner";
 import { useNavigate } from "react-router-dom";
 
 const DashboardCliente: React.FC = () => {
-  const [visibleSections, setVisibleSections] = useState<string[]>([]);
-
+  const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
   const navigate = useNavigate();
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
-  // Hook de animación por scroll
+  // ✅ Optimización: Un solo IntersectionObserver para todas las secciones
+  useEffect(() => {
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const sectionId = entry.target.getAttribute("data-section-id");
+          if (sectionId && entry.isIntersecting) {
+            setVisibleSections((prev) => new Set(prev).add(sectionId));
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, []);
+
+  // Hook optimizado de animación por scroll
   const useScrollAnimation = (id: string) => {
     const ref = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              setVisibleSections((prev) =>
-                prev.includes(id) ? prev : [...prev, id]
-              );
-            }
-          });
-        },
-        { threshold: 0.3 }
-      );
+      const element = ref.current;
+      if (element && observerRef.current) {
+        observerRef.current.observe(element);
+      }
 
-      if (ref.current) observer.observe(ref.current);
       return () => {
-        if (ref.current) observer.unobserve(ref.current);
+        if (element && observerRef.current) {
+          observerRef.current.unobserve(element);
+        }
       };
-    }, [id]);
+    }, []);
 
-    const isVisible = visibleSections.includes(id);
+    const isVisible = visibleSections.has(id);
     return { ref, isVisible };
   };
 
   // 🔹 Guarda la categoría seleccionada y redirige al catálogo
   function setCategoriaSeleccionada(categoria: string): void {
-    console.log("Categoría seleccionada:", categoria);
     localStorage.setItem("categoriaSeleccionada", categoria);
-    navigate("/catalogo-cliente"); // navegación interna, sin recargar
+    navigate("/catalogo-cliente");
   }
 
   const banner = useScrollAnimation("banner");
@@ -61,6 +74,7 @@ const DashboardCliente: React.FC = () => {
         {/* Banner */}
         <div
           ref={banner.ref}
+          data-section-id="banner"
           className={`transition-all duration-[1000ms] ease-out transform ${
             banner.isVisible
               ? "opacity-100 translate-y-0"
@@ -79,6 +93,7 @@ const DashboardCliente: React.FC = () => {
         {/* SearchBar */}
         <div
           ref={search.ref}
+          data-section-id="search"
           className={`transition-all duration-[1000ms] ease-out transform ${
             search.isVisible
               ? "opacity-100 translate-y-0"
@@ -91,6 +106,7 @@ const DashboardCliente: React.FC = () => {
         {/* Filtro de búsquedas */}
         <div
           ref={filtros.ref}
+          data-section-id="filtros"
           className={`transition-all duration-[1000ms] ease-out transform ${
             filtros.isVisible
               ? "opacity-100 translate-y-0"
@@ -103,6 +119,7 @@ const DashboardCliente: React.FC = () => {
         {/* Sección de contenido */}
         <section
           ref={panel.ref}
+          data-section-id="panel"
           className={`transition-all duration-[1000ms] ease-out transform p-6 sm:p-8 md:p-12 ${
             panel.isVisible
               ? "opacity-100 translate-y-0"
@@ -124,6 +141,7 @@ const DashboardCliente: React.FC = () => {
 
         <div
           ref={visitanos.ref}
+          data-section-id="visitanos"
           className={`transition-all duration-[1000ms] ease-out transform ${
             visitanos.isVisible
               ? "opacity-100 translate-y-0"

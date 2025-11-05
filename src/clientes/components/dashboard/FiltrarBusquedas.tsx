@@ -11,34 +11,34 @@ interface FiltrarBusquedasProps {
 const filtrosSuperiores: Filtro[] = [
   {
     nombre: "Lentes",
-    imagen: "../../../../public/assets/Lentes.png",
+    imagen: "/assets/Lentes.png",
   },
   {
     nombre: "Liquido",
-    imagen: "../../../../public/assets/Liquido.png",
+    imagen: "/assets/Liquido.png",
   },
   {
     nombre: "Estuche",
-    imagen: "../../../../public/assets/Accesorios.jpg",
+    imagen: "/assets/Accesorios.jpg",
   },
 ];
 
 const filtrosInferiores: Filtro[] = [
   {
     nombre: "Miel",
-    imagen: "../../../../public/assets/Miel.jpg",
+    imagen: "/assets/Miel.jpg",
   },
   {
     nombre: "Grises",
-    imagen: "../../../../public/assets/Grises.webp",
+    imagen: "/assets/Grises.webp",
   },
     {
     nombre: "Verdes",
-    imagen: "../../../../public/assets/Verdes.jpg",
+    imagen: "/assets/Verdes.jpg",
   },
   {
     nombre: "Celestes",
-    imagen: "../../../../public/assets/Celestes.jpg",
+    imagen: "/assets/Celestes.jpg",
   },
 ];
 

@@ -1,5 +1,5 @@
 // services/authService.ts
-import { axiosInstance } from '../axiosConfig';
+import { axiosInstance } from "../axiosConfig";
 
 export interface LoginCredentials {
   credencial: string;
@@ -11,6 +11,11 @@ export interface UserData {
   username: string;
   email: string;
   rol: string;
+  nombre_completo?: string;
+  telefono?: string;
+  sexo?: string;
+  correo?: string;
+  fecha_registro?: string;
 }
 
 export interface LoginResponse {
@@ -42,25 +47,47 @@ export type AuthError =
 
 class AuthService {
   private isRefreshing = false;
-
+  getCurrentUser() {
+    const userData = localStorage.getItem("user");
+    return userData ? JSON.parse(userData) : null;
+  }
   // ======================
   // LOGIN
   // ======================
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
     try {
-      const response = await axiosInstance.post<LoginResponse>(
+      const response = await axiosInstance.post(
         '/api/auth/login/',
         credentials
       );
 
-      if (response.data.success) {
-        this.saveUserData(response.data.user);
+      // El interceptor puede envolver la respuesta como { success, message, data }
+      // o devolver el objeto tal cual ({ success, user, ... }).
+      const body: any = response.data;
+      console.log('🌐 AuthService: Respuesta completa del backend:', body);
+      console.log('🌐 AuthService: response.data:', response.data);
+      
+      const payload = ('data' in body && body.data) ? body.data : body;
+      console.log('🌐 AuthService: payload procesado:', payload);
+
+      if (body?.success && payload?.user) {
+        this.saveUserData(payload.user);
       }
 
-      return response.data;
+      // Si la respuesta tiene 'user' pero no tiene 'success', normalizar
+      if (payload?.user && !body?.success) {
+        console.log('⚠️ AuthService: Normalizando respuesta sin campo success');
+        return {
+          success: true,
+          message: 'Login exitoso',
+          user: payload.user
+        };
+      }
+
+      return body;
     } catch (error: any) {
       const authError = this.handleAuthError(error);
-      throw new Error(authError);
+      throw new Error(this.getErrorMessage(authError));
     }
   }
 
@@ -119,15 +146,17 @@ class AuthService {
   // ======================
   async verifyToken(): Promise<UserData | null> {
     try {
-      const response = await axiosInstance.get<{ success: boolean; user: UserData }>(
-        '/api/auth/verificar-sesion/'
-      );
+      const response: any = await axiosInstance.get('/api/auth/verificar-sesion/');
+      // El interceptor puede devolver { success, data: { user } } o { success, user }
+      const body = response;
+      const payload = ('data' in body && body.data) ? body.data : body;
 
-      if (response.data.success) {
-        this.saveUserData(response.data.user);
-        return response.data.user;
+      if (body?.success && payload?.user) {
+        this.saveUserData(payload.user);
+        return payload.user as UserData;
       }
       return null;
+
     } catch (error) {
       this.clearLocalStorage();
       return null;
@@ -145,6 +174,18 @@ class AuthService {
       this.clearLocalStorage();
       return false;
     }
+  }
+  
+  // VERIFICAR SI ESTA AUTENTICADO
+  isAuthenticated(): boolean {
+    const user = this.getCurrentUser();
+    return !!user;
+  }
+
+  // VERIFICAR ROL
+  hasRole(role: string): boolean {
+    const user = this.getCurrentUser();
+    return user?.rol?.toUpperCase() === role.toUpperCase();
   }
 
   // ======================
