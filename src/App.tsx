@@ -27,6 +27,7 @@ import DashboardCliente from "./clientes/pages/productos/DashboardCliente";
 import CatalogoCliente from "./clientes/pages/productos/Catalogo";
 import ContactoCliente from "./clientes/pages/productos/Contacto";
 import PreguntasFrecuentes from "./clientes/pages/productos/PreguntasFrecuentes";
+import Carrito from "./clientes/pages/productos/Carrito"; 
 
 // Páginas de soporte (tickets)
 import SoporteList from "./pages/soporte/SoporteList";
@@ -45,6 +46,7 @@ import PerfilSoporte from "./clientes/pages/perfilCliente/PerfilSoporte";
 import DashboardLayout from "./layouts/DashboardLayout";
 import "./styles/globals.css";
 
+
 function App() {
   return (
     <BrowserRouter>
@@ -56,6 +58,7 @@ function App() {
         <Route path="/catalogo-cliente" element={<CatalogoCliente />} />
         <Route path="/contacto-cliente" element={<ContactoCliente />} />
         <Route path="/preguntas-cliente" element={<PreguntasFrecuentes />} />
+        <Route path="/carrito-cliente" element={<Carrito />} />
 
         {/* ========================================
             REDIRECCIÓN INICIAL Y AUTENTICACIÓN
