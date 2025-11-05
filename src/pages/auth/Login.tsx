@@ -55,13 +55,13 @@ const LoginForm: React.FC = () => {
     setFormData((prev) => ({ ...prev, [id]: value }));
 
     // Validación inmediata al escribir con Zod
-    try {
+     try {
       loginSchema.pick({ [id]: true }).parse({ [id]: value });
       setFormErrors((prev) => ({ ...prev, [id]: undefined }));
     } catch (err: any) {
       const msg = (err?.errors && err.errors[0]?.message)
-        || (err?.issues && err.issues[0]?.message)
-        || 'Dato inválido';
+         (err?.issues && err.issues[0]?.message)
+         'Dato inválido';
       setFormErrors((prev) => ({ ...prev, [id]: msg }));
     }
   };
