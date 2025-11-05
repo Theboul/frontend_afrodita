@@ -6,6 +6,7 @@ import "./styles/globals.css";
 // Componentes que se cargan inmediatamente (críticos para UX)
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import DashboardLayout from "./layouts/DashboardLayout";
+import GestionarProveedores from "./pages/Proveedores/GestionarProveedores";
 
 // ========================================
 // LAZY LOADING - Componentes cargados bajo demanda
@@ -257,7 +258,30 @@ function App() {
             path="/roles"
             element={<Navigate to="/seguridad/roles" replace />}
           />
-
+          <Route
+          path="/gestionar-compra"
+          element={
+            <DashboardLayout>
+              <GestionarCompra />
+            </DashboardLayout>
+          }
+        />
+        <Route
+          path="/gestionar-cuentacliente"
+          element={
+            <DashboardLayout>
+              <GestionarCuentaCliente />
+            </DashboardLayout>
+          }
+        />
+        <Route
+          path="/proveedores"
+          element={
+            <DashboardLayout>
+              <GestionarProveedores />
+            </DashboardLayout>
+          }
+        />
           {/* ========================================
         RUTAS DE SOPORTE (ADMINISTRADOR)
         ======================================= */}
