@@ -10,7 +10,7 @@ export default function Table({ headers, children }: TableProps) {
         <thead className="bg-pink-300 text-black">
           <tr>
             {headers.map((h, i) => (
-              <th key={i} className="px-4 py-2 text-left">{h}</th>
+              <th key={`header-${h}-${i}`} className="px-4 py-2 text-left">{h}</th>
             ))}
           </tr>
         </thead>

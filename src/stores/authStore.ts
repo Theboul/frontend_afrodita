@@ -24,18 +24,24 @@ export const useAuthStore = create<AuthState>()(
 
       // LOGIN
       login: async (credentials: LoginCredentials) => {
+        console.log('🏪 AuthStore: Iniciando login...');
         set({ loading: true, error: null });
         try {
           const response = await authService.login(credentials);
+          console.log('🏪 AuthStore: Respuesta recibida:', { success: response.success, user: response.user?.username });
+          
           if (response.success && response.user) {
             authService.saveUserData(response.user); //Sincroniza con localStorage
+            console.log('🏪 AuthStore: Actualizando estado a autenticado');
             set({
               user: response.user,
               isAuthenticated: true,
               loading: false,
             });
+            console.log('🏪 AuthStore: Estado actualizado exitosamente');
           }
         } catch (error: any) {
+          console.error('🏪 AuthStore: Error en login:', error);
           set({ error: error.message as AuthError, loading: false });
           throw error;
         }

@@ -122,7 +122,7 @@ export default function ListaClientes() {
           <div className="bg-white rounded-lg shadow-md p-8">
             <div className="animate-pulse space-y-4">
               {[...Array(5)].map((_, i) => (
-                <div key={i} className="h-16 bg-gray-200 rounded"></div>
+                <div key={`skeleton-${i}`} className="h-16 bg-gray-200 rounded"></div>
               ))}
             </div>
           </div>

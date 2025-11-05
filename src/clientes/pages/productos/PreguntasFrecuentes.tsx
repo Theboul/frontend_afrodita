@@ -5,21 +5,25 @@ import Footer from "../../components/common/Footer";
 
 const preguntas = [
   {
+    id: "limpiar-lentes",
     pregunta: "¿Cómo debo limpiar mis lentes de contacto?",
     respuesta:
       "Lava tus manos antes de manipular los lentes, usa solución multipropósito y nunca uses agua del grifo.",
   },
   {
+    id: "duracion-diarios",
     pregunta: "¿Cuánto tiempo puedo usar mis lentes de contacto diarios?",
     respuesta:
       "Los lentes de contacto diarios deben desecharse al final del día; no los reutilices.",
   },
   {
+    id: "astigmatismo",
     pregunta: "¿Puedo usar lentes de contacto si tengo astigmatismo?",
     respuesta:
       "Sí, existen lentes diseñados específicamente para astigmatismo. Consulta con tu óptico.",
   },
   {
+    id: "cambio-estuche",
     pregunta: "¿Cada cuánto debo cambiar el estuche de mis lentes?",
     respuesta:
       "Se recomienda cambiar el estuche cada 3 meses para evitar bacterias y hongos.",
@@ -39,9 +43,9 @@ const PreguntasFrecuentes: React.FC = () => {
         </h1>
 
         <div className="space-y-4 sm:space-y-6">
-          {preguntas.map((item, index) => (
+          {preguntas.map((item) => (
             <div
-              key={index}
+              key={item.id}
               className="border-l-4 border-[#C25B8C] pl-3 sm:pl-4 py-2 sm:py-3"
             >
               <h2 className="text-base sm:text-lg md:text-xl font-semibold text-gray-800">

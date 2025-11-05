@@ -22,7 +22,7 @@ export default function BreadcrumbCategoria({ ruta, onNavigate }: Props) {
         const isLast = i === visibleRuta.length - 1;
         const esOmitido = cat.nombre === "...";
         return (
-          <div key={i} className="flex items-center">
+          <div key={`breadcrumb-${cat.id_categoria}-${i}`} className="flex items-center">
             {!esOmitido ? (
               <span
                 className={`${

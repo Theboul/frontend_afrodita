@@ -64,10 +64,24 @@ class AuthService {
       // El interceptor puede envolver la respuesta como { success, message, data }
       // o devolver el objeto tal cual ({ success, user, ... }).
       const body: any = response.data;
+      console.log('🌐 AuthService: Respuesta completa del backend:', body);
+      console.log('🌐 AuthService: response.data:', response.data);
+      
       const payload = ('data' in body && body.data) ? body.data : body;
+      console.log('🌐 AuthService: payload procesado:', payload);
 
       if (body?.success && payload?.user) {
         this.saveUserData(payload.user);
+      }
+
+      // Si la respuesta tiene 'user' pero no tiene 'success', normalizar
+      if (payload?.user && !body?.success) {
+        console.log('⚠️ AuthService: Normalizando respuesta sin campo success');
+        return {
+          success: true,
+          message: 'Login exitoso',
+          user: payload.user
+        };
       }
 
       return body;

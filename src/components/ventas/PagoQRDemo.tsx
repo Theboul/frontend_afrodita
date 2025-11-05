@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { paymentService, type MetodoPago, type IniciarPagoResponse } from '../../services/ventas/paymentService';
 
 export default function PagoQRDemo() {
@@ -16,11 +16,6 @@ export default function PagoQRDemo() {
   // Payment state
   const [pago, setPago] = useState<IniciarPagoResponse | null>(null);
   const [statusMsg, setStatusMsg] = useState<string>('');
-
-  const metodoSeleccionado = useMemo(
-    () => metodos.find((m) => m.id_metodo_pago === idMetodo),
-    [metodos, idMetodo]
-  );
 
   useEffect(() => {
     (async () => {

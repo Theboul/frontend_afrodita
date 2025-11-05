@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import CarritoService, { type CarritoResponse } from "../services/CarritoService";
+import CarritoService from "../services/CarritoService";
 
 export interface ProductoCarrito {
   id: string;

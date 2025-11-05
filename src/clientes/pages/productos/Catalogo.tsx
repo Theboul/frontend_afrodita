@@ -6,10 +6,7 @@ import FiltrarBusquedas from "../../components/dashboard/FiltrarBusquedas";
 import SearchBar from "../../components/common/Search";
 import { ProductoService } from "../../../services/productos/ProductoService";
 import type { Producto } from "../../../services/productos/ProductoService";
-//import { useCarritoStore } from "../../stores/useCarritoStore";
 import ProductoCard from "../../components/productoCard"; 
-
-
 
 const CatalogoCliente: React.FC = () => {
   const [visibleSections, setVisibleSections] = useState<string[]>([]);

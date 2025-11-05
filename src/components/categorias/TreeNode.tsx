@@ -28,11 +28,11 @@ export default function TreeNode({
     const partes = texto.split(new RegExp(`(${searchTerm})`, "gi"));
     return partes.map((parte, i) =>
       parte.toLowerCase() === searchTerm.toLowerCase() ? (
-        <mark key={i} className="bg-yellow-200 text-yellow-800 rounded px-0.5">
+        <mark key={`highlight-${parte}-${i}`} className="bg-yellow-200 text-yellow-800 rounded px-0.5">
           {parte}
         </mark>
       ) : (
-        <span key={i}>{parte}</span>
+        <span key={`text-${parte}-${i}`}>{parte}</span>
       )
     );
   };

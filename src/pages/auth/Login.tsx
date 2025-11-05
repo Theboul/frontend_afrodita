@@ -21,24 +21,34 @@ const LoginForm: React.FC = () => {
   const navigate = useNavigate();
   const { login, loading, error, clearError, isAuthenticated, user } = useAuthStore();
 
-  // Redirección por rol al iniciar sesión
+  // Redirigir según el rol del usuario cuando esté autenticado
   useEffect(() => {
-    if (isAuthenticated && user) redirectByRole(user.rol);
-  }, [isAuthenticated, user, navigate]);
-
-  const redirectByRole = (rol: string) => {
-    switch (rol) {
-      case "ADMINISTRADOR":
-      case "VENDEDOR":
-        navigate("/dashboard");
-        break;
-      case "CLIENTE":
-        navigate("/catalogo-cliente"); // Redirige a clientes al catálogo
-        break;
-      default:
-        navigate("/");
+    console.log('🔍 Login useEffect ejecutado:', { isAuthenticated, username: user?.username, rol: user?.rol });
+    
+    if (isAuthenticated && user) {
+      // Función de redirección dentro del useEffect
+      const redirectByRole = (rol: string) => {
+        console.log('🚀 Redirigiendo usuario con rol:', rol);
+        
+        switch (rol) {
+          case "ADMINISTRADOR":
+          case "VENDEDOR":
+            console.log('➡️ Navegando a /dashboard');
+            navigate("/dashboard");
+            break;
+          case "CLIENTE":
+            console.log('➡️ Navegando a /catalogo-cliente');
+            navigate("/catalogo-cliente"); // Redirige a clientes al catálogo
+            break;
+          default:
+            console.log('➡️ Navegando a /');
+            navigate("/");
+        }
+      };
+      
+      redirectByRole(user.rol);
     }
-  };
+  }, [isAuthenticated, user, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -56,6 +66,8 @@ const LoginForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     clearError();
+
+    console.log('📝 Formulario enviado con datos:', { credencial: formData.credencial });
 
     // Validación completa con Zod
     const result = loginSchema.safeParse(formData);
@@ -75,13 +87,18 @@ const LoginForm: React.FC = () => {
     }
 
     try {
+      console.log('🔐 Intentando login...');
       await login(formData);
+      console.log('✅ Login completado, estado debería actualizarse');
     } catch (err) {
-      console.error("Login error:", err);
+      console.error("❌ Login error:", err);
     }
   };
 
+  console.log('🔄 Componente Login renderizando. Estado:', { isAuthenticated, userExists: !!user, loading });
+
   if (isAuthenticated) {
+    console.log('⏳ Mostrando pantalla de redirección...');
     return (
       <div className="loading-container">
         <div className="spinner"></div>
