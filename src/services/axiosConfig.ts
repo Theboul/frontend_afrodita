@@ -1,7 +1,7 @@
 // services/axiosConfig.ts
 import axios, { type AxiosInstance, type AxiosResponse, AxiosError, type InternalAxiosRequestConfig } from 'axios';
 
-// Nota: usamos nullish coalescing para permitir cadena vaca ('') y as usar rutas relativas + proxy de Vite.
+// Nota: usamos nullish coalescing para permitir cadena vacia ('') y asi usar rutas relativas + proxy de Vite.
 const API_BASE_URL = (import.meta.env.VITE_API_URL ?? 'http://localhost:8000');
 const API_TIMEOUT = parseInt(import.meta.env.VITE_API_TIMEOUT || '30000');
 

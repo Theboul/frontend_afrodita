@@ -26,17 +26,19 @@ export const useAuthStore = create<AuthState>()(
       login: async (credentials: LoginCredentials) => {
         set({ loading: true, error: null });
         try {
-          const response = await authService.login(credentials);
-          if (response.success) {
-            set({
-              user: response.user,
-              isAuthenticated: true,
-              loading: false,
-            });
+          const response: any = await authService.login(credentials);
+          const user = (response?.data && response.data.user) || response?.user || null;
+
+          if (response?.success && user) {
+            set({ user, isAuthenticated: true });
+          } else {
+            set({ error: 'INVALID_CREDENTIALS' as AuthError });
           }
         } catch (error: any) {
-          set({ error: error.message as AuthError, loading: false });
+          set({ error: error.message as AuthError });
           throw error;
+        } finally {
+          set({ loading: false });
         }
       },
 

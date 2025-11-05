@@ -53,9 +53,9 @@ class AuthService {
         credentials
       );
 
-      // El interceptor puede envolver la respuesta como { success, message, data }
-      // o devolver el objeto tal cual ({ success, user, ... }).
-      const body: any = response.data;
+      // El interceptor ya devuelve el cuerpo normalizado, no AxiosResponse.
+      // Puede ser { success, message, data } o { success, user }.
+      const body: any = response as any;
       const payload = ('data' in body && body.data) ? body.data : body;
 
       if (body?.success && payload?.user) {

@@ -49,7 +49,10 @@ const LoginForm: React.FC = () => {
       loginSchema.pick({ [id]: true }).parse({ [id]: value });
       setFormErrors((prev) => ({ ...prev, [id]: undefined }));
     } catch (err: any) {
-      setFormErrors((prev) => ({ ...prev, [id]: err.errors[0].message }));
+      const msg = (err?.errors && err.errors[0]?.message)
+        || (err?.issues && err.issues[0]?.message)
+        || 'Dato inválido';
+      setFormErrors((prev) => ({ ...prev, [id]: msg }));
     }
   };
 
