@@ -41,6 +41,8 @@ const GestionarCompra = lazy(() => import("./pages/productos/GestionarCompra"));
 const GestionarCuentaCliente = lazy(() => import("./pages/usuarios/GestionarCuentaCliente"));
 const GestionInventario = lazy(() => import("./pages/inventario/GestionInventario"));
 const GestionLotes = lazy(() => import("./pages/lotes/GestionLotes"));
+const NotaVenta = lazy(() => import("./pages/ventas/NotaVenta"));
+const GestionarVentas = lazy(() => import("./pages/ventas/GestionarVentas"));
 
 // Páginas de seguridad
 const GestionRoles = lazy(() => import("./pages/seguridad/GestionRoles"));
@@ -110,6 +112,24 @@ function App() {
             element={
               <DashboardLayout>
                 <MetodosPagoPage />
+              </DashboardLayout>
+            }
+          />
+
+          <Route
+            path="/ventas"
+            element={
+              <DashboardLayout>
+                <GestionarVentas />
+              </DashboardLayout>
+            }
+          />
+
+          <Route
+            path="/venta/nota/:id"
+            element={
+              <DashboardLayout>
+                <NotaVenta />
               </DashboardLayout>
             }
           />
