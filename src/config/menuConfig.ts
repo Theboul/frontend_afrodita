@@ -72,7 +72,7 @@ export const menuModules = [
     icon: BarChart3,
     items: [
       { label: "Gestionar Reportes", to: "/reportes" },
-      { label: "Configurar Políticas del Sistema", to: "/configuracion" },
+      { label: "Configurar Políticas del Sistema", to: "/politica/gestionar" },
       { label: "Auditoría / Bitácora", to: "/bitacora" },
     ],
   },

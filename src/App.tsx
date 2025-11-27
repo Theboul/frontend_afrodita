@@ -52,6 +52,7 @@ const GestionPermisosIndividuales = lazy(() => import("./pages/seguridad/Gestion
 // Páginas de soporte
 const SoporteList = lazy(() => import("./pages/soporte/SoporteList"));
 const SoporteDetalle = lazy(() => import("./pages/soporte/SoporteDetalle"));
+const GestionarPolitica = lazy(() => import("./pages/politica/GestionarPolitica"));
 
 // Pagos
 const MetodosPagoPage = lazy(() => import("./pages/pagos/MetodosPago"));
@@ -275,6 +276,15 @@ function App() {
             element={
               <DashboardLayout>
                 <GestionReportes />
+              </DashboardLayout>
+            }
+          />
+
+          <Route
+            path="/politica/gestionar"
+            element={
+              <DashboardLayout>
+                <GestionarPolitica />
               </DashboardLayout>
             }
           />
