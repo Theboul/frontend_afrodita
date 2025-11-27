@@ -57,7 +57,7 @@ export const menuModules = [
     items: [
       { label: "Gestionar Carrito", to: "/ventas/carrito" },
       { label: "Gestionar Ventas", to: "/ventas" },
-      { label: "Devoluciones y Reembolsos", to: "/ventas/reembolsos" },
+      { label: "Devoluciones y Reembolsos", to: "/devoluciones" },
       { label: "Métodos de Pago", to: "/pagos/metodos" },
       { label: "Procesar Pago en Línea", to: "/pagos/linea" },
       { label: "Conciliar Transacciones", to: "/pagos/conciliacion" },

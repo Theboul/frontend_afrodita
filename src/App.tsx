@@ -6,6 +6,11 @@ import "./styles/globals.css";
 // Componentes que se cargan inmediatamente (críticos para UX)
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import DashboardLayout from "./layouts/DashboardLayout";
+import GestionarDevoluciones from "./pages/devoluciones/GestionarDevoluciones";
+import MisDevoluciones from "./pages/devoluciones/MisDevoluciones";
+import MisDevolucionesCliente from "./pages/devoluciones/MisDevolucionesCliente";
+import FormularioDevolucionCliente from "./pages/devoluciones/FormularioDevolucionCliente";
+
 
 // ========================================
 // LAZY LOADING - Componentes cargados bajo demanda
@@ -134,6 +139,15 @@ function App() {
             }
           />
 
+          <Route
+  path="/devoluciones/solicitar/:id_compra"
+  element={<FormularioDevolucionCliente />}
+/>
+
+
+<Route path="/mis-devoluciones" element={<MisDevolucionesCliente />} />
+<Route path="/devoluciones/solicitar/:id_compra" element={<FormularioDevolucionCliente />} />
+
           {/* ========================================
             RUTAS DEL DASHBOARD (CON SIDEBAR)
         ======================================== */}
@@ -220,6 +234,23 @@ function App() {
             }
           />
 
+       <Route
+  path="/devoluciones"
+  element={
+    <DashboardLayout>
+      <GestionarDevoluciones />
+    </DashboardLayout>
+  }
+/>
+
+          <Route
+  path="/mis-devoluciones"
+  element={
+    <DashboardLayout>
+      <GestionarDevoluciones />
+    </DashboardLayout>
+  }
+/>
 
 
           {/* ========================================
@@ -249,6 +280,10 @@ function App() {
               </DashboardLayout>
             }
           />
+
+            
+
+
 
           {/* ========================================
             RUTAS DE ARCHIVOS Y BITÁCORA
