@@ -57,10 +57,12 @@ const GestionPermisosIndividuales = lazy(() => import("./pages/seguridad/Gestion
 // Páginas de soporte
 const SoporteList = lazy(() => import("./pages/soporte/SoporteList"));
 const SoporteDetalle = lazy(() => import("./pages/soporte/SoporteDetalle"));
+const GestionarPolitica = lazy(() => import("./pages/politica/GestionarPolitica"));
 
 // Pagos
 const MetodosPagoPage = lazy(() => import("./pages/pagos/MetodosPago"));
 const PagoEnLinea = lazy(() => import("./pages/ventas/PagoEnLinea"));
+const GestionReportes = lazy(() => import("./pages/reportes/GestionReportes"));
 
 
 function App() {
@@ -301,6 +303,23 @@ function App() {
             element={
               <DashboardLayout>
                 <BitacoraPage />
+              </DashboardLayout>
+            }
+          />
+          <Route
+            path="/reportes"
+            element={
+              <DashboardLayout>
+                <GestionReportes />
+              </DashboardLayout>
+            }
+          />
+
+          <Route
+            path="/politica/gestionar"
+            element={
+              <DashboardLayout>
+                <GestionarPolitica />
               </DashboardLayout>
             }
           />

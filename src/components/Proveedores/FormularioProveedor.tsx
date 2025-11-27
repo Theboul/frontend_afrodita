@@ -13,7 +13,6 @@ interface FormularioProveedorProps {
 }
 
 const FormularioProveedor: React.FC<FormularioProveedorProps> = ({
-  proveedor,
   datos,
   loading,
   esEdicion,
