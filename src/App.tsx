@@ -20,7 +20,8 @@ const DashboardCliente = lazy(() => import("./clientes/pages/productos/Dashboard
 const CatalogoCliente = lazy(() => import("./clientes/pages/productos/Catalogo"));
 const ContactoCliente = lazy(() => import("./clientes/pages/productos/Contacto"));
 const PreguntasFrecuentes = lazy(() => import("./clientes/pages/productos/PreguntasFrecuentes"));
-const Carrito = lazy(() => import("./clientes/pages/productos/Carrito"));
+const Carrito = lazy(() => import("./clientes/pages/productos/Carrito")); 
+const EnvioClientePage = lazy(() => import("./clientes/pages/productos/Envio"));
 
 // Perfil cliente
 const PerfilClienteLayout = lazy(() => import("./clientes/pages/perfilCliente/PerfilClienteLayout"));
@@ -71,6 +72,7 @@ function App() {
           <Route path="/contacto-cliente" element={<ContactoCliente />} />
           <Route path="/preguntas-cliente" element={<PreguntasFrecuentes />} />
           <Route path="/carrito-cliente" element={<Carrito />} />
+          <Route path="/envio-cliente" element={<EnvioClientePage />} />
 
           {/* ========================================
               REDIRECCIÓN INICIAL Y AUTENTICACIÓN

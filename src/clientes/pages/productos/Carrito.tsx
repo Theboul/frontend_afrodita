@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useCarritoStore } from "../../stores/useCarritoStore";
 import Header from "../../components/common/Header";
 import Footer from "../../../components/common/Footer";
+import { useNavigate } from "react-router-dom";
+
 
 const Carrito: React.FC = () => {
   const {
@@ -14,6 +16,8 @@ const Carrito: React.FC = () => {
 
   const [loading, setLoading] = useState(false);
   const [errorStock, setErrorStock] = useState<string | null>(null);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     const init = async () => {
@@ -38,8 +42,37 @@ const Carrito: React.FC = () => {
   return (
     <div>
       <Header />
-      <main className="flex-1 w-full px-4 sm:px-6 lg:px-8 mt-10">
-      <h1 className="text-2xl font-bold mb-6">🛒 Mi Carrito</h1>
+
+       
+   <main className="flex-1 w-full px-4 sm:px-6 lg:px-11 mt-20">
+
+        {/* TABS DE NAVEGACIÓN ENTRE CARRITO Y ENVÍO */}
+     <div className="w-full flex justify-center mt-16 md:mt-20 lg:mt-32 mb-10 md:mb-16">
+          <div className="flex border-b border-gray-400 w-full max-w-xl sm:max-w-2xl justify-around text-center">
+    
+          
+          {/* TAB Carrito */}
+           <button
+              onClick={() => navigate("/carrito-cliente")}
+              className="px-3 sm:px-6 py-2 font-semibold text-base sm:text-lg 
+              border-b-4 transition border-purple-600 text-purple-600 w-1/2"
+            >
+              Carrito
+            </button>
+
+            <button
+              onClick={() => navigate("/envio-cliente")}
+              className="px-3 sm:px-6 py-2 font-semibold text-base sm:text-lg 
+              text-gray-500 hover:text-purple-600 w-1/2
+              border-b-4 border-transparent hover:border-purple-300 transition"
+             
+            >
+              Información
+            </button>
+
+
+        </div>
+      </div>
       <h1 className="text-2xl font-bold mb-6">🛒 Mi Carrito</h1>
         {loading ? (
           <p>Cargando carrito...</p>
