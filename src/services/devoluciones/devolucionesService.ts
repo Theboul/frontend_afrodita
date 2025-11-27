@@ -1,11 +1,9 @@
-// src/services/devoluciones/devolucionesService.ts
 import api from "../api";
-
 
 export interface DetalleDevolucionCompra {
   id_detalle: number;
-  devolucion: number; // id_devolucion_compra
-  producto: string;   // id_producto (código)
+  devolucion: number;
+  producto: string;
   cantidad: number;
   precio_unit: string;
   sub_total: string;
@@ -15,7 +13,7 @@ export interface DetalleDevolucionCompra {
 export interface DevolucionCompra {
   id_devolucion_compra: number;
   compra: number;
-  fecha_devolucion: string; // "YYYY-MM-DD"
+  fecha_devolucion: string;
   motivo_general: string;
   monto_total: string;
   estado_devolucion: "PENDIENTE" | "APROBADA" | "RECHAZADA";
@@ -30,14 +28,20 @@ export interface CrearDevolucionPayload {
   monto_total: number;
 }
 
+// 👉 CLIENTE CREA DEVOLUCIÓN
+export const crearDevolucion = async (payload: any) => {
+  return api.post("/compras/devoluciones/", payload);
+};
+
+// Admin aprobar
 export const aprobarDevolucion = async (id: number) => {
   return api.patch(`/devoluciones/aprobar/${id}/`);
 };
 
+// Admin rechazar
 export const rechazarDevolucion = async (id: number) => {
   return api.patch(`/devoluciones/rechazar/${id}/`);
 };
-
 
 const baseUrl = "/api/devoluciones";
 
