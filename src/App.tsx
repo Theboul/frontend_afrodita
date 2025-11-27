@@ -48,6 +48,10 @@ const GestionarVentas = lazy(() => import("./pages/ventas/GestionarVentas"));
 const GestionRoles = lazy(() => import("./pages/seguridad/GestionRoles"));
 const GestionPermisos = lazy(() => import("./pages/seguridad/GestionPermisos"));
 const GestionPermisosIndividuales = lazy(() => import("./pages/seguridad/GestionPermisosIndividuales"));
+const CambiarPasswordPage = lazy(() => import("./pages/usuarios/CambiarPasswordPage"));
+
+//Páginas de compras
+const GenerarNotaCompraPage = lazy(() => import("./pages/compras/GenerarNotaCompraPage"));
 
 // Páginas de soporte
 const SoporteList = lazy(() => import("./pages/soporte/SoporteList"));
@@ -221,7 +225,14 @@ function App() {
             }
           />
 
-
+          <Route
+            path="/compras/nota"
+            element={
+              <DashboardLayout>
+                <GenerarNotaCompraPage />
+              </DashboardLayout>
+            }
+          />
 
           {/* ========================================
             RUTAS DE USUARIOS Y CLIENTES
@@ -242,11 +253,19 @@ function App() {
               </DashboardLayout>
             }
           />
-          <Route
+        <Route
             path="/dashboard/clientes/:id"
             element={
               <DashboardLayout>
                 <GestionarCuentaCliente />
+              </DashboardLayout>
+            }
+          />
+          <Route
+            path="/cambiar-password"
+            element={
+              <DashboardLayout>
+                <CambiarPasswordPage />
               </DashboardLayout>
             }
           />

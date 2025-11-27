@@ -8,7 +8,7 @@ export const menuModules = [
     items: [
       { label: "Gestionar Usuarios", to: "/usuarios" },
       { label: "Roles y Permisos", to: "/roles" },
-      { label: "Recuperar Contraseña", to: "/recuperar" },
+      { label: "Cambiar Contraseña", to: "/cambiar-password" },
     ],
   },
 
@@ -33,7 +33,7 @@ export const menuModules = [
       { label: "Gestionar Productos", to: "/productos" },
       { label: "Gestionar Categorías", to: "/categorias" },
       { label: "Gestionar Archivos del Catálogo", to: "/catalogo" },
-      { label: "Consultar Catálogo con Filtros", to: "/catalogo/filtros" },
+      //{ label: "Consultar Catálogo con Filtros", to: "/catalogo/filtros" },
     ],
   },
 
