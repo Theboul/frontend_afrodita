@@ -56,9 +56,21 @@ class AuthService {
   // ======================
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
     try {
+      // Normaliza: el backend espera 'password'. En el formulario el id es 'contraseña'.
+      const keys = Object.keys(credentials || {});
+      let passwordVal: string = '';
+      for (const k of keys) {
+        const lk = k.toLowerCase();
+        if (lk === 'password' || lk.startsWith('contrase')) {
+          passwordVal = (credentials as any)[k];
+          break;
+        }
+      }
+      const loginPayload = { credencial: (credentials as any).credencial, password: passwordVal } as const;
+
       const response = await axiosInstance.post(
         '/api/auth/login/',
-        credentials
+        loginPayload
       );
 
       // El interceptor puede envolver la respuesta como { success, message, data }
@@ -86,6 +98,10 @@ class AuthService {
 
       return body;
     } catch (error: any) {
+      // El interceptor puede rechazar con un objeto sin .response
+      if (error && error.success === false) {
+        throw new Error(this.getErrorMessage('INVALID_CREDENTIALS'));
+      }
       const authError = this.handleAuthError(error);
       throw new Error(this.getErrorMessage(authError));
     }
