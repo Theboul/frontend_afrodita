@@ -56,6 +56,7 @@ const SoporteDetalle = lazy(() => import("./pages/soporte/SoporteDetalle"));
 // Pagos
 const MetodosPagoPage = lazy(() => import("./pages/pagos/MetodosPago"));
 const PagoEnLinea = lazy(() => import("./pages/ventas/PagoEnLinea"));
+const GestionReportes = lazy(() => import("./pages/reportes/GestionReportes"));
 
 
 function App() {
@@ -266,6 +267,14 @@ function App() {
             element={
               <DashboardLayout>
                 <BitacoraPage />
+              </DashboardLayout>
+            }
+          />
+          <Route
+            path="/reportes"
+            element={
+              <DashboardLayout>
+                <GestionReportes />
               </DashboardLayout>
             }
           />
