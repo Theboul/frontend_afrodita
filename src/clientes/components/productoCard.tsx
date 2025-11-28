@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { useCarritoStore } from "../stores/useCarritoStore";
 import type { ProductoCarrito } from "../stores/useCarritoStore";
 
@@ -104,13 +105,21 @@ const ProductoCard: React.FC<ProductoCardProps> = ({ producto }) => {
           </button>
         </div>
       ) : (
-        <button
-          onClick={handleAgregar}
-          className="mt-2 w-full py-2 rounded-lg transition bg-pink-600 text-white hover:bg-pink-700"
-          disabled={loading}
-        >
-          {loading ? "Cargando..." : "Agregar al carrito"}
-        </button>
+        <div className="mt-3 w-full space-y-2">
+          <button
+            onClick={handleAgregar}
+            className="w-full py-2 rounded-lg transition bg-pink-600 text-white hover:bg-pink-700"
+            disabled={loading}
+          >
+            {loading ? "Cargando..." : "Agregar al carrito"}
+          </button>
+          <Link
+            to={`/clientes/productos/${producto.id}`}
+            className="block w-full text-center py-2 rounded-lg border border-pink-200 text-pink-700 hover:bg-pink-50 transition"
+          >
+            Ver detalles y reseñas
+          </Link>
+        </div>
       )}
     </div>
   );
