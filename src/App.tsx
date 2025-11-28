@@ -6,6 +6,7 @@ import "./styles/globals.css";
 // Componentes que se cargan inmediatamente (críticos para UX)
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import DashboardLayout from "./layouts/DashboardLayout";
+import StripeCheckout from "./clientes/pages/productos/StripeCheckout";
 
 // ========================================
 // LAZY LOADING - Componentes cargados bajo demanda
@@ -23,6 +24,10 @@ const PreguntasFrecuentes = lazy(() => import("./clientes/pages/productos/Pregun
 const Carrito = lazy(() => import("./clientes/pages/productos/Carrito"));
 const DetalleProducto = lazy(() => import("./clientes/pages/productos/DetalleProducto"));
 const ResenasProducto = lazy(() => import("./clientes/pages/productos/ResenasProducto"));
+const ProcesoPago = lazy(() => import("./clientes/pages/productos/ProcesoPago"));
+const PagoExitoso = lazy(() => import("./clientes/pages/productos/PagoExitoso"));
+const PagoFallido = lazy(() => import("./clientes/pages/productos/PagoFallido"));
+
 
 // Perfil cliente
 const PerfilClienteLayout = lazy(() => import("./clientes/pages/perfilCliente/PerfilClienteLayout"));
@@ -51,6 +56,10 @@ const GestionarResenas = lazy(() => import("./pages/resenas/GestionarResenas"));
 const GestionRoles = lazy(() => import("./pages/seguridad/GestionRoles"));
 const GestionPermisos = lazy(() => import("./pages/seguridad/GestionPermisos"));
 const GestionPermisosIndividuales = lazy(() => import("./pages/seguridad/GestionPermisosIndividuales"));
+const CambiarPasswordPage = lazy(() => import("./pages/usuarios/CambiarPasswordPage"));
+
+//Páginas de compras
+const GenerarNotaCompraPage = lazy(() => import("./pages/compras/GenerarNotaCompraPage"));
 
 // Páginas de soporte
 const SoporteList = lazy(() => import("./pages/soporte/SoporteList"));
@@ -61,6 +70,7 @@ const GestionarPolitica = lazy(() => import("./pages/politica/GestionarPolitica"
 const MetodosPagoPage = lazy(() => import("./pages/pagos/MetodosPago"));
 const PagoEnLinea = lazy(() => import("./pages/ventas/PagoEnLinea"));
 const GestionarPromociones = lazy(() => import("./pages/promociones/GestionarPromociones"));
+const GestionReportes = lazy(() => import("./pages/reportes/GestionReportes"));
 
 
 function App() {
@@ -78,6 +88,10 @@ function App() {
           <Route path="/carrito-cliente" element={<Carrito />} />
           <Route path="/clientes/productos/:id" element={<DetalleProducto />} />
           <Route path="/clientes/resenas/:id" element={<ResenasProducto />} />
+          <Route path="/proceso-pago" element={<ProcesoPago />} />
+          <Route path="/stripe-checkout" element={<StripeCheckout />} />
+          <Route path="/pago-exitoso" element={<PagoExitoso />} />
+          <Route path="/pago-fallido" element={<PagoFallido />} />
 
           {/* ========================================
               REDIRECCIÓN INICIAL Y AUTENTICACIÓN
@@ -227,7 +241,14 @@ function App() {
             }
           />
 
-
+          <Route
+            path="/compras/nota"
+            element={
+              <DashboardLayout>
+                <GenerarNotaCompraPage />
+              </DashboardLayout>
+            }
+          />
 
           {/* ========================================
             RUTAS DE USUARIOS Y CLIENTES
@@ -256,11 +277,20 @@ function App() {
               </DashboardLayout>
             }
           />
-          <Route
+          
+        <Route
             path="/dashboard/clientes/:id"
             element={
               <DashboardLayout>
                 <GestionarCuentaCliente />
+              </DashboardLayout>
+            }
+          />
+          <Route
+            path="/cambiar-password"
+            element={
+              <DashboardLayout>
+                <CambiarPasswordPage />
               </DashboardLayout>
             }
           />
@@ -281,6 +311,14 @@ function App() {
             element={
               <DashboardLayout>
                 <BitacoraPage />
+              </DashboardLayout>
+            }
+          />
+          <Route
+            path="/reportes"
+            element={
+              <DashboardLayout>
+                <GestionReportes />
               </DashboardLayout>
             }
           />
@@ -307,7 +345,7 @@ function App() {
         ======================================== */}
           <Route
             path="/roles"
-            element={<Navigate to="/seguridad/roles" replace />}
+            element={<Navigate to="/seguridad/roles" replace />} 
           />
 
           {/* ========================================

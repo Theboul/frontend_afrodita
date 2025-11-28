@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useCarritoStore } from "../../stores/useCarritoStore";
 import Header from "../../components/common/Header";
-import Footer from "../../../components/common/Footer";
+import Footer from "../../components/common/Footer";
+import { useNavigate } from "react-router-dom";
 
 const Carrito: React.FC = () => {
   const {
@@ -12,6 +13,7 @@ const Carrito: React.FC = () => {
     eliminarProducto,
   } = useCarritoStore();
 
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [errorStock, setErrorStock] = useState<string | null>(null);
 
@@ -35,12 +37,15 @@ const Carrito: React.FC = () => {
     await aumentarCantidad(prod.id);
   };
 
+  const handleIrAPagar = () => {
+    navigate(`/proceso-pago`);
+  };
+
   return (
     <div>
       <Header />
       <main className="flex-1 w-full px-4 sm:px-6 lg:px-8 mt-10">
-      <h1 className="text-2xl font-bold mb-6">🛒 Mi Carrito</h1>
-      <h1 className="text-2xl font-bold mb-6">🛒 Mi Carrito</h1>
+        <h1 className="text-2xl font-bold mb-6">🛒 Mi Carrito</h1>
         {loading ? (
           <p>Cargando carrito...</p>
         ) : productos.length === 0 ? (
@@ -94,6 +99,16 @@ const Carrito: React.FC = () => {
 
             <div className="mt-6 text-right font-bold text-xl">
               Total: Bs {total.toFixed(2)}
+            </div>
+
+            <div className="mt-6 flex justify-end">
+              <button
+                onClick={handleIrAPagar}
+                className="px-6 py-3 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors disabled:bg-gray-400"
+                disabled={productos.length === 0}
+              >
+                Ir a Pagar
+              </button>
             </div>
           </div>
         )}
