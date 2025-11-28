@@ -5,7 +5,14 @@ import { Link } from "react-router-dom";
 import VentaPresencialForm from "../../components/ventas/VentaPresencialForm";
 
 export default function GestionarVentas() {
-  const [ventas, setVentas] = useState([]);
+  // El estado 'ventas' ahora solo almacenará el array de items
+  const [ventas, setVentas] = useState<any[]>([]);
+  
+  // Nuevo estado para almacenar la información de paginación
+  const [pagination, setPagination] = useState<any>(null);
+  // Estado para la página actual
+  const [currentPage, setCurrentPage] = useState(1);
+
   const [loading, setLoading] = useState(true);
   const [ventaSeleccionada, setVentaSeleccionada] = useState<any>(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -13,13 +20,28 @@ export default function GestionarVentas() {
   const [modalVentaPresencial, setModalVentaPresencial] = useState(false);
 
   useEffect(() => {
-    cargarVentas();
-  }, []);
+    // Recargamos las ventas cuando cambie la página actual
+    cargarVentas(currentPage);
+  }, [currentPage]);
 
-  const cargarVentas = () => {
+  const cargarVentas = (page: number) => {
+    setLoading(true);
     ventasService
-      .listarVentas()
-      .then((res) => setVentas(res.data))
+      .listarVentas(page) // Asumimos que el servicio puede recibir la página
+      .then((res) => {
+        // La respuesta paginada de Django es { count, next, previous, results }
+        const pageSize = 15; // El mismo valor que en el backend
+        const totalPages = Math.ceil(res.data.count / pageSize);
+
+        // Asignamos el array de ventas que viene en la propiedad 'results'
+        setVentas(res.data.results); 
+        // Guardamos la información de paginación relevante
+        setPagination({
+          totalPages: totalPages,
+          next: res.data.next,
+          previous: res.data.previous
+        });
+      })
       .finally(() => setLoading(false));
   };
 
@@ -45,15 +67,14 @@ export default function GestionarVentas() {
     if (!confirm("¿Seguro que deseas anular esta venta?")) return;
 
     await ventasService.anularVenta(id);
-    cargarVentas();
+    cargarVentas(currentPage);
     cerrarModal();
   };
 
   const confirmarPago = async (id: number) => {
     if (!confirm("¿Confirmar el pago de esta venta?")) return;
-
     await ventasService.confirmarPago(id);
-    cargarVentas();
+    cargarVentas(currentPage);
   };
 
   if (loading) return <LoadingFallback />;
@@ -146,6 +167,31 @@ export default function GestionarVentas() {
         </table>
       </div>
 
+      {/* Controles de Paginación */}
+      {pagination && pagination.totalPages > 1 && (
+        <div className="flex justify-center items-center mt-6 space-x-4">
+          <button
+            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+            disabled={!pagination.previous} // Deshabilitado si no hay página anterior
+            className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Anterior
+          </button>
+
+          <span className="text-gray-700">
+            Página {currentPage} de {pagination.totalPages}
+          </span>
+
+          <button
+            onClick={() => setCurrentPage(prev => prev + 1)}
+            disabled={!pagination.next} // Deshabilitado si no hay página siguiente
+            className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Siguiente
+          </button>
+        </div>
+      )}
+
       {/* MODAL DE VENTA PRESENCIAL */}
       {modalVentaPresencial && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
@@ -162,7 +208,7 @@ export default function GestionarVentas() {
               onClose={cerrarModalVentaPresencial}
               onSuccess={() => {
                 cerrarModalVentaPresencial();
-                cargarVentas();
+                cargarVentas(1); // Volver a la página 1 al crear una nueva venta
               }}
             />
           </div>

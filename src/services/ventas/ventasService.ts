@@ -40,8 +40,10 @@ export const ventasService = {
   },
 
   // 5 Listar ventas
-  listarVentas: () => {
-    return axiosInstance.get("/api/ventas/");
+  listarVentas: (page: number) => {
+    return axiosInstance.get("/api/ventas/", {
+      params: { page } // Envía el parámetro ?page=X en la URL
+    });
   },
 
   // 6 Anular venta
