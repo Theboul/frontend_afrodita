@@ -50,7 +50,9 @@ const GestionInventario = lazy(() => import("./pages/inventario/GestionInventari
 const GestionLotes = lazy(() => import("./pages/lotes/GestionLotes"));
 const NotaVenta = lazy(() => import("./pages/ventas/NotaVenta"));
 const GestionarVentas = lazy(() => import("./pages/ventas/GestionarVentas"));
+const TransaccionesPage = lazy(() => import("./pages/ventas/TransaccionesPage"));
 const GestionarResenas = lazy(() => import("./pages/resenas/GestionarResenas"));
+const CheckoutStripePage = lazy(() => import("./pages/ventas/CheckoutStripePage"));
 
 // Páginas de seguridad
 const GestionRoles = lazy(() => import("./pages/seguridad/GestionRoles"));
@@ -71,6 +73,7 @@ const MetodosPagoPage = lazy(() => import("./pages/pagos/MetodosPago"));
 const PagoEnLinea = lazy(() => import("./pages/ventas/PagoEnLinea"));
 const GestionarPromociones = lazy(() => import("./pages/promociones/GestionarPromociones"));
 const GestionReportes = lazy(() => import("./pages/reportes/GestionReportes"));
+const ConciliacionStripePage = lazy(() => import("./pages/pagos/ConciliacionStripe"));
 
 
 function App() {
@@ -127,6 +130,22 @@ function App() {
               </DashboardLayout>
             }
           />
+          <Route
+            path="/pagos/checkout"
+            element={
+              <DashboardLayout>
+                <CheckoutStripePage />
+              </DashboardLayout>
+            }
+          />
+          <Route
+            path="/pagos/conciliacion"
+            element={
+              <DashboardLayout>
+                <ConciliacionStripePage />
+              </DashboardLayout>
+            }
+          />
 
           <Route
             path="/pagos/metodos"
@@ -142,6 +161,14 @@ function App() {
             element={
               <DashboardLayout>
                 <GestionarVentas />
+              </DashboardLayout>
+            }
+          />
+          <Route
+            path="/ventas/transacciones"
+            element={
+              <DashboardLayout>
+                <TransaccionesPage />
               </DashboardLayout>
             }
           />

@@ -56,6 +56,7 @@ export const menuModules = [
       { label: "Metodos de Pago", to: "/pagos/metodos" },
       { label: "Procesar Pago en Linea", to: "/pagos/linea" },
       { label: "Conciliar Transacciones", to: "/pagos/conciliacion" },
+      { label: "Transacciones", to: "/ventas/transacciones" },
       { label: "Gestionar Promociones", to: "/promociones" },
       { label: "Gestionar Envios", to: "/envios" },
     ],
