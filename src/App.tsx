@@ -6,6 +6,7 @@ import "./styles/globals.css";
 // Componentes que se cargan inmediatamente (críticos para UX)
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import DashboardLayout from "./layouts/DashboardLayout";
+import StripeCheckout from "./clientes/pages/productos/StripeCheckout";
 
 // ========================================
 // LAZY LOADING - Componentes cargados bajo demanda
@@ -21,6 +22,10 @@ const CatalogoCliente = lazy(() => import("./clientes/pages/productos/Catalogo")
 const ContactoCliente = lazy(() => import("./clientes/pages/productos/Contacto"));
 const PreguntasFrecuentes = lazy(() => import("./clientes/pages/productos/PreguntasFrecuentes"));
 const Carrito = lazy(() => import("./clientes/pages/productos/Carrito"));
+const ProcesoPago = lazy(() => import("./clientes/pages/productos/ProcesoPago"));
+const PagoExitoso = lazy(() => import("./clientes/pages/productos/PagoExitoso"));
+const PagoFallido = lazy(() => import("./clientes/pages/productos/PagoFallido"));
+
 
 // Perfil cliente
 const PerfilClienteLayout = lazy(() => import("./clientes/pages/perfilCliente/PerfilClienteLayout"));
@@ -77,6 +82,10 @@ function App() {
           <Route path="/contacto-cliente" element={<ContactoCliente />} />
           <Route path="/preguntas-cliente" element={<PreguntasFrecuentes />} />
           <Route path="/carrito-cliente" element={<Carrito />} />
+          <Route path="/proceso-pago" element={<ProcesoPago />} />
+          <Route path="/stripe-checkout" element={<StripeCheckout />} />
+          <Route path="/pago-exitoso" element={<PagoExitoso />} />
+          <Route path="/pago-fallido" element={<PagoFallido />} />
 
           {/* ========================================
               REDIRECCIÓN INICIAL Y AUTENTICACIÓN
@@ -313,7 +322,7 @@ function App() {
         ======================================== */}
           <Route
             path="/roles"
-            element={<Navigate to="/seguridad/roles" replace />}
+            element={<Navigate to="/seguridad/roles" replace />} 
           />
 
           {/* ========================================

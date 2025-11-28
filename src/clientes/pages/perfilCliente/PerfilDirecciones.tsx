@@ -2,11 +2,8 @@ import { useEffect, useState } from "react";
 import { EmptyState } from "../../../components/ui/EmptyState";
 import { Button } from "../../../components/ui/Button";
 import { Card } from "../../../components/ui/Card";
-import { 
-  direccionesClienteService, 
-  type Direccion,
-  type CrearDireccionData
-} from "../../../services/cliente/direccionesClienteService";
+import { direccionesClienteService } from "../../../services/cliente/direccionesClienteService";
+import type { Direccion, CrearDireccionData } from "../../../services/cliente/direccionesClienteService";
 import toast from "react-hot-toast";
 import { MapPin, Star, Trash2, Edit, X } from "lucide-react";
 import FormularioDireccionCliente from "../../../clientes/components/direcciones/FormularioDireccionCliente";

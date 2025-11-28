@@ -148,8 +148,8 @@ const CatalogoCliente: React.FC = () => {
               <ProductoCard
                 key={prod.id_producto}
                 producto={{
-                 
-                  id: String(prod.id_producto),
+                  // Se mantiene el ID como número para consistencia con el backend
+                  id: prod.id_producto,
                   
                   nombre: prod.nombre,
                   descripcion: prod.descripcion,
