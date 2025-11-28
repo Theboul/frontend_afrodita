@@ -129,11 +129,10 @@ export default function GestionarResenas() {
       const updated = await accionMap[accion](id);
       actualizarEnLista(updated);
 
-      const mensajesAccion: Record<typeof accion, string> = {
+      const mensajesAccion: Record<"publicar" | "rechazar" | "ocultar", string> = {
         publicar: "Reseña publicada",
         rechazar: "Reseña rechazada",
         ocultar: "Reseña ocultada",
-        eliminar: "Reseña eliminada",
       };
       setMensaje({ tipo: "ok", texto: mensajesAccion[accion] });
     } catch (err: any) {

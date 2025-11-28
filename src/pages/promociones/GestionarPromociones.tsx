@@ -1,10 +1,8 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Sparkles,
   PlusCircle,
   RefreshCw,
-  CheckCircle2,
-  XCircle,
   Calendar,
   Tag,
   Percent,
@@ -107,7 +105,7 @@ const GestionarPromociones = () => {
 
   const parseValor = (): number | null | undefined => {
     if (!requiresValue(form.tipo)) return null;
-    if (form.valor_descuento === undefined || form.valor_descuento === null || form.valor_descuento === "") {
+    if (form.valor_descuento === undefined || form.valor_descuento === null) {
       return undefined;
     }
     const num = Number(form.valor_descuento);
@@ -199,11 +197,6 @@ const GestionarPromociones = () => {
       setMessage(err?.message || "No se pudo cambiar el estado");
     }
   };
-
-  const productSelectedNames = useMemo(() => {
-    const map = new Map(products.map((p) => [p.id_producto, p.nombre]));
-    return form.productos.map((id) => map.get(id) || id);
-  }, [form.productos, products]);
 
   if (loading) return <LoadingFallback />;
 
@@ -323,7 +316,10 @@ const GestionarPromociones = () => {
                     step="0.01"
                     className="w-full mt-1 rounded-lg border border-gray-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400"
                     value={form.valor_descuento ?? ""}
-                    onChange={(e) => handleChange("valor_descuento", e.target.value)}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      handleChange("valor_descuento", val === "" ? null : Number(val));
+                    }}
                     placeholder={form.tipo === "DESCUENTO_PORCENTAJE" ? "Ej: 10 para 10%" : "Ej: 20.5"}
                     disabled={!requiresValue(form.tipo)}
                   />
