@@ -1,26 +1,18 @@
-import { useEffect, useMemo, useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import { Star, ShoppingCart } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { Star } from "lucide-react";
 import Header from "../../components/common/Header";
 import Footer from "../../components/common/Footer";
 import Button from "../../../components/ui/Button";
 import { ProductoService, type Producto } from "../../../services/productos/ProductoService";
 import { resenaService, type Resena } from "../../../services/resenas/resenaService";
-import { useCarritoStore } from "../../stores/useCarritoStore";
 
-const unwrap = (res: any) => {
-  if (res && typeof res === "object" && "success" in res && "data" in res) return res.data;
-  if (res && typeof res === "object" && "data" in res) return res.data;
-  return res;
-};
-
-export default function DetalleProducto() {
+export default function ResenasProducto() {
   const { id } = useParams<{ id: string }>();
 
   const [producto, setProducto] = useState<Producto | null>(null);
   const [resenas, setResenas] = useState<Resena[]>([]);
   const [loading, setLoading] = useState(true);
-  const [resenaLoading, setResenaLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [mensaje, setMensaje] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -28,38 +20,20 @@ export default function DetalleProducto() {
   const [calificacion, setCalificacion] = useState<number>(5);
   const [comentario, setComentario] = useState<string>("");
 
-  const { agregarProducto, productos, aumentarCantidad } = useCarritoStore();
-  const itemEnCarrito = useMemo(
-    () => productos.find((p) => p.id === String(id)),
-    [productos, id]
-  );
-
   useEffect(() => {
     if (!id) return;
     const fetchData = async () => {
-      setLoading(true);
       try {
-        const [pRes, rRes] = await Promise.all([
+        const [productoRes, resenasRes] = await Promise.all([
           ProductoService.obtener(id),
           resenaService.listarPublicas(id),
         ]);
-        setProducto(unwrap(pRes));
-        setResenas(rRes);
+        const productoData = (productoRes as any)?.data ?? (productoRes as any);
+        setProducto(productoData);
+        setResenas(resenasRes);
       } catch (err: any) {
-        console.error("No se pudo cargar el detalle, intentando fallback", err);
-        try {
-          const listado = await ProductoService.listarConImagen({ search: id });
-          const lista = listado.data || listado.results || [];
-          const encontrado = (lista as any[]).find((p) => String(p.id_producto) === String(id));
-          if (encontrado) {
-            setProducto(encontrado as Producto);
-          } else {
-            setError(err?.message || "No se pudo cargar el producto.");
-          }
-        } catch (err2: any) {
-          console.error("Fallo el fallback de listado", err2);
-          setError(err2?.message || err?.message || "No se pudo cargar el producto.");
-        }
+        console.error(err);
+        setError(err?.message || "No se pudo cargar el producto o las reseñas.");
       } finally {
         setLoading(false);
       }
@@ -67,19 +41,6 @@ export default function DetalleProducto() {
 
     fetchData();
   }, [id]);
-
-  const agregarAlCarrito = async () => {
-    if (!producto) return;
-    await agregarProducto({
-      id: String(producto.id_producto),
-      nombre: producto.nombre,
-      descripcion: producto.descripcion,
-      precio: Number(producto.precio),
-      cantidad: 1,
-      imagen: (producto as any).imagen_principal?.url,
-      stock: Number(producto.stock || 0),
-    });
-  };
 
   const renderStars = (value: number, size: "sm" | "md" = "md") => (
     <div className="flex items-center gap-1">
@@ -93,25 +54,6 @@ export default function DetalleProducto() {
       ))}
     </div>
   );
-
-  const promedioCalificacion = useMemo(() => {
-    if (!resenas.length) return 0;
-    const sum = resenas.reduce((acc, r) => acc + r.calificacion, 0);
-    return Math.round((sum / resenas.length) * 10) / 10;
-  }, [resenas]);
-
-  const recargarResenas = async () => {
-    if (!id) return;
-    setResenaLoading(true);
-    try {
-      const data = await resenaService.listarPublicas(id);
-      setResenas(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setResenaLoading(false);
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -161,74 +103,24 @@ export default function DetalleProducto() {
     );
   }
 
-  if (!producto) {
-    return (
-      <div className="min-h-screen flex flex-col bg-[#FDF2F6]">
-        <Header logoSrc="/assets/1.png" />
-        <main className="flex-1 flex items-center justify-center">
-          <div className="text-center space-y-2">
-            <p className="text-xl font-semibold text-gray-800">Producto no encontrado</p>
-            {error && <p className="text-sm text-red-600">{error}</p>}
-            <Link to="/catalogo-cliente" className="text-pink-600 hover:underline">
-              Volver al catálogo
-            </Link>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-
   return (
     <div className="flex flex-col min-h-screen bg-[#FDF2F6]">
       <Header logoSrc="/assets/1.png" />
 
-      <main className="flex-1 w-full px-4 md:px-8 lg:px-12 py-8">
-        <div className="max-w-6xl mx-auto space-y-8">
-          <div className="bg-white rounded-2xl shadow-md p-6 border border-gray-100 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="w-full rounded-xl overflow-hidden bg-gray-100">
-              <img
-                src={(producto as any).imagen_principal?.url || "/assets/default.jpg"}
-                alt={producto.nombre}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="space-y-4">
-              <p className="text-sm text-gray-500">ID: {producto.id_producto}</p>
-              <h1 className="text-3xl font-bold text-gray-900">{producto.nombre}</h1>
-              <p className="text-gray-700 leading-relaxed">{producto.descripcion}</p>
-
-              <div className="flex items-center gap-4">
-                <span className="text-3xl font-bold text-pink-600">Bs {producto.precio}</span>
-                <span className="text-sm text-gray-600">Stock: {producto.stock ?? 0}</span>
-              </div>
-
-              <div className="flex items-center gap-3">
-                {renderStars(Math.round(promedioCalificacion) || 0)}
-                <span className="text-sm text-gray-700">
-                  {resenas.length ? `${promedioCalificacion} (${resenas.length} reseñas)` : "Sin reseñas aún"}
-                </span>
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Button
-                  label={itemEnCarrito ? "Agregar otro" : "Agregar al carrito"}
-                  color="primary"
-                  icon={<ShoppingCart className="h-4 w-4" />}
-                  onClick={itemEnCarrito ? () => aumentarCantidad(String(producto.id_producto)) : agregarAlCarrito}
-                />
-                <Link
-                  to="/catalogo-cliente"
-                  className="text-pink-600 hover:text-pink-700 font-medium flex items-center"
-                >
-                  Volver al catálogo
-                </Link>
-              </div>
-            </div>
+      <main className="flex-1 w-full px-4 md:px-8 lg:px-12 py-10">
+        <div className="max-w-5xl mx-auto space-y-6">
+          <div className="bg-gradient-to-r from-pink-200 via-white to-pink-100 rounded-2xl shadow-md p-6 border border-pink-100">
+            <p className="text-sm text-gray-600 mb-1">Reseñas</p>
+            <h1 className="text-3xl font-bold text-gray-900">
+              {producto?.nombre || "Producto"} <span className="text-pink-500">#{id}</span>
+            </h1>
+            {producto?.descripcion && (
+              <p className="text-gray-700 mt-2 max-w-3xl">{producto.descripcion}</p>
+            )}
           </div>
 
-          {/* Reseñas */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Formulario */}
             <div className="bg-white rounded-2xl shadow-md p-5 border border-gray-100 lg:col-span-1">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Escribe tu reseña</h2>
               <form className="space-y-4" onSubmit={handleSubmit}>
@@ -283,15 +175,11 @@ export default function DetalleProducto() {
               </form>
             </div>
 
+            {/* Listado */}
             <div className="lg:col-span-2 space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold text-gray-900">Opiniones de otros clientes</h2>
-                <Button
-                  label="Refrescar"
-                  color="warning"
-                  onClick={recargarResenas}
-                  disabled={resenaLoading}
-                />
+                <span className="text-sm text-gray-600">{resenas.length} publicadas</span>
               </div>
 
               {resenas.length === 0 ? (
@@ -304,17 +192,17 @@ export default function DetalleProducto() {
                     <div key={r.id_resena} className="bg-white rounded-xl shadow p-4 border border-gray-100">
                       <div className="flex items-center justify-between mb-2">
                         <div>
-                      <p className="text-sm text-gray-500">#{r.id_resena}</p>
-                      <p className="font-semibold text-gray-900">{r.cliente_nombre}</p>
+                          <p className="text-sm text-gray-500">#{r.id_resena}</p>
+                          <p className="font-semibold text-gray-900">{r.cliente_nombre}</p>
+                        </div>
+                        {renderStars(r.calificacion, "sm")}
+                      </div>
+                      <p className="text-gray-700 leading-relaxed">{r.comentario}</p>
+                      <p className="text-xs text-gray-500 mt-2">
+                        Publicada el {new Date(r.fecha_creacion).toLocaleDateString("es-ES")}
+                      </p>
                     </div>
-                    {renderStars(r.calificacion, "sm")}
-                  </div>
-                  <p className="text-gray-700 leading-relaxed">{r.comentario}</p>
-                  <p className="text-xs text-gray-500 mt-2">
-                    Publicada el {new Date(r.fecha_creacion).toLocaleDateString("es-ES")}
-                  </p>
-                </div>
-              ))}
+                  ))}
                 </div>
               )}
             </div>

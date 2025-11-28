@@ -22,6 +22,8 @@ const CatalogoCliente = lazy(() => import("./clientes/pages/productos/Catalogo")
 const ContactoCliente = lazy(() => import("./clientes/pages/productos/Contacto"));
 const PreguntasFrecuentes = lazy(() => import("./clientes/pages/productos/PreguntasFrecuentes"));
 const Carrito = lazy(() => import("./clientes/pages/productos/Carrito"));
+const DetalleProducto = lazy(() => import("./clientes/pages/productos/DetalleProducto"));
+const ResenasProducto = lazy(() => import("./clientes/pages/productos/ResenasProducto"));
 const ProcesoPago = lazy(() => import("./clientes/pages/productos/ProcesoPago"));
 const PagoExitoso = lazy(() => import("./clientes/pages/productos/PagoExitoso"));
 const PagoFallido = lazy(() => import("./clientes/pages/productos/PagoFallido"));
@@ -48,6 +50,7 @@ const GestionInventario = lazy(() => import("./pages/inventario/GestionInventari
 const GestionLotes = lazy(() => import("./pages/lotes/GestionLotes"));
 const NotaVenta = lazy(() => import("./pages/ventas/NotaVenta"));
 const GestionarVentas = lazy(() => import("./pages/ventas/GestionarVentas"));
+const GestionarResenas = lazy(() => import("./pages/resenas/GestionarResenas"));
 
 // Páginas de seguridad
 const GestionRoles = lazy(() => import("./pages/seguridad/GestionRoles"));
@@ -66,6 +69,7 @@ const GestionarPolitica = lazy(() => import("./pages/politica/GestionarPolitica"
 // Pagos
 const MetodosPagoPage = lazy(() => import("./pages/pagos/MetodosPago"));
 const PagoEnLinea = lazy(() => import("./pages/ventas/PagoEnLinea"));
+const GestionarPromociones = lazy(() => import("./pages/promociones/GestionarPromociones"));
 const GestionReportes = lazy(() => import("./pages/reportes/GestionReportes"));
 
 
@@ -82,6 +86,8 @@ function App() {
           <Route path="/contacto-cliente" element={<ContactoCliente />} />
           <Route path="/preguntas-cliente" element={<PreguntasFrecuentes />} />
           <Route path="/carrito-cliente" element={<Carrito />} />
+          <Route path="/clientes/productos/:id" element={<DetalleProducto />} />
+          <Route path="/clientes/resenas/:id" element={<ResenasProducto />} />
           <Route path="/proceso-pago" element={<ProcesoPago />} />
           <Route path="/stripe-checkout" element={<StripeCheckout />} />
           <Route path="/pago-exitoso" element={<PagoExitoso />} />
@@ -263,6 +269,15 @@ function App() {
               </DashboardLayout>
             }
           />
+          <Route
+            path="/clientes/resenas"
+            element={
+              <DashboardLayout>
+                <GestionarResenas />
+              </DashboardLayout>
+            }
+          />
+          
         <Route
             path="/dashboard/clientes/:id"
             element={
@@ -313,6 +328,14 @@ function App() {
             element={
               <DashboardLayout>
                 <GestionarPolitica />
+              </DashboardLayout>
+            }
+          />
+          <Route
+            path="/promociones"
+            element={
+              <DashboardLayout>
+                <GestionarPromociones />
               </DashboardLayout>
             }
           />
