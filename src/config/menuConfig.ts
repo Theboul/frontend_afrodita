@@ -62,7 +62,7 @@ export const menuModules = [
       { label: "Procesar Pago en Línea", to: "/pagos/linea" },
       { label: "Conciliar Transacciones", to: "/pagos/conciliacion" },
       { label: "Gestionar Promociones", to: "/promociones" },
-      { label: "Gestionar Envíos", to: "/envios" },
+      { label: "Gestionar Envíos", to: "/envio-vendedor" },
     ],
   },
 

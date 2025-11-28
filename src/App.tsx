@@ -58,6 +58,9 @@ const SoporteDetalle = lazy(() => import("./pages/soporte/SoporteDetalle"));
 const MetodosPagoPage = lazy(() => import("./pages/pagos/MetodosPago"));
 const PagoEnLinea = lazy(() => import("./pages/ventas/PagoEnLinea"));
 
+// Envio
+const EnvioVendedor = lazy(() => import("./pages/ventas/EnvioVendedor"));
+
 
 function App() {
   return (
@@ -185,6 +188,7 @@ function App() {
               <DashboardLayout>
                 <GestionProductos />
               </DashboardLayout>
+
             }
           />
           <Route
@@ -218,6 +222,14 @@ function App() {
             element={
               <DashboardLayout>
                 <GestionLotes />
+              </DashboardLayout>
+            }
+          />
+          < Route 
+           path ="/envio-vendedor"
+            element ={
+              <DashboardLayout> 
+                <EnvioVendedor />
               </DashboardLayout>
             }
           />
